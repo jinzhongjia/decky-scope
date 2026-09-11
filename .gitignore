@@ -1,0 +1,13 @@
+node_modules/
+dist/
+bin/
+monitor/.zig-cache/
+monitor/zig-out/
+monitor/zig-debug/
+__pycache__/
+*.pyc
+.work/
+outputs/
+.env
+.env.*
+dev_mode

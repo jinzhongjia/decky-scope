@@ -1,0 +1,27 @@
+# DeckScope architecture
+
+## Scope and source of truth
+
+DeckScope is a read-only SteamOS diagnostics and history plugin. The user's September 12 scope correction supersedes the attached proposal's Steam-Deck-only boundary. Jupiter and Galileo are named profiles, not admission checks. Other SteamOS hardware is capability-probed and must report unsupported data as unavailable. Generic Linux development is useful but does not constitute SteamOS compatibility certification.
+
+The supplied final package is a feasibility demo, not production code or a performance guarantee. Its no-libc syscall approach is reused; its permissive JSON parser, sample-count timing assumptions, fixed eight-CPU/BAT1 assumptions and unknown-command success behavior are not retained.
+
+## Runtime
+
+The native Zig 0.16 process owns all samples and aggregation. Linux timerfd and epoll provide the event loop. Proc/sysfs descriptors are reused. The bridge creates a private UNIX socket, starts the monitor and correlates bounded request IDs. No TCP listener, root requirement, external network calls, shell commands or Python sampling loop is introduced.
+
+The frontend uses Decky controls and a single typed API. Live pushes are enabled only while a consumer is mounted. Settings are atomic and private. Unknown or unavailable functions return structured errors rather than fake success.
+
+## Hardware capabilities
+
+CPU topology is discovered from proc/stat and cpu sysfs, not inferred from model. Up to 256 logical CPU IDs are sampled for current per-thread values, with explicit truncation reporting for larger systems. Historical CPU records store total CPU only in the initial version. GPU busy/frequency/power sources are supported when readable; lack of a vendor-specific source is an honest missing capability, not zero load. Temperature source names are exposed because differently labelled sensors are not interchangeable. Battery devices are discovered by their type and presence; the initial version uses one selected battery and reports that source rather than claiming multi-battery totals.
+
+## History and budgets
+
+High holds at most 1,800 total-metric samples, Mid 2,160 ten-second windows, Low 10,080 minute windows. All windows are based on elapsed monotonic time rather than number of samples. Gaps are not backfilled. Wall time timestamps are UTC; clock discontinuities reset active aggregation. Each metric has its own valid-sample denominator. Only CPU/GPU retain min/max in the compact first-version aggregate; other fields are means. This intentional reduction keeps the fixed data region below 2 MiB.
+
+Minute aggregates use a versioned little-endian checksum-protected format. Truncated or corrupt tails are ignored/repaired at the last valid record; unknown schemas are preserved and rejected. Retention and write failure behavior must be tested. No unmeasured latency, RSS or gaming-impact claim is a release criterion marked passed.
+
+## Compatibility and acceptance
+
+Initial device discovery confirmed one Galileo SteamOS 3.8.16 host and readable PSI/hwmon sources. No plugin deployment, service restart or UI acceptance is authorized by that read-only probe. LCD, non-Deck SteamOS, suspend/resume, multi-GPU, network switching and long-run behavior need their own evidence. Features omitted from the first working slice must be listed in README rather than represented by dummy data.
