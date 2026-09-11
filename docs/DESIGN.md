@@ -12,6 +12,8 @@ The native Zig 0.16 process owns all samples and aggregation. Linux timerfd and 
 
 The frontend uses Decky controls and a single typed API. Live pushes are enabled only while a consumer is mounted. Settings are atomic and private. Unknown or unavailable functions return structured errors rather than fake success.
 
+All flat Python modules use a plugin-specific prefix: `deckscope_bridge`, `deckscope_protocol` and `deckscope_settings`. A host-preloaded module in `sys.modules` wins over a plugin file with the same generic name. The first authorized device install exposed this for `settings`, resolving `load` to `json.load` and failing before monitor spawn. An isolated test now preloads conflicting host modules and imports the actual plugin facade without modifying those host modules.
+
 ## Hardware capabilities
 
 CPU topology is discovered from proc/stat and cpu sysfs, not inferred from model. Up to 256 logical CPU IDs are sampled for current per-thread values, with explicit truncation reporting for larger systems. Historical CPU records store total CPU only in the initial version. GPU busy/frequency/power sources are supported when readable; lack of a vendor-specific source is an honest missing capability, not zero load. Temperature source names are exposed because differently labelled sensors are not interchangeable. Battery devices are discovered by their type and presence; the initial version uses one selected battery and reports that source rather than claiming multi-battery totals.
@@ -25,3 +27,5 @@ Minute aggregates use a versioned little-endian checksum-protected format. Trunc
 ## Compatibility and acceptance
 
 Initial device discovery confirmed one Galileo SteamOS 3.8.16 host and readable PSI/hwmon sources. No plugin deployment, service restart or UI acceptance is authorized by that read-only probe. LCD, non-Deck SteamOS, suspend/resume, multi-GPU, network switching and long-run behavior need their own evidence. Features omitted from the first working slice must be listed in README rather than represented by dummy data.
+
+The user subsequently authorized one sideload on September 12. Installation and the loader restart succeeded, but plugin startup failed due to the Python module collision above. The namespace correction passes local regression; it has not yet been redeployed or accepted on-device. See `VALIDATION.md` for the package identities and observed failure.

@@ -1,5 +1,5 @@
 """Stable Decky facade. Keep CALLABLES identical to src/api.ts."""
-from bridge import Bridge
+from deckscope_bridge import Bridge
 
 CALLABLES = frozenset("get_status get_device_info get_connectivity query_history set_config export_summary".split())
 

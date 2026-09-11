@@ -9,7 +9,7 @@
 | 场景 | 当前实现 | 验证状态 |
 | --- | --- | --- |
 | Steam Deck LCD | Jupiter 配置；动态 CPU、DRM 与电池发现 | 合成夹具通过；尚无 LCD 真机验收 |
-| Steam Deck OLED | Galileo 配置；同样不硬编码编号 | 合成夹具通过；在线 OLED 只做了 SSH 只读环境检查，尚未部署本插件 |
+| Steam Deck OLED | Galileo 配置；同样不硬编码编号 | 初版已授权侧载，但启动时发生 Python 模块冲突；本地修复版尚未再次部署 |
 | 非 Deck SteamOS | 通用 CPU/内存/PSI/I/O/连接信息；按可读来源提供硬件指标 | 16/24 线程、BAT0/CMB0、无 GPU 等合成场景通过；尚无其他 SteamOS 真机验收 |
 | 普通 Linux 开发机 | 允许降级运行，方便测试协议与内核接口 | 当前开发机完成本地回归；不等于 SteamOS 真机认证 |
 | Intel/NVIDIA GPU、特殊 EC 风扇、多 GPU/多电池汇总 | 缺失时明确不可用；当前仅选一个可读 GPU 和一个电池 | 专用采集器、显式设备选择和多设备汇总未完成 |
@@ -72,7 +72,9 @@ bash scripts/package.sh
 
 ## 真机部署与调试
 
-**当前没有部署，也没有重启在线设备的任何服务。** 首次部署前应确认设备地址、目标用户以及当前没有需要保持不中断的 Decky 操作。部署会安装/替换 `DeckScope` 并重启 `plugin_loader`，因此可能短暂影响其他 Decky 插件；不会修改系统功耗、风扇、SSH 或 CEF 配置。
+**2026-09-12 01:25 已按用户授权首次侧载并重启 Decky，但插件启动失败，尚不能正常采集。** 真机日志显示通用模块名 `settings` 命中冻结 Python 中的同名模块，调用 `json.load(Path)` 报错。当前本地代码已将三个内部模块统一改为 `deckscope_` 前缀，并增加冲突回归测试；修复包尚待用户确认后再次侧载。[2]
+
+每次部署前应确认设备地址、目标用户以及当前没有需要保持不中断的 Decky 操作。部署会安装/替换 `DeckScope` 并重启 `plugin_loader`，因此可能短暂影响其他 Decky 插件；不会修改系统功耗、风扇、SSH 或 CEF 配置。
 
 ```bash
 # 只读查找，不扫描整个局域网；地址不要写进仓库
@@ -85,7 +87,7 @@ DECK_HOST=user@ip bash scripts/deploy.sh --confirm
 DECK_HOST=user@ip bash scripts/logs.sh
 ```
 
-部署脚本每次重建全部产物，使用远端登录用户的 `$HOME/homebrew/plugins`，不假设用户名必为 `deck`。认证由 SSH/sudo 交互或已有密钥负责；不要把密码写进脚本或环境文件。旧版本保存在 `homebrew/deckscope-backups/`，不放在插件扫描目录内。该侧载路径尚未实机执行；ZIP 结构校验不代表 Decky 商店安装验收。
+部署脚本每次重建全部产物，使用远端登录用户的 `$HOME/homebrew/plugins`，不假设用户名必为 `deck`。认证由 SSH/sudo 交互或已有密钥负责；不要把密码写进脚本或环境文件。旧版本保存在 `homebrew/deckscope-backups/`，不放在插件扫描目录内。首次安装路径已经在真机执行；旧版本备份与回退尚未实机验收。安装成功不代表插件启动成功，也不代表 Decky 商店安装验收。
 
 如果 CEF 只监听回环地址，可通过用户主动运行的 SSH 转发访问，例如 `ssh -L 8080:127.0.0.1:8080 user@ip`。项目不自动打开调试端口。实际 Steam UI 的调试方法可继续参考 `decky-music` 中的 `decky-dev` 与 `steam-cdp` 说明；任何重新部署、服务重启或可见 UI 操作都应先明确授权。
 
@@ -99,7 +101,7 @@ DECK_HOST=user@ip bash scripts/logs.sh
 
 当前基础版本没有自动游戏会话识别、会话摘要、PSI 阈值事件、历史时间线事件、完整手柄游标/缩放、存储容量/显示器信息和 Intel/NVIDIA 专用 GPU 采集。网络选择只覆盖主路由表，VPN 排除仍为启发式，复杂策略路由与 multipart 中断恢复还需要专门回归。新设备热插拔目前主要依赖重启或休眠恢复时重新探测。持久化启动恢复仍读取有界的七日数据，尚未实现惰性索引读取。
 
-接下来应先在已发现的 OLED 上完成授权侧载、真实数据核对、手柄 UI 和休眠恢复验收，再收集 LCD 与至少一台非 Deck SteamOS 的实际来源清单。48 小时长稳、游戏 frametime AB、真实 P99 和商店发布都仍未验收。**不要把这次本地成功编译，或参考 demo 的性能数字，当作跨机型生产验收。**
+接下来应先取得修复版再次侧载的授权，在 OLED 上确认启动成功，再完成真实数据核对、手柄 UI 和休眠恢复验收，随后收集 LCD 与至少一台非 Deck SteamOS 的实际来源清单。48 小时长稳、游戏 frametime AB、真实 P99 和商店发布都仍未验收。**不要把这次本地成功编译，或参考 demo 的性能数字，当作跨机型生产验收。**
 
 ## References
 

@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 
 import decky
-from protocol import Channel, MAX_LINE, failure
-import settings
+from deckscope_protocol import Channel, MAX_LINE, failure
+import deckscope_settings as settings
 
 
 class Bridge:

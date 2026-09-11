@@ -11,7 +11,7 @@ from pathlib import Path
 from support import ROOT, BINARY
 
 sys.path.insert(0, str(ROOT / "py_modules"))
-import settings
+import deckscope_settings as settings
 
 
 class SettingsTests(unittest.TestCase):
@@ -31,7 +31,7 @@ class SettingsTests(unittest.TestCase):
         api = (ROOT / "src/api.ts").read_text()
         declared = set(re.findall(r'\("([a-z_]+)"\)', api)) - {"metrics"}
         self.assertEqual(names, declared)
-        bridge = (ROOT / "py_modules/bridge.py").read_text()
+        bridge = (ROOT / "py_modules/deckscope_bridge.py").read_text()
         for name in names:
             self.assertRegex(bridge, rf'async def {name}\(')
 
@@ -53,7 +53,7 @@ class BridgeTests(unittest.IsolatedAsyncioTestCase):
         fake.emit = emit
         fake.logger = logging.getLogger("test-decky")
         sys.modules["decky"] = fake
-        import bridge
+        import deckscope_bridge as bridge
         importlib.reload(bridge)
         self.bridge = bridge.Bridge()
         await self.bridge.start()

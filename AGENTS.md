@@ -8,6 +8,8 @@ Target SteamOS, not only Steam Deck. Steam Deck LCD (Jupiter) and OLED (Galileo)
 
 React UI communicates only through `src/api.ts` with the stdlib-only Python bridge. The Zig 0.16 monitor owns sampling and history. Use direct Linux syscalls, no libc, no shell execution or external network calls in the monitor. UI closed means live metrics disabled. Never collect credentials, MAC/SSID, Steam IDs, serial numbers or other processes' environment.
 
+Name flat Python plugin modules with the `deckscope_` prefix. Decky's frozen runtime can preload generic names such as `settings`, `protocol` and `bridge`; never rely on sys.path order to override those modules. Keep the preloaded-host-module regression test.
+
 ## Workflow
 
 Read `docs/DESIGN.md` before implementation changes. Keep source modules focused (prefer <500 lines). Run Zig, Python and frontend tests after changes. Do not claim unrun device or performance tests. UI requires actual SteamOS/Decky validation before release; local builds are not visual acceptance.
