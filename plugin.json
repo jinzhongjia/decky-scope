@@ -1,0 +1,4 @@
+{
+  "name": "DeckScope", "author": "jinzhongjia", "flags": [], "api_version": 1,
+  "publish": { "tags": ["utility", "monitoring", "development"], "description": "Read-only SteamOS diagnostics and performance history", "image": "" }
+}
