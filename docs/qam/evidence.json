@@ -1,0 +1,91 @@
+{
+  "version": "0.1.0-rc.1",
+  "scope": "QAM-only; screenshots are unmodified Steam CEF captures; preview removes empty right area only",
+  "ui": {
+    "live": {
+      "samplesBefore": 12,
+      "samplesAfter": 15,
+      "livePush": true,
+      "charts": 3,
+      "changed": [
+        true,
+        true,
+        true
+      ]
+    },
+    "horizontalOverflow": [],
+    "system": "监控\n系统\n设置\n只读诊断 · 无需 root\nSteam Deck OLED\nSteamOS 3.8.16\n操作系统\n系统\nSteamOS\nSteamOS 版本\n3.8.16\n系统构建\n20260716.1\n内核版本\n6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45\n架构\nx86_64\n硬件信息\n处理器\nAMD Custom APU 0932\n逻辑处理器\n8\n可用物理内存总量\n14.46 GiB\n制造商\nValve\n型号\nGalileo\nBIOS / 固件\nF7G0114\n网络与开发\nIP · wlan0\n地址已隐藏\n•••.•••.•••.•••\n显示 IP\n复制 IP\nSSH · 22\n非回环监听\nCEF · 8080\n仅本机\n\n监听状态不代表远端可达。CEF 仅本机时使用 SSH 转发。\n\n采集来源\nCPU\nacpitz\nGPU\ncard0\n电池\nBAT1\n电池充放电\ncurrent_x_voltage\nSSD 温度 · 30秒缓存\n33.9 °C\n关于 DeckScope\nDeckScope\n0.1.0-rc.1\nDecky Loader\nv3.2.8\n\n默认隐藏地址。系统摘要始终不含 IP、序列号、SteamID。\n\n复制系统摘要\n刷新数据\nDECKSCOPE\nSTEAMOS SYSTEM TOOLS",
+    "systemLive": false,
+    "ipVisible": true,
+    "copyNotice": "已复制",
+    "settingsText": "监控\n系统\n设置\n只读诊断 · 无需 root\n采样间隔\n0.5 s\n1 s\n2 s\n5 s\n\n关闭面板仅停止界面推送，后台继续采样与保存历史。\n\n隐私与共享\n隐藏 IP 地址\n\n默认隐藏地址。系统摘要始终不含 IP、序列号、SteamID。\n\n历史记录\n内存中的分钟记录\n101\n累计采样\n21\n本次采集已运行\n0 min\n\n最多保留 7 天。分钟数据批量落盘，异常退出可能丢失未写入部分。\n\n关于 DeckScope\n版本\n0.1.0-rc.1\n\n未提供整机功耗来源\n＋ 放电 / − 充电 · 非整机功耗\n\n刷新数据\nDECKSCOPE\nSTEAMOS SYSTEM TOOLS",
+    "finalSettings": {
+      "schema_version": 1,
+      "interval_ms": 1000,
+      "privacy_mask": true
+    },
+    "alerts": []
+  },
+  "lifecycle": {
+    "recovery": {
+      "before": {
+        "uptime": 105612,
+        "samples": 104
+      },
+      "after": {
+        "uptime": 2041,
+        "samples": 2,
+        "live": true
+      },
+      "uiContinued": true
+    },
+    "closed": {
+      "live": false,
+      "samplesBefore": 5,
+      "samplesAfter": 7,
+      "settings": {
+        "schema_version": 1,
+        "interval_ms": 1000,
+        "privacy_mask": true
+      }
+    }
+  },
+  "focus_walk": [
+    "系统\nSteamOS",
+    "SteamOS 版本\n3.8.16",
+    "系统构建\n20260716.1",
+    "内核版本\n6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45",
+    "架构\nx86_64",
+    "处理器\nAMD Custom APU 0932",
+    "逻辑处理器\n8",
+    "可用物理内存总量\n14.46 GiB",
+    "制造商\nValve",
+    "型号\nGalileo",
+    "BIOS / 固件\nF7G0114"
+  ],
+  "cleanup": {
+    "inhibitor_released": true,
+    "tunnel_closed": true,
+    "verified_at": "2026-09-12T03:35:14+08:00"
+  },
+  "artifacts": {
+    "bin/deckscope-monitor": {
+      "bytes": 128000,
+      "sha256": "d8156e01d2c53ec9b1d116de0b3ea8cc3ee814e710940ac9a985ad9c4d8916bb"
+    },
+    "dist/index.js": {
+      "bytes": 49142,
+      "sha256": "b044d7bcf8c1c4f33119150b8e4726614b83e3e76101d9bdcce83c787581cb09"
+    }
+  },
+  "screenshots": {
+    "monitor.png": "c92fbf7f4cb7365f7f2f80b51e6b2156a52ac65c2e02866df3c08d1465088ae6",
+    "battery.png": "a580c0e138504ebd2e6b46a72a33848bcc3e0b503cd58c1160f9747bd986446c",
+    "system.png": "85fda8224d495ed82d1d6c1a6d9744ddf368d743867be0f97cf109e451dacb97",
+    "network.png": "d6272f741b7e1f86134ff0a972155cdecc21a182f3c414674e21f9df8b478921",
+    "settings.png": "d48d5232f802f5ab0f821fdbe0decd066effe106383080c0e97aa28c0d8995ae",
+    "summary.png": "972ccaf5a73cb082f2ace2d3492857d1f6e999b26a45fdbc7ab2334cf23ca3ac",
+    "hardware-focus.png": "c39984b6e257088d7e8fea94597cb5fd8d381d91b24eb1696390ac8cb1ee2f67",
+    "seven-days.png": "750880dac69fce8208fe3b86aa4392c33ba0b3b3f6dec9accd8f25c7e2d5d536"
+  }
+}

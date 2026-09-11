@@ -1,6 +1,6 @@
 # DeckScope / decky-scope
 
-**面向 SteamOS 的只读诊断与历史性能记录插件。** 核心使用 Zig 0.16，Decky 后端仅使用 Python 标准库，前端使用 React、TypeScript 与 Decky UI。当前为 `0.1.0` 开发预览，已经形成可构建、可测试、可打包的基础版本，**不是原技术方案全部完成后的生产发布版**。[1]
+**面向 SteamOS 的只读诊断与历史性能记录插件。** 核心使用 Zig 0.16，Decky 后端仅使用 Python 标准库，前端使用 React、TypeScript 与 Decky UI。当前为 **QAM-only 的 `0.1.0-rc.1` 候选版**，已侧载并通过本轮真实 QAM 验收；没有独立大屏或路由。**尚未公开发布，也不代表原技术方案全部完成后的生产发布版**。[1]
 
 ## 平台边界
 
@@ -9,7 +9,7 @@
 | 场景 | 当前实现 | 验证状态 |
 | --- | --- | --- |
 | Steam Deck LCD | Jupiter 配置；动态 CPU、DRM 与电池发现 | 合成夹具通过；尚无 LCD 真机验收 |
-| Steam Deck OLED | Galileo 配置；同样不硬编码编号 | `2bb2daa` 已侧载并通过本轮指标读取、历史、UI、设置和恢复验收；生产与跨机型认证仍未完成 |
+| Steam Deck OLED | Galileo 配置；同样不硬编码编号 | `0.1.0-rc.1` 已侧载并通过 QAM 图表、系统字段、设置、焦点与恢复验收；生产与跨机型认证仍未完成 |
 | 非 Deck SteamOS | 通用 CPU/内存/PSI/I/O/连接信息；按可读来源提供硬件指标 | 16/24 线程、BAT0/CMB0、无 GPU 等合成场景通过；尚无其他 SteamOS 真机验收 |
 | 普通 Linux 开发机 | 允许降级运行，方便测试协议与内核接口 | 当前开发机完成本地回归；不等于 SteamOS 真机认证 |
 | Intel/NVIDIA GPU、特殊 EC 风扇、多 GPU/多电池汇总 | 缺失时明确不可用；当前仅选一个可读 GPU 和一个电池 | 专用采集器、显式设备选择和多设备汇总未完成 |
@@ -26,7 +26,7 @@ CPU 当前快照支持逻辑编号 0–255；超过上限会报告截断。历�
 | 持久化 | DSCP schema v1、128 字节记录、CRC32、按 UTC 日保留、坏尾恢复、批量追加、独占锁、写入失败时保留内存采集 |
 | 开发连接 | rtnetlink 事件驱动缓存；IPv4/IPv6 推荐地址；SSH/CEF 本地监听状态，不扫描局域网或查询公网 IP |
 | Bridge | 私有 UDS、SO_PEERCRED 校验、请求关联、纯 stdlib、设置原子写、限频重启、卸载 flush |
-| 基础 UI | QAM 速览、总览、历史 Canvas、设备/连接页、隐私遮罩、脱敏摘要复制、中英文本 |
+| QAM-only UI | CPU/GPU/功率曲线，系统与开发连接信息，采样设置，隐私遮罩，摘要复制，原生方向键焦点；不再提供大屏 |
 | 工程工具 | 本地构建、发布/安全构建双回归、完整开发 ZIP、显式确认部署、旧插件备份、只读发现与日志脚本 |
 
 `battery_rate_mw` 正值为放电、负值为充电，**不是墙上整机功耗**。缺少 `power_now` 时可从电流和电压估算，并报告来源。NVMe 温度按 30 秒缓存，状态接口公开缓存年龄，历史中可能包含保持值。当前历史聚合对 CPU/GPU 保留 min/avg/max，其余指标保留均值。网络卡片在进入页面和手动刷新时读取更新后的内核缓存，尚未接入网络变化的前端主动推送。[1]
@@ -72,9 +72,9 @@ bash scripts/package.sh
 
 ## 真机部署与调试
 
-**2026-09-12，当前代码 `2bb2daa` 已侧载到 Galileo 并完成本轮功能性验收。** 真实 API、总览/历史/设备/QAM、方向键设置操作、隐私、复制与 monitor 恢复均已执行。五项验收问题已修复；原始截图、机器可读证据与剩余边界见 [真机验收记录](docs/DEVICE-ACCEPTANCE.md)。这不代表完整产品或跨机型生产验收。[3]
+**2026-09-12，当前 `0.1.0-rc.1` 已侧载到 Galileo 并完成 QAM-only 验收。** 三图更新、范围/功率切换、系统字段、设置、隐私、复制、方向键焦点和 monitor 恢复均已执行。当前结果见 [QAM 验收记录](docs/QAM-ACCEPTANCE.md)。[4] 早期大屏版本的历史验收仍保存在 [初版验收记录](docs/DEVICE-ACCEPTANCE.md)，其 UI 描述不再代表当前产品。[3]
 
-用户已临时授权当前设备空闲调试期内的侧载与必要 Loader 重启，无需逐次询问。仍应确认设备地址和目标用户；设备开始使用、目标变化或需要修改无关设置时需重新确认。调试前挂带自动到期上限的临时防休眠锁，结束后解除。本轮功能验收使用最长一小时的临时锁，并已于 02:47 主动解除；临时 SSH/CDP 隧道同时关闭。部署会安装/替换 `DeckScope` 并重启 `plugin_loader`，可能短暂影响其他 Decky 插件；不会修改系统功耗、风扇、SSH 或 CEF 配置。
+用户已临时授权当前设备空闲调试期内的侧载与必要 Loader 重启，无需逐次询问。仍应确认设备地址和目标用户；设备开始使用、目标变化或需要修改无关设置时需重新确认。调试前挂带自动到期上限的临时防休眠锁，结束后解除。本轮 QAM 验收使用最长一小时的临时锁，并已于 03:35 主动解除；临时 SSH/CDP 隧道同时关闭。部署会安装/替换 `DeckScope` 并重启 `plugin_loader`，可能短暂影响其他 Decky 插件；不会修改系统功耗、风扇、SSH 或 CEF 配置。
 
 ```bash
 # 只读查找，不扫描整个局域网；地址不要写进仓库
@@ -97,6 +97,10 @@ DECK_HOST=user@ip bash scripts/logs.sh
 
 插件不采集 SteamID、MAC、SSID、设备序列号、其他进程的环境或完整命令行。它不联网外传。摘要导出使用字段白名单，而不是试图从任意原始日志里事后删除敏感信息。实时指标仅在挂载的消费者需要时启用；没有 AI 调用、云端定时任务或前端定时轮询。
 
+## 发布准备
+
+本地候选包使用 `python3 scripts/package-candidate.py` 归档。主许可证和参考代码授权、第三方通知、发布仓库、商店构建适配、pnpm 9 目标验证及展示图仍需完成。`python3 scripts/release-check.py --public` 当前会明确失败；本轮没有推送、tag、公开 Release 或商店提交。详见 [发布准备](docs/RELEASE.md)。
+
 ## 下一阶段
 
 当前基础版本没有自动游戏会话识别、会话摘要、PSI 阈值事件、历史时间线事件、完整手柄游标/缩放、存储容量/显示器信息和 Intel/NVIDIA 专用 GPU 采集。网络选择只覆盖主路由表，VPN 排除仍为启发式，复杂策略路由与 multipart 中断恢复还需要专门回归。新设备热插拔目前主要依赖重启或休眠恢复时重新探测。持久化启动恢复仍读取有界的七日数据，尚未实现惰性索引读取。
@@ -108,3 +112,5 @@ DECK_HOST=user@ip bash scripts/logs.sh
 [1]: docs/PROTOCOL.md "DeckScope protocol, data semantics and on-disk schema"
 [2]: docs/VALIDATION.md "DeckScope local validation record"
 [3]: docs/DEVICE-ACCEPTANCE.md "DeckScope OLED functional acceptance and original screenshots"
+
+[4]: docs/QAM-ACCEPTANCE.md "DeckScope QAM-only release candidate acceptance, 2026-09-12"
