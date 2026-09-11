@@ -2,11 +2,16 @@ const std = @import("std");
 const src = @import("source.zig");
 const M = @import("model.zig");
 const Value = src.Value;
+const policy = @import("sensor_policy.zig");
 pub const Sensors = struct {
     values: [M.metric_count]Value = @splat(.{}),
     divisors: [M.metric_count]i64 = @splat(1),
     cpufreq: [256]Value = @splat(.{}),
     battery_status: Value = .{},
+    battery_current: Value = .{},
+    battery_voltage: Value = .{},
+    nvme_read_us: ?u64 = null,
+    nvme_value: ?i64 = null,
     cpu_source: [64]u8 = @splat(0),
     battery_source: [64]u8 = @splat(0),
     gpu_source: [64]u8 = @splat(0),
@@ -32,6 +37,8 @@ pub const Sensors = struct {
         for (&self.values) |*v| v.close();
         for (&self.cpufreq) |*v| v.close();
         self.battery_status.close();
+        self.battery_current.close();
+        self.battery_voltage.close();
     }
     fn claim(self: *Sensors, m: M.Metric, base: []const u8, leaf: []const u8, divisor: i64) bool {
         const id = @intFromEnum(m);
@@ -113,20 +120,35 @@ pub const Sensors = struct {
             const present = src.text(src.join(&pathbuf, "{s}/present", .{base}) orelse continue, &txt);
             if (present != null and std.mem.eql(u8, present.?, "0")) continue;
             if (self.claim(.battery_pct, base, "capacity", 1)) {
-                _ = self.claim(.battery_rate_mw, base, "power_now", 1000);
+                if (!self.claim(.battery_rate_mw, base, "power_now", 1000)) {
+                    self.battery_current = Value.init(src.join(&pathbuf, "{s}/current_now", .{base}) orelse continue);
+                    self.battery_voltage = Value.init(src.join(&pathbuf, "{s}/voltage_now", .{base}) orelse continue);
+                }
                 self.battery_status = Value.init(src.join(&pathbuf, "{s}/status", .{base}) orelse continue);
                 copy(&self.battery_source, entry);
                 break;
             }
         }
     }
-    pub fn sample(self: *const Sensors, s: *M.Sample) void {
-        for (self.values, 0..) |v, i| if (v.int()) |value| {
+    pub fn batteryPowerSource(self: *const Sensors) []const u8 {
+        if (self.values[@intFromEnum(M.Metric.battery_rate_mw)].fd >= 0) return "power_now";
+        if (self.battery_current.fd >= 0 and self.battery_voltage.fd >= 0) return "current_x_voltage";
+        return if (self.battery_status.fd >= 0) "status_only" else "unavailable";
+    }
+    pub fn sample(self: *Sensors, s: *M.Sample, now_us: u64) void {
+        for (self.values, 0..) |v, i| {
             const metric: M.Metric = @enumFromInt(i);
-            if (metric == .battery_rate_mw) continue;
-            if ((metric == .battery_pct or metric == .gpu_pct) and (value < 0 or value > 100)) continue;
-            s.set(metric, @divTrunc(value, self.divisors[i]));
-        };
+            if (metric == .battery_rate_mw or metric == .nvme_temp_mc) continue;
+            if (v.int()) |value| {
+                if ((metric == .battery_pct or metric == .gpu_pct) and (value < 0 or value > 100)) continue;
+                s.set(metric, @divTrunc(value, self.divisors[i]));
+            }
+        }
+        if (policy.refreshDue(self.nvme_read_us, now_us)) {
+            self.nvme_value = self.values[@intFromEnum(M.Metric.nvme_temp_mc)].int();
+            self.nvme_read_us = now_us;
+        }
+        if (self.nvme_value) |value| s.set(.nvme_temp_mc, value);
         var sum: i64 = 0;
         var count: i64 = 0;
         for (self.cpufreq) |v| if (v.int()) |khz| {
@@ -138,12 +160,7 @@ pub const Sensors = struct {
         if (count > 0) s.set(.cpu_mhz, @divTrunc(sum, count * 1000));
         var buf: [32]u8 = undefined;
         if (self.battery_status.read(&buf)) |state| {
-            if (self.values[@intFromEnum(M.Metric.battery_rate_mw)].int()) |uw| {
-                if (uw < 0) return;
-                if (std.mem.eql(u8, state, "Discharging")) s.set(.battery_rate_mw, @divTrunc(uw, 1000));
-                if (std.mem.eql(u8, state, "Charging")) s.set(.battery_rate_mw, -@divTrunc(uw, 1000));
-                if (std.mem.eql(u8, state, "Full") or std.mem.eql(u8, state, "Not charging")) s.set(.battery_rate_mw, 0);
-            }
+            if (policy.batteryPowerMw(state, self.values[@intFromEnum(M.Metric.battery_rate_mw)].int(), self.battery_current.int(), self.battery_voltage.int())) |mw| s.set(.battery_rate_mw, mw);
         }
     }
 };

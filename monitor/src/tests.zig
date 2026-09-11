@@ -1,4 +1,5 @@
 test {
+    _ = @import("sensor_policy.zig");
     _ = @import("model.zig");
     _ = @import("parsers.zig");
     _ = @import("store.zig");

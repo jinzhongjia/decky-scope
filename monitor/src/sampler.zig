@@ -47,7 +47,7 @@ pub const Sampler = struct {
                 j += 1;
             }
         }
-        self.sensors.sample(&s);
+        self.sensors.sample(&s, now);
         self.prev_us = now;
         return s;
     }

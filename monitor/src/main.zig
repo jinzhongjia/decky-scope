@@ -176,6 +176,12 @@ fn handle(line: []const u8, state: *State, sampler: *Sampler, device: *const Dev
         try proto.string(&w, @import("device.zig").z(&sampler.sensors.battery_source));
         try w.writeAll(",\"gpu\":");
         try proto.string(&w, @import("device.zig").z(&sampler.sensors.gpu_source));
+        try w.writeAll(",\"battery_power\":");
+        try proto.string(&w, sampler.sensors.batteryPowerSource());
+        try w.writeAll("},\"sensor_cache\":{\"nvme_period_ms\":30000,\"nvme_age_ms\":");
+        if (sampler.sensors.nvme_value != null and sampler.sensors.nvme_read_us != null) {
+            try w.print("{d}", .{(sys.nowUs() -| sampler.sensors.nvme_read_us.?) / 1000});
+        } else try w.writeAll("null");
         try w.writeAll("}}");
     } else if (std.mem.eql(u8, method, "get_device_info") or std.mem.eql(u8, method, "export_summary")) {
         try device.write(&w);

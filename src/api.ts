@@ -24,7 +24,8 @@ export interface Status {
   topology_truncated: boolean;
   latest: Sample;
   settings: { privacy_mask: boolean; interval_ms: number };
-  sources: { cpu_temperature: string; gpu: string; battery: string };
+  sources: { cpu_temperature: string; gpu: string; battery: string; battery_power: string };
+  sensor_cache: { nvme_period_ms: number; nvme_age_ms: number | null };
 }
 export interface Connectivity {
   ready: boolean;
