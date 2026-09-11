@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DialogButton,
   Dropdown,
@@ -11,6 +11,7 @@ import { api, Connectivity, DeviceInfo, History, Status, unwrap } from "./api";
 import { formatMetric, t, TextKey } from "./i18n";
 import { useLive } from "./live";
 import { Timeline } from "./Timeline";
+import { copyText } from "./clipboard";
 export const ROUTE = "/deckscope";
 const metrics: { key: string; label: TextKey }[] = [
   { key: "cpu_pct_x10", label: "cpu" },
@@ -19,6 +20,7 @@ const metrics: { key: string; label: TextKey }[] = [
   { key: "cpu_temp_mc", label: "temperature" },
   { key: "apu_power_mw", label: "power" },
   { key: "battery_pct", label: "battery" },
+  { key: "battery_rate_mw", label: "batteryRate" },
   { key: "psi_cpu_some_x100", label: "pressure" },
 ];
 export function ErrorMessage({ text }: { text: string }) {
@@ -39,19 +41,19 @@ export function Overview({ compact = false }: { compact?: boolean }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: compact ? "1fr" : "repeat(3, minmax(0, 1fr))",
-          gap: 10,
+          gridTemplateColumns: compact ? "1fr" : "repeat(4, minmax(0, 1fr))",
+          gap: 8,
         }}
       >
         {metrics.slice(0, compact ? 4 : metrics.length).map((metric) => (
           <div
             key={metric.key}
-            style={{ padding: 12, borderRadius: 6, background: "#172b38" }}
+            style={{ padding: 10, borderRadius: 6, background: "#172b38" }}
           >
             <div style={{ color: "#a9bbca", fontSize: 13 }}>
               {t(metric.label)}
             </div>
-            <div style={{ fontSize: compact ? 20 : 28, marginTop: 5 }}>
+            <div style={{ fontSize: compact ? 20 : 24, marginTop: 5 }}>
               {formatMetric(metric.key, latest?.[metric.key])}
             </div>
           </div>
@@ -124,6 +126,7 @@ function HistoryPage() {
   );
 }
 function DevicePage() {
+  const owner = useRef<HTMLDivElement>(null);
   const [device, setDevice] = useState<DeviceInfo | null>(null),
     [status, setStatus] = useState<Status | null>(null);
   const [network, setNetwork] = useState<Connectivity | null>(null),
@@ -170,7 +173,7 @@ function DevicePage() {
       const result = unwrap(await api.export_summary());
       setSummary(result.text);
       try {
-        await navigator.clipboard.writeText(result.text);
+        await copyText(result.text, owner.current?.ownerDocument);
         setNotice(t("copied"));
       } catch {
         setNotice(t("copyFailed"));
@@ -181,6 +184,7 @@ function DevicePage() {
   };
   return (
     <PanelSection title={t("device")}>
+      <div ref={owner} />
       <ErrorMessage text={error} />
       <ToggleField
         label={t("privacy")}
@@ -211,7 +215,7 @@ function DevicePage() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 10,
+            gap: 8,
             overflowWrap: "anywhere",
           }}
         >
@@ -240,8 +244,9 @@ function DevicePage() {
       <p style={{ color: "#a9bbca", fontSize: 13 }}>{t("threadNote")}</p>
       <p>
         {t("source")}: CPU {status?.sources.cpu_temperature || "—"} / GPU{" "}
-        {status?.sources.gpu || "—"} / Battery {status?.sources.battery || "—"}
+        {status?.sources.gpu || "—"} / Battery {status?.sources.battery || "—"} / Power {status?.sources.battery_power || "—"}
       </p>
+      <p style={{ color: "#a9bbca", fontSize: 13 }}>{t("sensorNote")}</p>
       {status?.persistence_failed && <ErrorMessage text={t("storageError")} />}
       <Dropdown
         menuLabel={t("interval")}
@@ -277,10 +282,12 @@ export function Page() {
         padding: "48px 28px 44px",
         background: "#0d1b26",
         color: "#eef4f8",
-        overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
-      <header style={{ marginBottom: 16 }}>
+      <header style={{ marginBottom: 8, flexShrink: 0 }}>
         <strong style={{ fontSize: 24 }}>DeckScope</strong>
         <span style={{ marginLeft: 16, color: "#a9bbca" }}>
           {t("subtitle")}
@@ -289,6 +296,7 @@ export function Page() {
           {t("partial")}
         </div>
       </header>
+      <div style={{ flex: 1, minHeight: 0 }}>
       <Tabs
         activeTab={tab}
         onShowTab={setTab}
@@ -310,6 +318,7 @@ export function Page() {
           },
         ]}
       />
+      </div>
     </div>
   );
 }

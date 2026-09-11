@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = new URL('../.work/ui-test-build/', import.meta.url);
 fs.mkdirSync(output, { recursive: true });
-execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
+execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
 
 function moduleFrom(name, extra = {}) {
   const js = fs.readFileSync(new URL(name.replace('.ts', '.js'), output), 'utf8');
@@ -37,4 +37,19 @@ test('missing values are not fabricated as zero and units remain explicit', () =
 test('English UI selection is available', () => {
   const { t } = moduleFrom('i18n.ts', { navigator: { language: 'en-US' } });
   assert.equal(t('overview'), 'Overview');
+});
+
+
+test('clipboard writes through the visible owner document, never the shared navigator', async () => {
+  let written;
+  const { copyText } = moduleFrom('clipboard.ts', { navigator: { clipboard: { writeText: () => { throw Error('wrong window'); } } } });
+  const clipboard = { writeText: async function(value) { assert.equal(this, clipboard); written = value; } };
+  await copyText('redacted summary', { defaultView: { navigator: { clipboard } } });
+  assert.equal(written, 'redacted summary');
+});
+
+test('clipboard missing or rejected remains a caught fallback path', async () => {
+  const { copyText } = moduleFrom('clipboard.ts');
+  await assert.rejects(copyText('summary', null), /clipboard_unavailable/);
+  await assert.rejects(copyText('summary', { defaultView: { navigator: { clipboard: { writeText: async () => { throw Error('denied'); } } } } }), /denied/);
 });

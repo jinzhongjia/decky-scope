@@ -12,14 +12,16 @@ const words = {
   temperature: ["CPU 温度", "CPU temperature"],
   power: ["APU 封装功耗", "APU package power"],
   battery: ["电池电量", "Battery"],
+  batteryRate: ["电池充放电功率", "Battery charge/discharge"],
+  sensorNote: ["电池功率：正值放电、负值充电；非整机功耗。NVMe 温度按 30 秒缓存。", "Battery power: positive discharging, negative charging; not system power. NVMe temperature cached for 30 seconds."],
   pressure: ["CPU 资源等待", "CPU pressure"],
   subtitle: [
     "只读 SteamOS 诊断与历史记录",
     "Read-only SteamOS diagnostics & history",
   ],
   partial: [
-    "开发预览 · 尚未完成真机 UI 验收",
-    "Development preview · device UI validation pending",
+    "开发预览 · 非生产验收版本",
+    "Development preview · not production validated",
   ],
   privacy: ["隐私遮罩", "Privacy mask"],
   interval: ["采样间隔", "Sample interval"],
