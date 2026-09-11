@@ -1,6 +1,6 @@
-# DeckScope 验证与首次侧载记录
+# DeckScope 验证与侧载记录
 
-**验证日期：2026-09-12（UTC+8，更新至 01:30）。版本：0.1.0 开发预览。** 初版已安装到 OLED，但 Python 模块冲突导致启动失败。当前本地修复版已通过回归，尚未再次侧载。本记录不构成跨机型 SteamOS 兼容认证。测试入口为 `bash scripts/check.sh`。[1]
+**验证日期：2026-09-12（UTC+8，更新至 02:02）。版本：0.1.0 开发预览。** 修复版 `4740fbf` 已侧载到 OLED，并通过基础启动检查。初版的 Python 模块冲突不再出现在当前启动日志中。UI、指标数值和历史功能尚未通过真机验收，本记录不构成跨机型 SteamOS 兼容认证。测试入口为 `bash scripts/check.sh`。[1]
 
 ## 已执行的检查
 
@@ -14,6 +14,7 @@
 | 前端构建 | 通过 | `pnpm build`，生成 `dist/index.js` |
 | ELF 检查 | 通过 | x86_64、静态、无动态依赖、无 ELF interpreter |
 | 插件 ZIP | 通过 | 白名单文件、ZIP CRC、完整内置二进制、排除配置与工作目录 |
+| OLED 基础启动 | 通过 | Loader active、monitor 进程存在、私有 socket 权限、当前日志 `monitor ready` |
 
 Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始结果保留在 `.work/final-check.log`，修复版完整回归保留在 `.work/namespace-fix-check.log`；这些工作日志不进入插件包或 Git。
 
@@ -22,7 +23,7 @@ Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始
 | 产物 | 字节数 | SHA-256 |
 | --- | ---: | --- |
 | `bin/deckscope-monitor` | 126,616 | `6970ca56523d2dfd9d8eeebb19f6d74bcdd2f2454ae17827e3ae3310ca01d772` |
-| `outputs/DeckScope-dev.zip`（本地修复版，未再次侧载） | 63,992 | `9db5d590d578f79a0e19352e19dee2772fd7cba6a2e4115162a6af9ed9e802ec` |
+| `outputs/DeckScope-dev.zip`（已侧载修复版） | 63,992 | `9db5d590d578f79a0e19352e19dee2772fd7cba6a2e4115162a6af9ed9e802ec` |
 
 发布二进制约 123.6 KiB，低于方案的 256 KiB 体积目标。这个结果只证明**当前编译产物的体积与链接方式**。没有据此宣称 SteamOS 稳态 RSS、CPU 占用、P99 采样耗时或游戏影响达标。Zig 测试命令显示的 MaxRSS 属于测试进程，不能当作 monitor 的稳态内存数据。
 
@@ -55,13 +56,26 @@ Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始
 
 启动日志显示 `Plugin._main → Bridge.__init__ → settings.load(self.settings_path)` 最终调用了 `json.load`，报错 `AttributeError: 'PosixPath' object has no attribute 'read'`。这是通用 Python 模块名冲突，不是采样器启动成功后的传感器错误。
 
-本地已将三个内部模块改为 `deckscope_bridge`、`deckscope_protocol`、`deckscope_settings`，并增加两项命名隔离回归。当前修复包尚未上传或重新安装，真机启动成功仍待验证。后续再次侧载和服务重启需要用户确认。
+三个内部模块随后改为 `deckscope_bridge`、`deckscope_protocol`、`deckscope_settings`，并增加两项命名隔离回归。02:01 经用户授权重新安装提交 `4740fbf` 的修复包并重启 Loader。安装器将旧版保留在 `/home/deck/homebrew/deckscope-backups/DeckScope-1789149673267633579`。备份创建路径已执行；没有做回退恢复演练。
 
-没有操作 Steam UI，也未修改功耗、风扇、SSH 或 CEF 配置。设备 IP 没有写进项目配置或可复用代码，密码没有写入项目文件或 Git。安装成功不能视为采集正常，更不能证明 LCD 或其他 SteamOS 设备已兼容。
+02:01 的只读检查结果如下。安装与检查原始输出保留在 `.work/sideload-fixed-20260912.log` 和 `.work/sideload-fixed-check-20260912.log`。
+
+| 项目 | 观察结果 |
+| --- | --- |
+| `plugin_loader` | `active` |
+| 安装后二进制 SHA-256 | 与本地 `6970ca56…a01d772` 一致 |
+| 原生 monitor | PID 17229，使用本插件的 UDS 与 history 目录启动 |
+| IPC 目录 / socket | `0700` / `0600`，owner 为登录用户 |
+| History 目录 / 独占锁 | `0700` / `0600` |
+| 当前插件日志 | `[2026-09-12 02:01:21,702][INFO]: [bridge] monitor ready`，本次读取未出现异常 |
+
+用户在 01:59 临时授权当前空闲设备调试期内的侧载和必要 Loader 重启，无需逐次确认，并要求防休眠。已创建 task-owned 用户服务 `deckscope-n4qze4-nosleep`，用 `systemd-inhibit` 阻止 idle/sleep，最长 30 分钟自动到期。02:00 已核验 block 锁，02:02 调试结束后主动停止服务并确认锁已解除。没有留下永久防休眠配置。
+
+没有操作 Steam UI，也未修改功耗、风扇、SSH 或 CEF 配置。设备 IP 没有写进项目配置或可复用代码，密码没有写入项目文件或 Git。进程和控制通道启动成功不能视为数值、历史持久化或完整产品验收，更不能证明 LCD 或其他 SteamOS 设备已兼容。
 
 ## 尚待验收
 
-首先需要再次授权部署修复版并核验启动。随后还需验证 Steam UI/QAM 与手柄操作、实时订阅关闭、异常注入、连续休眠恢复、网络切换、设备实际指标与系统工具对照、跨重启历史恢复，以及至少一台 LCD 和一台非 Deck SteamOS 的适配。48 小时长稳、7 天滚动、游戏 frametime AB、生产性能预算和 Decky 商店安装流程均未执行。
+基础启动检查已经通过。仍需验证 Steam UI/QAM 与手柄操作、实时订阅关闭、异常注入、连续休眠恢复、网络切换、设备实际指标与系统工具对照、历史记录写入和跨重启恢复，以及至少一台 LCD 和一台非 Deck SteamOS 的适配。48 小时长稳、7 天滚动、游戏 frametime AB、生产性能预算和 Decky 商店安装流程均未执行。
 
 ## References
 
