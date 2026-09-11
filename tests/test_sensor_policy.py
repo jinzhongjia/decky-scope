@@ -33,3 +33,24 @@ class SensorPolicyTests(unittest.TestCase):
                 self.assertEqual(after["latest"]["nvme_temp_mc"], 31500)
                 self.assertEqual(after["sensor_cache"]["nvme_period_ms"], 30000)
                 self.assertGreaterEqual(after["sensor_cache"]["nvme_age_ms"], 1000)
+
+
+class DeviceIdentityTests(unittest.TestCase):
+    def test_model_fields_are_read_once_without_serial_identifiers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "fixture"
+            fixture(root)
+            put(root, "proc/cpuinfo", "processor : 0\nmodel name : AMD Custom APU\nserial : PRIVATE-SERIAL\n")
+            put(root, "sys/class/dmi/id/sys_vendor", "Valve")
+            put(root, "sys/class/dmi/id/product_name", "Galileo")
+            run = Path(directory) / "run"
+            run.mkdir()
+            monitor = Monitor(run, root)
+            try:
+                info = monitor.request("get_device_info")["data"]
+                self.assertEqual(info["cpu_model"], "AMD Custom APU")
+                self.assertEqual(info["vendor"], "Valve")
+                self.assertEqual(info["product"], "Galileo")
+                self.assertNotIn("PRIVATE-SERIAL", str(info))
+            finally:
+                monitor.close()
