@@ -97,3 +97,28 @@ class BridgeTests(unittest.IsolatedAsyncioTestCase):
         await asyncio.wait_for(self.bridge.connected.wait(), 5)
         self.assertNotEqual(self.bridge.process.pid, process.pid)
         self.assertTrue((await self.bridge.get_status())["ok"])
+
+    async def test_live_subscription_survives_monitor_restart(self):
+        self.assertTrue((await self.bridge.set_config({"live_push": True}))["ok"])
+        process = self.bridge.process
+        process.kill()
+        await process.wait()
+        self.events.clear()
+        await asyncio.sleep(2.4)
+        reply = await self.bridge.get_status()
+        self.assertTrue(reply["ok"])
+        self.assertTrue(reply["data"]["live_push"])
+        self.assertTrue(any(name == "metrics" for name, _ in self.events))
+        self.assertNotIn("live_push", settings.load(self.bridge.settings_path))
+
+    async def test_unsubscribe_during_restart_stays_disabled(self):
+        self.assertTrue((await self.bridge.set_config({"live_push": True}))["ok"])
+        process = self.bridge.process
+        process.kill()
+        await process.wait()
+        await self.bridge.set_config({"live_push": False})
+        await asyncio.sleep(1.4)
+        reply = await self.bridge.get_status()
+        self.assertTrue(reply["ok"])
+        self.assertFalse(reply["data"]["live_push"])
+        self.assertFalse(self.bridge.desired_live)

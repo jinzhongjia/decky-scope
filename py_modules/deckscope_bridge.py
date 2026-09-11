@@ -23,6 +23,7 @@ class Bridge:
         self.connected = asyncio.Event()
         self.spawned = asyncio.Event()
         self.stopping = False
+        self.desired_live = False  # ephemeral consumer intent, never written to settings
         self.config_lock = asyncio.Lock()
         self.last_error = None
 
@@ -93,7 +94,8 @@ class Bridge:
                 self.spawned.set()
                 stderr_task = asyncio.create_task(self._stderr(self.process.stderr))
                 await asyncio.wait_for(self.connected.wait(), 5)
-                reply = await self.channel.request("set_config", {"interval_ms": self.config["interval_ms"], "live_push": False})
+                async with self.config_lock:
+                    reply = await self.channel.request("set_config", {"interval_ms": self.config["interval_ms"], "live_push": self.desired_live})
                 if not reply["ok"]:
                     raise RuntimeError("configuration_failed")
                 self.last_error = None
@@ -162,6 +164,8 @@ class Bridge:
         if any(key in args and type(args[key]) is not bool for key in ("live_push", "privacy_mask")):
             return failure("invalid_request")
         async with self.config_lock:
+            if "live_push" in args:
+                self.desired_live = args["live_push"]
             control = {k: v for k, v in args.items() if k != "privacy_mask"}
             reply = await self._request("set_config", control)
             if not reply["ok"]:
@@ -187,6 +191,7 @@ class Bridge:
 
     async def unload(self):
         self.stopping = True
+        self.desired_live = False
         if self.channel:
             await self.channel.request("flush")
             await self.channel.close()
