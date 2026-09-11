@@ -1,31 +1,31 @@
 # DeckScope 验证与侧载记录
 
-**验证日期：2026-09-12（UTC+8，更新至 02:02）。版本：0.1.0 开发预览。** 修复版 `4740fbf` 已侧载到 OLED，并通过基础启动检查。初版的 Python 模块冲突不再出现在当前启动日志中。UI、指标数值和历史功能尚未通过真机验收，本记录不构成跨机型 SteamOS 兼容认证。测试入口为 `bash scripts/check.sh`。[1]
+**验证日期：2026-09-12（UTC+8，更新至 02:47）。版本：0.1.0 开发预览，代码 `2bb2daa`。** 当前版本已通过本轮 OLED 功能性验收，完整过程、原始截图和精确范围见 [真机验收记录](DEVICE-ACCEPTANCE.md)。本记录不构成跨机型或生产兼容认证。测试入口为 `bash scripts/check.sh`。[1]
 
 ## 已执行的检查
 
 | 检查 | 结果 | 证据范围 |
 | --- | --- | --- |
-| Zig 单元测试 | 18/18 通过 | 布局、CPU/内存/PSI 解析、环形缓冲、时间窗口、CRC、JSON 边界、netlink 地址过滤、监听状态、背压队列 |
-| Python 集成测试：ReleaseSmall | 19/19 通过 | 原生子进程、真实 UDS、合成硬件、bridge、设置与宿主模块命名冲突 |
-| Python 集成测试：ReleaseSafe | 同样 19/19 通过 | 使用保留符号、开启运行时检查的构建重复回归；不是另加 19 个不同用例 |
-| 前端纯逻辑测试 | 3/3 通过 | 畸形实时事件过滤、缺失值与单位、中英文选择 |
+| Zig 单元测试 | 21/21 通过 | 布局、CPU/内存/PSI 解析、环形缓冲、时间窗口、CRC、JSON 边界、netlink 地址过滤、监听状态、背压队列、电池估算与 NVMe 缓存策略 |
+| Python 集成测试：ReleaseSmall | 23/23 通过 | 原生子进程、真实 UDS、合成硬件、bridge、设置、宿主模块命名冲突、电池/缓存和重启订阅 |
+| Python 集成测试：ReleaseSafe | 同样 23/23 通过 | 使用保留符号、开启运行时检查的构建重复回归；不是另加 23 个不同用例 |
+| 前端纯逻辑测试 | 5/5 通过 | 畸形实时事件过滤、缺失值与单位、中英文选择、剪贴板窗口归属及降级 |
 | TypeScript | 通过 | `pnpm typecheck` |
 | 前端构建 | 通过 | `pnpm build`，生成 `dist/index.js` |
 | ELF 检查 | 通过 | x86_64、静态、无动态依赖、无 ELF interpreter |
 | 插件 ZIP | 通过 | 白名单文件、ZIP CRC、完整内置二进制、排除配置与工作目录 |
 | OLED 基础启动 | 通过 | Loader active、monitor 进程存在、私有 socket 权限、当前日志 `monitor ready` |
 
-Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始结果保留在 `.work/final-check.log`，修复版完整回归保留在 `.work/namespace-fix-check.log`；这些工作日志不进入插件包或 Git。
+Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始结果保留在 `.work/final-check.log`，修复版完整回归保留在 `.work/namespace-fix-check.log`；最终代码完整回归保留在 `.work/acceptance-final-check.log`；这些工作日志不进入插件包或 Git。
 
 ## 二进制与开发包
 
 | 产物 | 字节数 | SHA-256 |
 | --- | ---: | --- |
-| `bin/deckscope-monitor` | 126,616 | `6970ca56523d2dfd9d8eeebb19f6d74bcdd2f2454ae17827e3ae3310ca01d772` |
-| `outputs/DeckScope-dev.zip`（已侧载修复版） | 63,992 | `9db5d590d578f79a0e19352e19dee2772fd7cba6a2e4115162a6af9ed9e802ec` |
+| `bin/deckscope-monitor` | 127,640 | `f5bbc4fb4382553e223f81afe05e94c6c0e0cafdb069ac3b822946ca44025cd0` |
+| `outputs/DeckScope-dev.zip`（已侧载修复版） | 64,921 | `1dc51e9607c487702dceea9024ead8d5b2b18606659b76c40f9889ba704329a1` |
 
-发布二进制约 123.6 KiB，低于方案的 256 KiB 体积目标。这个结果只证明**当前编译产物的体积与链接方式**。没有据此宣称 SteamOS 稳态 RSS、CPU 占用、P99 采样耗时或游戏影响达标。Zig 测试命令显示的 MaxRSS 属于测试进程，不能当作 monitor 的稳态内存数据。
+发布二进制约 124.6 KiB，低于方案的 256 KiB 体积目标。这个结果只证明**当前编译产物的体积与链接方式**。没有据此宣称 SteamOS 稳态 RSS、CPU 占用、P99 采样耗时或游戏影响达标。Zig 测试命令显示的 MaxRSS 属于测试进程，不能当作 monitor 的稳态内存数据。
 
 ## 合成与本机回归的具体范围
 
@@ -48,7 +48,7 @@ Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始
 
 这些夹具没有模拟所有硬件差异。特别是网卡切换、策略路由、netlink multipart 中断、热插拔、传感器权限变化和所有磁盘故障分支仍需要补充验证。
 
-## SteamOS 真机检查边界
+## 首次启动阶段的历史记录（截至 02:02）
 
 本次通过 mDNS 找到一台在线 Steam Deck，并使用 SSH 做了只读检查。DMI 为 **Galileo**，系统为 **SteamOS 3.8.16**，Build 为 `20260716.1`，内核为 `6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45`。`plugin_loader` 处于 active；hwmon 中可见 acpitz、BAT1、steamdeck_hwmon、nvme 和 amdgpu；CPU/内存/I/O PSI 文件可读。SSH 监听非回环地址，CEF 8080 仅监听回环地址。
 
@@ -71,11 +71,15 @@ Zig 单元测试和 Python 集成测试的源码可直接审查。[2] [3] 初始
 
 用户在 01:59 临时授权当前空闲设备调试期内的侧载和必要 Loader 重启，无需逐次确认，并要求防休眠。已创建 task-owned 用户服务 `deckscope-n4qze4-nosleep`，用 `systemd-inhibit` 阻止 idle/sleep，最长 30 分钟自动到期。02:00 已核验 block 锁，02:02 调试结束后主动停止服务并确认锁已解除。没有留下永久防休眠配置。
 
-没有操作 Steam UI，也未修改功耗、风扇、SSH 或 CEF 配置。设备 IP 没有写进项目配置或可复用代码，密码没有写入项目文件或 Git。进程和控制通道启动成功不能视为数值、历史持久化或完整产品验收，更不能证明 LCD 或其他 SteamOS 设备已兼容。
+截至该阶段，没有操作 Steam UI，也未修改功耗、风扇、SSH 或 CEF 配置。设备 IP 没有写进项目配置或可复用代码，密码没有写入项目文件或 Git。进程和控制通道启动成功不能视为数值、历史持久化或完整产品验收，更不能证明 LCD 或其他 SteamOS 设备已兼容。
+
+## 后续功能验收（02:11–02:47）
+
+当前版本已通过实际 RPC、总览/历史/设备/QAM、模拟方向键操作、设置、隐私、摘要复制、磁盘 CRC 校验和 monitor 异常恢复检查。五项问题已修复并重新侧载。41 条已落盘记录通过完整校验；退出注入也证实尚未 flush 的记录可能丢失，这仍是明确的批量持久化边界。详见 [真机验收记录](DEVICE-ACCEPTANCE.md) 与 [脱敏证据](acceptance/evidence.json)。
 
 ## 尚待验收
 
-基础启动检查已经通过。仍需验证 Steam UI/QAM 与手柄操作、实时订阅关闭、异常注入、连续休眠恢复、网络切换、设备实际指标与系统工具对照、历史记录写入和跨重启恢复，以及至少一台 LCD 和一台非 Deck SteamOS 的适配。48 小时长稳、7 天滚动、游戏 frametime AB、生产性能预算和 Decky 商店安装流程均未执行。
+真实休眠/唤醒、网卡切换及断网、实体手柄、实际充放电状态转换、完整数值同步对照、磁盘故障、LCD 与其他 SteamOS 设备、48 小时长稳、七日保留、游戏 frametime A/B、生产 P99 和商店安装仍未完成。七天查询控件的成功不等于已经运行七天。最终设置已恢复为 1 s 和隐私开启，UI 关闭后 `live_push=false`；临时防休眠与调试隧道已解除。
 
 ## References
 

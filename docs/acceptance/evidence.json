@@ -1,0 +1,219 @@
+{
+  "observed_date": "2026-09-12 UTC+8",
+  "code_commit": "2bb2daa",
+  "device": {
+    "monitor_version": "0.1.0-dev",
+    "arch": "x86_64",
+    "board": "Galileo",
+    "bios": "F7G0114",
+    "kernel": "6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45",
+    "os_name": "SteamOS",
+    "os_id": "steamos",
+    "os_version": "3.8.16",
+    "os_build": "20260716.1",
+    "profile": "steam_deck_oled",
+    "is_steamos": true,
+    "compatibility_verified": false,
+    "decky_version": "v3.2.8"
+  },
+  "controls": {
+    "privacyDisabled": true,
+    "addressVisible": true,
+    "privacyRestored": true,
+    "intervalMenuOpened": true,
+    "intervalFromUI": 2000
+  },
+  "history_ui": {
+    "metric": "mem_used_mb",
+    "range": "7 d",
+    "available_data_only": true
+  },
+  "history_files": [
+    {
+      "name": "20707.dscp",
+      "bytes": 5280,
+      "records": 41,
+      "first": 1789149682702,
+      "last": 1789151926250,
+      "mode": "0o600"
+    }
+  ],
+  "history_crc_all_valid": true,
+  "recovery_before": {
+    "before": {
+      "samples": 1177,
+      "uptime_ms": 1179499,
+      "live_push": true,
+      "lo_len": 20
+    },
+    "after": {
+      "samples": 2,
+      "uptime_ms": 2072,
+      "live_push": false,
+      "lo_len": 20
+    }
+  },
+  "recovery_after": {
+    "before": {
+      "samples": 85,
+      "uptime_ms": 85736,
+      "live_push": true,
+      "lo_len": 30
+    },
+    "after": {
+      "samples": 2,
+      "uptime_ms": 2045,
+      "live_push": true,
+      "lo_len": 29
+    }
+  },
+  "recovery_ui_metrics_changed": true,
+  "live_gate": {
+    "all_closed": {
+      "samples": 102,
+      "live_push": false
+    },
+    "qam_open": {
+      "samples": 135,
+      "live_push": true
+    },
+    "qam_closed": {
+      "samples": 191,
+      "live_push": false
+    },
+    "qam_to_page": {
+      "samples": 129,
+      "live_push": true
+    },
+    "history": {
+      "samples": 130,
+      "live_push": false
+    }
+  },
+  "sensor_baseline": {
+    "sensors": {
+      "/sys/class/hwmon/hwmon4": {
+        "name": "nvme",
+        "temp1_input": "33850",
+        "freq1_input": null,
+        "power1_average": null,
+        "fan1_input": null
+      },
+      "/sys/class/hwmon/hwmon5": {
+        "name": "amdgpu",
+        "temp1_input": "54000",
+        "freq1_input": "200000000",
+        "power1_average": "3219000",
+        "fan1_input": null
+      },
+      "/sys/class/hwmon/hwmon3": {
+        "name": "steamdeck_hwmon",
+        "temp1_input": "31000",
+        "freq1_input": null,
+        "power1_average": null,
+        "fan1_input": "0"
+      },
+      "/sys/class/hwmon/hwmon1": {
+        "name": "acpitz",
+        "temp1_input": "54000",
+        "freq1_input": null,
+        "power1_average": null,
+        "fan1_input": null
+      }
+    },
+    "battery": {
+      "BAT1": {
+        "present": "1",
+        "capacity": "79",
+        "status": "Not charging",
+        "power_now": null,
+        "current_now": "0",
+        "voltage_now": "8481000"
+      }
+    },
+    "memory": {
+      "MemTotal": "15160368 kB",
+      "MemAvailable": "12499264 kB",
+      "SwapTotal": "8628728 kB",
+      "SwapFree": "8628728 kB"
+    },
+    "monitor": {
+      "pid": 19898,
+      "VmRSS": "376 kB",
+      "VmSize": "3244 kB",
+      "Threads": "1"
+    }
+  },
+  "timing_samples": [
+    {
+      "before_nvme_cache": {
+        "samples": 698,
+        "sample_total_us": 11938183,
+        "sample_max_us": 26932
+      },
+      "mean_us": 17103.414040114614
+    },
+    {
+      "after_nvme_cache": {
+        "samples": 39,
+        "sample_total_us": 74526,
+        "sample_max_us": 17865
+      },
+      "mean_us": 1910.923076923077
+    }
+  ],
+  "timing_limit": "Different short observation windows, not a controlled A/B or P99/CPU-utilization benchmark.",
+  "clipboard": {
+    "before": "unfocused SharedJSContext; fallback shown",
+    "after": "owner-document clipboard; UI reports copied",
+    "private_clipboard_contents_read": false
+  },
+  "binary": {
+    "bytes": 127640,
+    "sha256": "f5bbc4fb4382553e223f81afe05e94c6c0e0cafdb069ac3b822946ca44025cd0"
+  },
+  "frontend_sha256": "23d06ace2e0998c236336b2e7ad6250737f22708643c0e21e577910af86ba4f3",
+  "screenshots": {
+    "overview.png": "a6ce2cd046e72204e75aae6c692d63f2d6dad80da68f1cf63719ae59c30ef8e8",
+    "history.png": "f34760a95bd765dfc47d94fafec582d3c5cfcf5e17c029f00332ee2032f4ca28",
+    "history-memory-week.png": "576aeab51fce624fb2dc98ae43c48005e6ecb3b8d5b3208c660c5b8e83e2aece",
+    "device.png": "83e213a602a677e22b6e8d8966c30e02f8ca8debf8ec941a3a262a29a5e17786",
+    "clipboard.png": "8da5f41a190e0c6ad46206177654dfe5ffe23a5f9e99d47865cfe42b452dabd8",
+    "qam.png": "4c84291b6031a94086d481125c53ff31562cfd2c9577ae3fba7fb672961bf8dd"
+  },
+  "not_tested": [
+    "actual suspend/resume",
+    "network interruption/switching",
+    "physical gamepad hardware",
+    "actual charging/discharging transitions",
+    "LCD or non-Deck hardware",
+    "48-hour endurance",
+    "seven-day retention on device",
+    "game frametime A/B",
+    "production P99"
+  ],
+  "final_settings": {
+    "schema_version": 1,
+    "interval_ms": 1000,
+    "privacy_mask": true
+  },
+  "final_live_push": false,
+  "tests": {
+    "zig": 21,
+    "python_per_build": 23,
+    "python_builds": [
+      "ReleaseSmall",
+      "ReleaseSafe"
+    ],
+    "frontend": 5,
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "cleanup": {
+    "at": "2026-09-12 02:47 UTC+8",
+    "sleep_inhibitor_released": true,
+    "task_cdp_tunnel_closed": true,
+    "plugin_views_closed": true
+  },
+  "plugin_zip_sha256": "1dc51e9607c487702dceea9024ead8d5b2b18606659b76c40f9889ba704329a1"
+}

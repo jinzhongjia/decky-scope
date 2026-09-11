@@ -10,13 +10,17 @@ The supplied final package is a feasibility demo, not production code or a perfo
 
 The native Zig 0.16 process owns all samples and aggregation. Linux timerfd and epoll provide the event loop. Proc/sysfs descriptors are reused. The bridge creates a private UNIX socket, starts the monitor and correlates bounded request IDs. No TCP listener, root requirement, external network calls, shell commands or Python sampling loop is introduced.
 
-The frontend uses Decky controls and a single typed API. Live pushes are enabled only while a consumer is mounted. Settings are atomic and private. Unknown or unavailable functions return structured errors rather than fake success.
+The frontend uses Decky controls and a single typed API. Live pushes are enabled only while a consumer is mounted. The bridge retains this transient intent across native restarts under its configuration lock, including unsubscribe requests during recovery. Settings are atomic and private. Unknown or unavailable functions return structured errors rather than fake success.
 
 All flat Python modules use a plugin-specific prefix: `deckscope_bridge`, `deckscope_protocol` and `deckscope_settings`. A host-preloaded module in `sys.modules` wins over a plugin file with the same generic name. The first authorized device install exposed this for `settings`, resolving `load` to `json.load` and failing before monitor spawn. An isolated test now preloads conflicting host modules and imports the actual plugin facade without modifying those host modules.
 
 ## Hardware capabilities
 
 CPU topology is discovered from proc/stat and cpu sysfs, not inferred from model. Up to 256 logical CPU IDs are sampled for current per-thread values, with explicit truncation reporting for larger systems. Historical CPU records store total CPU only in the initial version. GPU busy/frequency/power sources are supported when readable; lack of a vendor-specific source is an honest missing capability, not zero load. Temperature source names are exposed because differently labelled sensors are not interchangeable. Battery devices are discovered by their type and presence; the initial version uses one selected battery and reports that source rather than claiming multi-battery totals.
+
+Battery power uses readable `power_now` first, then an overflow-safe current/voltage estimate with explicit source metadata. Slow NVMe temperature reads have a 30-second monotonic cadence and reported cache age; cached values are intentionally held in history. This avoids treating every archived temperature as a fresh hardware conversion.
+
+The route uses one native Tabs scroller in a flex-sized viewport. The compact QAM retains its own native scrolling and focus. Clipboard writes use the rendered element's owner document, not the unfocused SharedJSContext navigator; the summary remains visible when the clipboard fails.
 
 ## History and budgets
 
@@ -29,3 +33,5 @@ Minute aggregates use a versioned little-endian checksum-protected format. Trunc
 Initial device discovery confirmed one Galileo SteamOS 3.8.16 host and readable PSI/hwmon sources. No plugin deployment, service restart or UI acceptance is authorized by that read-only probe. LCD, non-Deck SteamOS, suspend/resume, multi-GPU, network switching and long-run behavior need their own evidence. Features omitted from the first working slice must be listed in README rather than represented by dummy data.
 
 The first authorized sideload on September 12 installed successfully but failed at plugin startup due to the Python module collision above. The namespace correction at `4740fbf` was then redeployed under user authorization. At 02:01 the loader was active, the installed native hash matched, the monitor process existed, its private socket was mode 0600, and the current plugin log reported `monitor ready`. This is startup acceptance only, not UI, metric-accuracy, historical durability or cross-device acceptance. See `VALIDATION.md` for package identities and evidence.
+
+The subsequent authorized functional acceptance exercised actual Overview/History/Device/QAM rendering, directional-key controls, settings, privacy, clipboard, persistent records and monitor crash recovery. See `DEVICE-ACCEPTANCE.md`; suspend/network fault testing and long-run or cross-model certification remain separate.

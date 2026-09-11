@@ -29,7 +29,7 @@ Request IDs are unsigned 32-bit integers. Unknown fields and invalid numeric typ
 
 The public Decky API contains six methods: all of the above except `flush`. The bridge's `set_config` additionally accepts `privacy_mask`. The bridge's `export_summary` returns a redacted text object rather than the native environment object. The whitelist excludes board names, BIOS strings, hostname, IP, username, serial numbers and user paths. `query_sessions` and `session_mark` are deliberately **not advertised** until session recording is implemented.
 
-The metrics event is enabled by UI reference counting, rate limited to at most 1 Hz, and suppressed inside metric-specific deadbands. Device and history pages query on entry or explicit refresh, not on a timer. The native network cache is refreshed by rtnetlink events; the initial UI connection card refreshes on entry or with its Refresh button. Network-change push events are not yet part of the exposed implementation.
+The metrics event is enabled by UI reference counting, rate limited to at most 1 Hz, and suppressed inside metric-specific deadbands. The bridge retains current live-subscription intent in memory across monitor restarts, but never persists it to settings; closing the last consumer during recovery keeps it disabled. Device and history pages query on entry or explicit refresh, not on a timer. The native network cache is refreshed by rtnetlink events; the initial UI connection card refreshes on entry or with its Refresh button. Network-change push events are not yet part of the exposed implementation.
 
 ## Metrics and units
 
@@ -38,6 +38,12 @@ The authoritative order of the 25 availability bits is the `Metric` enum in `mon
 CPU total excludes guest counters already included in user/nice. Counter resets and first observations establish a baseline rather than generating spikes. Current per-thread values support IDs 0–255 and report truncation explicitly beyond that bound. No eight-thread assumption remains. Per-thread history is deferred.
 
 CPU and GPU aggregate records retain min/max plus mean. Other metrics retain their valid-sample arithmetic mean. Means are sample-weighted, not duration-weighted; changing the interval inside an active window can change its weighting. Query reduction currently uses bounded stride selection; it does not promise preservation of every spike when reducing many windows. Cursor navigation and extrema-preserving display decimation remain future work.
+
+## Sensor freshness and battery power sources
+
+`get_status.sources.battery_power` reports `power_now`, `current_x_voltage`, `status_only` or `unavailable`. When `power_now` is absent, the selected battery's `current_now` and `voltage_now` provide estimated milliwatts: `abs(microamp) * microvolt / 1e9`. Charging is negative, discharging positive; known Full/Not charging states report zero. Unknown state, missing operands or overflowing results remain unavailable. This is battery electrical power, not total system or wall power.
+
+NVMe temperature can require a slow synchronous hardware read on SteamOS. It is refreshed every 30 seconds of monotonic time, and its cached value is included between refreshes. `get_status.sensor_cache` exposes `nvme_period_ms` (30000) and `nvme_age_ms` (null when unavailable). History thus includes held temperature values, not independent per-second sensor conversions. A failed refresh clears the cached value, and suspend/reprobe resets the cache. Other metrics keep the configured sampling cadence; single-threaded slow refreshes can still produce latency spikes, so this is not a P99 guarantee.
 
 ## On-disk schema
 
