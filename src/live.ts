@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { api, isSample, onMetrics, Sample, unwrap } from "./api";
+import { api, isSample, onMetrics, Sample, Status, unwrap } from "./api";
+import { appendRecent } from "./trends";
 let latest: Sample | null = null;
+let status: Status | null = null;
+let recent: Sample[] = [];
 let error = "";
 let off: (() => void) | null = null;
 const listeners = new Set<() => void>();
@@ -13,8 +16,11 @@ function sync() {
       const active = listeners.size > 0;
       unwrap(await api.set_config({ live_push: active }));
       if (active) {
-        const status = unwrap(await api.get_status());
-        if (isSample(status.latest)) latest = status.latest;
+        status = unwrap(await api.get_status());
+        if (isSample(status.latest)) {
+          latest = status.latest;
+          recent = appendRecent(recent, latest);
+        }
         error = "";
         notify();
       }
@@ -32,6 +38,7 @@ export function useLive() {
     if (listeners.size === 1) {
       off = onMetrics((sample) => {
         latest = sample;
+        recent = appendRecent(recent, sample);
         error = "";
         notify();
       });
@@ -46,7 +53,7 @@ export function useLive() {
       }
     };
   }, []);
-  return { latest, error, refresh: sync };
+  return { latest, status, recent, error, refresh: sync };
 }
 export function stopLive() {
   listeners.clear();

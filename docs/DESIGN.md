@@ -20,7 +20,7 @@ CPU topology is discovered from proc/stat and cpu sysfs, not inferred from model
 
 Battery power uses readable `power_now` first, then an overflow-safe current/voltage estimate with explicit source metadata. Slow NVMe temperature reads have a 30-second monotonic cadence and reported cache age; cached values are intentionally held in history. This avoids treating every archived temperature as a fresh hardware conversion.
 
-The route uses one native Tabs scroller in a flex-sized viewport. The compact QAM retains its own native scrolling and focus. Clipboard writes use the rendered element's owner document, not the unfocused SharedJSContext navigator; the summary remains visible when the clipboard fails.
+The product is QAM-only per the user's 02:55 direction. It registers no independent fullscreen route. The native QAM scroller contains Monitor, System and Settings views; real CPU/GPU/power history charts and system identity remain first-class features. Clipboard writes use the rendered element's owner document, not the unfocused SharedJSContext navigator; the summary remains visible when the clipboard fails.
 
 ## History and budgets
 
@@ -35,3 +35,7 @@ Initial device discovery confirmed one Galileo SteamOS 3.8.16 host and readable 
 The first authorized sideload on September 12 installed successfully but failed at plugin startup due to the Python module collision above. The namespace correction at `4740fbf` was then redeployed under user authorization. At 02:01 the loader was active, the installed native hash matched, the monitor process existed, its private socket was mode 0600, and the current plugin log reported `monitor ready`. This is startup acceptance only, not UI, metric-accuracy, historical durability or cross-device acceptance. See `VALIDATION.md` for package identities and evidence.
 
 The subsequent authorized functional acceptance exercised actual Overview/History/Device/QAM rendering, directional-key controls, settings, privacy, clipboard, persistent records and monitor crash recovery. See `DEVICE-ACCEPTANCE.md`; suspend/network fault testing and long-run or cross-model certification remain separate.
+
+## QAM-only release candidate
+
+The QAM charts seed bounded history on mount/range change and merge live samples without polling. All series retain UTC millisecond x-coordinates, explicit units and missing-value gaps. CPU/GPU use a shared 0–100% scale. Power distinguishes APU package from signed battery electrical power; unavailable whole-device power is never inferred from APU power. System information includes kernel, SteamOS build, CPU model, architecture, firmware, interface and masked IP. The plugin does not add desktop/fullscreen routes.

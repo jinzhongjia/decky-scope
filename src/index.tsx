@@ -1,14 +1,13 @@
-import { Component, ReactNode } from "react";
-import { definePlugin, routerHook } from "@decky/api";
-import {
-  DialogButton,
-  Navigation,
-  PanelSectionRow,
-  staticClasses,
-} from "@decky/ui";
+import { Component, ReactNode, useState } from "react";
+import { definePlugin } from "@decky/api";
+import { DialogButton, staticClasses } from "@decky/ui";
 import { FaChartLine } from "react-icons/fa";
-import { Overview, Page, ROUTE } from "./Page";
+import { MonitorPane } from "./MonitorPane";
+import { SystemPane } from "./SystemPane";
+import { SettingsPane } from "./SettingsPane";
+import { Segments } from "./Controls";
 import { stopLive } from "./live";
+import { styles } from "./styles";
 import { t } from "./i18n";
 class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -17,10 +16,12 @@ class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   }
   render() {
     return this.state.failed ? (
-      <div role="alert" style={{ padding: 16 }}>
-        DeckScope UI unavailable.{" "}
+      <div className="ds">
+        <p role="alert" className="ds-error">
+          DeckScope UI unavailable.
+        </p>
         <DialogButton onClick={() => this.setState({ failed: false })}>
-          {t("refresh")}
+          {t("retry")}
         </DialogButton>
       </div>
     ) : (
@@ -28,34 +29,45 @@ class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
     );
   }
 }
-export default definePlugin(() => {
-  routerHook.addRoute(ROUTE, () => (
+function Panel() {
+  const [view, setView] = useState("monitor");
+  return (
+    <div className="ds" data-deckscope="qam-only">
+      <style>{styles}</style>
+      <Segments
+        label="DeckScope"
+        value={view}
+        onChange={setView}
+        options={[
+          { value: "monitor", label: t("monitor") },
+          { value: "system", label: t("system") },
+          { value: "settings", label: t("settings") },
+        ]}
+      />
+      {view === "monitor" ? (
+        <MonitorPane />
+      ) : view === "system" ? (
+        <SystemPane />
+      ) : (
+        <SettingsPane />
+      )}
+      <footer className="ds-footer">
+        <span>DECKSCOPE</span>
+        <span>STEAMOS SYSTEM TOOLS</span>
+      </footer>
+    </div>
+  );
+}
+export default definePlugin(() => ({
+  name: "DeckScope",
+  titleView: <div className={staticClasses.Title}>DeckScope</div>,
+  icon: <FaChartLine />,
+  content: (
     <Boundary>
-      <Page />
+      <Panel />
     </Boundary>
-  ));
-  return {
-    name: "DeckScope",
-    titleView: <div className={staticClasses.Title}>DeckScope</div>,
-    icon: <FaChartLine />,
-    content: (
-      <Boundary>
-        <Overview compact />
-        <PanelSectionRow>
-          <DialogButton
-            onClick={() => {
-              Navigation.CloseSideMenus();
-              Navigation.Navigate(ROUTE);
-            }}
-          >
-            {t("open")}
-          </DialogButton>
-        </PanelSectionRow>
-      </Boundary>
-    ),
-    onDismount() {
-      stopLive();
-      routerHook.removeRoute(ROUTE);
-    },
-  };
-});
+  ),
+  onDismount() {
+    stopLive();
+  },
+}));

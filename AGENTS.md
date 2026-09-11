@@ -4,6 +4,8 @@
 
 Target SteamOS, not only Steam Deck. Steam Deck LCD (Jupiter) and OLED (Galileo) are known profiles, never prerequisites. Discover CPU topology, DRM devices, hwmon and batteries by capabilities. Unknown hardware must degrade honestly: omit unavailable values; do not invent zero readings. A successful OLED test is not LCD or general SteamOS certification.
 
+The user clarified on 2026-09-12 that the product is QAM-only: no independent fullscreen UI or navigation entry. Keep CPU/GPU/power trend charts and professional system information (kernel, SteamOS version/build, IP, hardware) inside QAM. Do not reduce it to a numbers-only widget.
+
 ## Architecture
 
 React UI communicates only through `src/api.ts` with the stdlib-only Python bridge. The Zig 0.16 monitor owns sampling and history. Use direct Linux syscalls, no libc, no shell execution or external network calls in the monitor. UI closed means live metrics disabled. Never collect credentials, MAC/SSID, Steam IDs, serial numbers or other processes' environment.
@@ -19,3 +21,5 @@ The user authorizes local commits after each completed and verified stage, with 
 Document deliberately deferred functionality and compatibility limits. Use English diagnostic logs with no sensitive payloads. Do not silently acknowledge unimplemented protocol operations as successful.
 
 The user additionally authorized functional acceptance on 2026-09-12: Steam CEF plugin navigation, directional/confirm input, settings/clipboard checks, and bounded monitor-only exit injection are within scope for the current idle-device period. Keep original screenshots and distinguish synthetic input from physical-controller or suspend/network testing. Read `docs/DEVICE-ACCEPTANCE.md` before repeating already-completed acceptance.
+
+At 03:19 the user explicitly authorized continuing all sideload iterations autonomously while they sleep. Use the established sudo-backed full installer for root-owned plugin files, retain backups, and do not try direct unprivileged frontend writes. This does not authorize public publishing, pushing, or changing permanent system settings.
