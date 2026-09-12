@@ -1,5 +1,7 @@
 # Documentation
 
+**Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](MONITOR-UX.md).
+
 [rc.3 monitoring and system details](FEATURES-RC3.md) documents the new functionality, native snapshot and field semantics. [rc.3 device acceptance](RC3-ACCEPTANCE.md) records the installed QAM and directional-key results.
 
 **This repository contains everything needed to build, sideload and debug DeckScope.** No sibling repository, external Agent Skill, pre-existing `.work/` directory, or saved device credential is required. Start with the current guides below; historical records are evidence, not instructions to replay an old workflow.

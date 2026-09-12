@@ -1,5 +1,7 @@
 # Validation Record
 
+**Latest UI revision:** the single-metric Monitor passes installed QAM checks and 25 frontend/tooling tests. The native monitor is unchanged. See [Monitor UX](MONITOR-UX.md) for current screenshots and navigation results.
+
 ## rc.3 current development candidate
 
 [rc.3 feature notes](FEATURES-RC3.md) supersede the older current-candidate label below. The new native snapshots were verified in an isolated temporary process on Galileo; the revised candidate subsequently passed installed QAM and CEF directional-key checks; see [rc.3 device acceptance](RC3-ACCEPTANCE.md). Full local regression passes with 46 Zig tests, 42 Python tests per native build and 22 frontend/tooling tests. Physical suspend/SD-card transitions remain untested. Earlier records below remain historical evidence.

@@ -6,6 +6,8 @@ Target SteamOS, not only Steam Deck. Steam Deck LCD (Jupiter) and OLED (Galileo)
 
 The user clarified on 2026-09-12 that the product is QAM-only: no independent fullscreen UI or navigation entry. Keep CPU/GPU/power trend charts and professional system information (kernel, SteamOS version/build, IP, hardware) inside QAM. Do not reduce it to a numbers-only widget.
 
+On 2026-09-12 at 17:45 the user rejected the dense Monitor layout. Default to one selected metric and one clear chart; keep the full metric catalog accessible through progressive selection. Recording integrity and explanatory details should be collapsed by default. Do not replace density with smaller text or a wall of equally weighted controls.
+
 ## Architecture
 
 React UI communicates only through `src/api.ts` with the stdlib-only Python bridge. The Zig 0.16 monitor owns sampling and history. Use direct Linux syscalls, no libc, no shell execution or external network calls in the monitor. UI closed means live metrics disabled. Never collect credentials, MAC/SSID, Steam IDs, serial numbers or other processes' environment.
@@ -31,3 +33,5 @@ Document deliberately deferred functionality and compatibility limits. Use Engli
 The user additionally authorized functional acceptance on 2026-09-12: Steam CEF plugin navigation, directional/confirm input, settings/clipboard checks, and bounded monitor-only exit injection are within scope for the current idle-device period. Keep original screenshots and distinguish synthetic input from physical-controller or suspend/network testing. Read `docs/VALIDATION.md` and the relevant dated record before repeating already-completed acceptance. Historical permission notes are not permanent authorization for a new target or session.
 
 At 03:19 the user explicitly authorized continuing all sideload iterations autonomously while they sleep. Use the established sudo-backed full installer for root-owned plugin files, retain backups, and do not try direct unprivileged frontend writes. This does not authorize public publishing, pushing, or changing permanent system settings.
+
+The user prefers repository-only delivery: make and verify changes in this Git checkout and report the outcome/commit concisely. Do not repeatedly attach source or installation ZIPs unless requested. Build ZIPs used internally for authorized sideloading are not user deliverables.

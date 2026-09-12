@@ -1,0 +1,18 @@
+{
+  "installed_sha256": {
+    "main.py": "b9fb939ab0a2f5175c4887e6c79bca72aa234d9b5a56b6e1c657c3a9944393f7",
+    "plugin.json": "0879222f30b8842382c4401341ce97e06f9d7b878672bb8a474e71a41a664a06",
+    "dist/index.js": "1a26196d8f62b2dba27483eba2b576c28e619de849d0c5af7b9395150be3ed7e",
+    "bin/deckscope-monitor": "6cfdb8ec2113003dcdc63168fc760137946dcc78138c3fbdf31110f78b74e0cb"
+  },
+  "live_push_after_close": false,
+  "samples": 369,
+  "persistence_failed": false,
+  "inhibitor_released": true,
+  "tunnel_closed": true,
+  "screenshots": {
+    "default.png": "40482f570789353577d6733601c4a9a735b9f107caf47bc09c6a8ec056b23197",
+    "memory.png": "ce5553fc2d33b79f436b1af1847c2bb84eaa118fb516da3048b6a809528ca628",
+    "picker.png": "a7f4d4fbd4683be197bb433903e8e4ef38ff06752ac8f54946ad48c69a80db2a"
+  }
+}

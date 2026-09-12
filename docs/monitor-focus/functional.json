@@ -1,0 +1,128 @@
+{
+  "metrics": [
+    {
+      "group": "性能",
+      "label": "CPU 使用率",
+      "reading": "1.8%\n1.85 GHz",
+      "focus": "CPU 使用率"
+    },
+    {
+      "group": "性能",
+      "label": "GPU 使用率",
+      "reading": "0%\n0.20 GHz",
+      "focus": "GPU 使用率"
+    },
+    {
+      "group": "性能",
+      "label": "APU 封装功耗",
+      "reading": "2.2 W\n现在",
+      "focus": "APU 封装功耗"
+    },
+    {
+      "group": "性能",
+      "label": "电池充放电",
+      "reading": "0.0 W\n现在",
+      "focus": "电池充放电"
+    },
+    {
+      "group": "内存",
+      "label": "内存",
+      "reading": "2579 MiB\n现在",
+      "focus": "内存"
+    },
+    {
+      "group": "内存",
+      "label": "交换空间",
+      "reading": "0 MiB\n现在",
+      "focus": "交换空间"
+    },
+    {
+      "group": "温度",
+      "label": "CPU 温度",
+      "reading": "54.0 °C\n现在",
+      "focus": "CPU 温度"
+    },
+    {
+      "group": "温度",
+      "label": "GPU 温度",
+      "reading": "53.0 °C\n现在",
+      "focus": "GPU 温度"
+    },
+    {
+      "group": "温度",
+      "label": "SSD 温度",
+      "reading": "33.9 °C\n现在",
+      "focus": "SSD 温度"
+    },
+    {
+      "group": "温度",
+      "label": "风扇",
+      "reading": "0 RPM\n现在",
+      "focus": "风扇"
+    },
+    {
+      "group": "磁盘 / 网络",
+      "label": "磁盘读取",
+      "reading": "0 KiB/s\n现在",
+      "focus": "磁盘读取"
+    },
+    {
+      "group": "磁盘 / 网络",
+      "label": "磁盘写入",
+      "reading": "0 KiB/s\n现在",
+      "focus": "磁盘写入"
+    },
+    {
+      "group": "磁盘 / 网络",
+      "label": "网络接收",
+      "reading": "0 KiB/s\n现在",
+      "focus": "网络接收"
+    },
+    {
+      "group": "磁盘 / 网络",
+      "label": "网络发送",
+      "reading": "0 KiB/s\n现在",
+      "focus": "网络发送"
+    },
+    {
+      "group": "压力",
+      "label": "CPU 等待（some）",
+      "reading": "0.20%\n现在",
+      "focus": "CPU 等待（some）"
+    },
+    {
+      "group": "压力",
+      "label": "内存等待（some）",
+      "reading": "0.00%\n现在",
+      "focus": "内存等待（some）"
+    },
+    {
+      "group": "压力",
+      "label": "内存等待（full）",
+      "reading": "0.00%\n现在",
+      "focus": "内存等待（full）"
+    },
+    {
+      "group": "压力",
+      "label": "I/O 等待（some）",
+      "reading": "0.00%\n现在",
+      "focus": "I/O 等待（some）"
+    },
+    {
+      "group": "压力",
+      "label": "I/O 等待（full）",
+      "reading": "0.00%\n现在",
+      "focus": "I/O 等待（full）"
+    }
+  ],
+  "selection_count": 19,
+  "integrity_default_closed": true,
+  "range_selection": true,
+  "collapsed_monitor_buttons": [
+    "内存",
+    "5分",
+    "记录完整性覆盖 ≈ 5 min",
+    "数据说明",
+    "刷新曲线"
+  ]
+}

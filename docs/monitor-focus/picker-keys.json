@@ -1,0 +1,28 @@
+{
+  "method": "CEF directional and Enter input",
+  "record": [
+    {
+      "action": "range selected",
+      "focus": {
+        "text": "30分",
+        "metric": false,
+        "range": true,
+        "option": false,
+        "rangeOption": false
+      }
+    },
+    {
+      "action": "memory selected",
+      "focus": {
+        "text": "内存",
+        "metric": true,
+        "range": false,
+        "option": false,
+        "rangeOption": false
+      }
+    },
+    {
+      "action": "integrity expanded"
+    }
+  ]
+}

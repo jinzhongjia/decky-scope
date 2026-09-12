@@ -1,5 +1,7 @@
 # DeckScope / decky-scope
 
+**Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](docs/MONITOR-UX.md).
+
 **rc.3:** grouped monitoring curves, recording coverage, storage capacity, battery details and OS runtime are implemented. Local regression and an isolated native device snapshot pass; the revised candidate also passes installed QAM and directional-key acceptance. See [device results](docs/RC3-ACCEPTANCE.md). See [feature notes](docs/FEATURES-RC3.md).
 
 **Read-only SteamOS diagnostics and performance history, entirely inside Decky QAM.** The current private candidate is `0.1.0-rc.3`. A static Zig 0.16 monitor owns collection and history, a Python-standard-library bridge owns lifecycle/RPC, and a React/TypeScript UI presents Monitor, System and Settings views. There is no separate fullscreen route.[1]
