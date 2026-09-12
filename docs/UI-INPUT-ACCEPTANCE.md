@@ -1,55 +1,56 @@
-# rc.2 原生 UI 与输入验收
+# rc.2 Native UI and Input Acceptance
 
-**2026-09-12，UTC+8。当前 `0.1.0-rc.2` 已侧载到 Galileo。两组横向按钮导航已通过实际 Steam CEF 验收。用户描述的原始触摸阻滞未稳定复现，不能标记为彻底解决。**
+> **Historical status:** This document records private `0.1.0-rc.2` acceptance on Galileo on 2026-09-12. It is not current release acceptance. For the current self-contained procedure, see [DEBUGGING.md](DEBUGGING.md).
 
+**2026-09-12, UTC+8. The current `0.1.0-rc.2` was sideloaded to Galileo. Navigation across both horizontal button groups passed acceptance in the actual Steam CEF environment. The originally reported touch-input obstruction was not reproduced consistently and cannot be marked as definitively resolved.**
 
-## 11:16 范围更新与十字键复验
+## 11:16 Scope Update and D-pad Reverification
 
-用户观察到其他插件似乎也存在触屏问题，因此明确要求停止触屏排查，当前只保证十字键能到达所有视图。这个观察不等于已经证明故障根因在宿主。本轮未更改插件 UI、滚动逻辑或系统配置，也未重新侧载。
+The user observed that other plugins appeared to exhibit touch-screen problems as well and explicitly requested that touch-screen investigation stop. The current acceptance requirement is D-pad access to all views and enabled controls. This observation does not prove that the host is the root cause of the failure. No plugin UI, scrolling logic, or system configuration was changed in this round, and the plugin was not sideloaded again.
 
-11:20 在实际 QAM 中用 CEF 方向键与确认键完成“监控→系统→设置”切换，并从页底返回导航栏。监控页覆盖全部时间范围、APU/电池切换、信息行和刷新曲线；系统页覆盖硬件/连接/来源信息行及两组操作按钮；设置页覆盖全部采样间隔、隐私开关、历史状态及页底刷新。所有启用的操作按钮均能到达。本轮只遍历焦点，没有执行复制、隐私切换或采样设置更改。证据见 [十字键轨迹](native-ui/dpad-accessibility.json)。这些是 CEF 合成按键，不冒充实体手柄测试。
+At 11:20, the actual QAM was used with CEF directional and confirm keys to switch between “Monitor → System → Settings” and to navigate back to the navigation bar from the bottom of a page. The Monitor page covered all time ranges, the APU/battery switch, information rows, and the refresh chart. The System page covered hardware, connection, and source information rows, together with both groups of action buttons. The Settings page covered all sampling intervals, the privacy toggle, historical status, and the refresh control at the bottom of the page. All enabled action buttons were reachable. This round traversed focus only; it did not execute copying, toggle privacy, or change sampling settings. Evidence is available in [the D-pad trace](native-ui/dpad-accessibility.json). These were CEF-synthesized key presses and do not represent a physical-controller test.
 
-触屏问题保留为已知限制，不再作为本轮继续修补的目标。已关闭 QAM、解除临时防休眠并关闭调试隧道。以下保留此前 rc.2 验收过程。
+The touch-screen issue remains a known limitation and is no longer a target for further fixes in this round. QAM was closed, the temporary sleep inhibitor was removed, and the debugging tunnel was closed. The earlier rc.2 acceptance process is retained below.
 
-## 改动
+## Changes
 
-移除了渐变卡片、自定义按钮底色、焦点描边及品牌页脚。系统信息改用 Decky 的 `Field`、`PanelSection` 和 `PanelSectionRow`，保留原生字体、间距、按钮和焦点表现。图表仍保留真实 CPU/GPU/功率数据，不使用静态图片替代。
+Gradient cards, custom button background colors, focus outlines, and the branded footer were removed. System information now uses Decky’s `Field`, `PanelSection`, and `PanelSectionRow`, while retaining the native fonts, spacing, buttons, and focus behavior. Charts still retain real CPU, GPU, and power data; static images are not used as substitutes.
 
-“隐藏/显示 IP、复制 IP”以及“复制系统摘要、刷新数据”原先只有 CSS flex 布局，没有原生横向焦点容器。现在两组都使用 `Focusable flow-children="horizontal"`。本轮没有改变它们的业务操作、隐私设置默认值或摘要数据内容。
+“Hide/show IP,” “Copy IP,” “Copy system summary,” and “Refresh data” previously used only a CSS flex layout and had no native horizontal focus container. Both groups now use `Focusable flow-children="horizontal"`. This round did not change their business actions, the default privacy setting, or the summary data contents.
 
-![原生监控界面，裁掉右侧空白](native-ui/monitor-preview.png)
+![Native monitoring interface, with the empty space on the right cropped](native-ui/monitor-preview.png)
 
-![原生系统信息行](native-ui/system-preview.png)
+![Native system information rows](native-ui/system-preview.png)
 
-## 实测结果
+## Measured Results
 
-| 场景 | 实际结果 |
+| Scenario | Actual result |
 | --- | --- |
-| 隐藏 IP → 右键 → 左键 | 焦点先到“复制 IP”，再回“隐藏 IP” |
-| 复制系统摘要 → 右键 → 左键 | 焦点先到“刷新数据”，再回“复制系统摘要” |
-| 两组按钮布局 | 没有横向溢出 |
-| 系统页：方向键聚焦后拖动 | 向上拖动后滚动位置增加 224 CSS px；没有超过 2 px 的反向回跳 |
-| 监控页：方向键聚焦后拖动 | 滚动位置增加约 231.3 CSS px；实时温度变化时没有反向回跳 |
-| 图表内起手的斜向拖动 | 滚动位置增加 226 CSS px；没有反向回跳 |
-| 隐私设置 | 截图时临时隐藏 IP，完成后恢复用户原先设置 |
-| 安装身份 | 最终设备二进制和前端 SHA-256 与本地一致 |
-| 清理 | QAM 已关闭，临时防休眠与 SSH/CEF 隧道已解除 |
+| Hide IP → Right → Left | Focus first moved to “Copy IP,” then returned to “Hide IP.” |
+| Copy system summary → Right → Left | Focus first moved to “Refresh data,” then returned to “Copy system summary.” |
+| Both button layouts | No horizontal overflow. |
+| System page: drag after directional-key focus | After an upward drag, the scroll position increased by 224 CSS px; there was no reverse jump exceeding 2 px. |
+| Monitor page: drag after directional-key focus | The scroll position increased by approximately 231.3 CSS px; there was no reverse jump while the live temperature changed. |
+| Diagonal drag beginning inside a chart | The scroll position increased by 226 CSS px; there was no reverse jump. |
+| Privacy setting | IP was temporarily hidden for the screenshots and the user’s original setting was restored afterward. |
+| Installation identity | The device’s final binary and frontend SHA-256 hashes matched the local values. |
+| Cleanup | QAM was closed, and the temporary sleep inhibitor and SSH/CEF tunnels were removed. |
 
-按键使用 CEF 合成方向键；拖动使用分步 `Input.dispatchTouchEvent`。这些不是实体手柄或手指触摸的主观验收。原始结果和截图哈希见机器可读证据。[1]
+Keys were sent as CEF-synthesized directional keys. Drags used stepped `Input.dispatchTouchEvent` calls. These are not subjective acceptance tests using a physical controller or a finger on the touchscreen. The original results and screenshot hashes are included in the machine-readable evidence.[1]
 
-## 触摸问题的准确边界
+## Precise Boundary of the Touch-Screen Issue
 
-旧版在本轮的普通拖动、先方向键再拖动、图表内起手及斜向拖动中也没有稳定出现用户描述的阻滞。因此不能从修正版的通过结果倒推“原问题已经找到根因”。
+In this round, the old version also did not consistently reproduce the user-described obstruction during ordinary dragging, dragging after directional-key use, dragging that began inside a chart, or diagonal dragging. Therefore, the passing results from the corrected version cannot be used to infer that the root cause of the original issue has been found.
 
-最终版删除了图表卡片的多余 `overflow:hidden`，保留 Steam 自己的一个滚动容器，没有添加 `touchmove` 拦截、强制 `scrollTop` 或焦点回滚。诊断期间试过显式 `touch-action:pan-y`，但它在实际 CEF 斜向测试中导致页面不移动，因此已经撤回；最终版不覆盖 Steam 的触摸策略。
+The final version removed the chart card’s redundant `overflow:hidden` and retained one of Steam’s own scroll containers. It did not add a `touchmove` interceptor, forced `scrollTop`, or focus rollback. Explicit `touch-action:pan-y` was tried during diagnosis, but it prevented the page from moving during an actual CEF diagonal test and was therefore reverted. The final version does not override Steam’s touch strategy.
 
-**后续仍需用户在原来容易出现阻滞的位置用手指复验。** 若问题仍在，需要进一步确定具体页面、起手位置，以及是否发生在十字键操作之后。不能将该待复现问题隐藏在“全部验收通过”结论中。
+Before the 11:16 scope update, physical-finger retesting at the affected locations remained outstanding. That work is no longer requested. The issue must not be relabeled as resolved or used to justify further touch workarounds without new authorization.
 
-## 本地回归与版本范围
+## Local Regression and Version Scope
 
-最终代码通过 22 项 Zig 单元测试、26 项 Python 集成测试（ReleaseSmall/ReleaseSafe 各运行一次）、12 项前端测试，以及 TypeScript、Rollup 和完整包检查。前端新增测试实际检查共享控件的组件结构，防止按钮对再次退化为仅视觉并排；也检查没有自定义焦点皮肤、嵌套滚动或触摸策略覆盖。
+The final code passed 22 Zig unit tests, 26 Python integration tests, with `ReleaseSmall` and `ReleaseSafe` each run once, 12 frontend tests, and TypeScript, Rollup, and complete-package checks. The new frontend tests verify the component structure of shared controls to prevent the button pairs from regressing to visual side-by-side placement only. They also verify that there is no custom focus skin, nested scrolling, or touch-strategy override.
 
-本轮仅为私有候选版修正，未公开发布。商店构建、许可证和其他发布缺项仍以 [发布说明](RELEASE.md) 为准。原生采集逻辑与历史格式没有改动，monitor 只同步了版本号。
+This round contained fixes for a private candidate build only; it was not publicly released. Store builds, licensing, and other release omissions remain covered by the [release notes](RELEASE.md). Native collection logic and the historical format were unchanged; the monitor only synchronized the version number.
 
 ## References
 

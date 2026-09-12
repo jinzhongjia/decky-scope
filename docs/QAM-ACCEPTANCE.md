@@ -1,76 +1,82 @@
-# DeckScope QAM-only 候选版验收
+# DeckScope QAM-only Candidate Acceptance
 
-**日期：2026-09-12，UTC+8。版本：0.1.0-rc.1。结论：QAM 改版已侧载并通过本轮功能性验收，尚未公开发布。**
+> **Historical status — 2026-09-12:** This document records a historical candidate acceptance exercise, not current release approval, production certification, or store approval. The approved **rc.2 UI** is retained as the accepted UI direction. The self-contained current procedure is maintained in [DEBUGGING.md](DEBUGGING.md); this historical record must not be treated as a substitute for that procedure.
 
-## 结果概述
+**Date:** 2026-09-12, UTC+8. **Version recorded by this acceptance run:** `0.1.0-rc.1`. **Conclusion:** The QAM revision was sideloaded and passed this round of functional acceptance; it was not publicly released.
 
-本轮将产品收敛为 QAM-only。旧 `Page.tsx`、`Timeline.tsx` 和 `/deckscope` 路由已移除。监控、系统和设置均在 Decky 侧栏内完成。CPU/GPU 并排曲线、APU/电池功率曲线、系统版本与内核信息均已在实际 Steam CEF 界面检查，不是静态设计图或模拟数据。
+## Results overview
 
-设备为 Steam Deck OLED（Galileo），SteamOS 3.8.16，系统构建 20260716.1，Decky Loader v3.2.8。其他机型和系统通道没有在本轮获得真机认证。机器可读的实测结果与原图哈希保存在 [验收证据](qam/evidence.json)。[1]
+This round narrowed the product to QAM-only. The former `Page.tsx`, `Timeline.tsx`, and `/deckscope` route were removed. Monitoring, system information, and settings are all handled within the Decky sidebar. The side-by-side CPU/GPU charts, APU/battery power charts, system version, and kernel information were checked in the actual Steam CEF interface; they were not static designs or simulated data.
 
-![实际 QAM 监控界面，仅裁掉原图右侧空白](qam/monitor-preview.png)
+The device was a Steam Deck OLED (Galileo) running SteamOS 3.8.16, system build `20260716.1`, with Decky Loader v3.2.8. Other hardware models and system channels did not receive real-device validation in this round. Machine-readable observations and original screenshot hashes are stored in [acceptance evidence](qam/evidence.json).[1]
 
-## 本地回归
+![Actual QAM monitoring interface, with only empty space cropped from the right side of the original](qam/monitor-preview.png)
 
-| 检查 | 结果 |
+## Local regression
+
+| Check | Result |
 | --- | --- |
-| Zig 单元测试 | 22 项通过 |
-| ReleaseSmall 二进制的 Python 回归 | 26 项通过 |
-| 带运行时检查的 ReleaseSafe 二进制回归 | 26 项通过 |
-| 前端纯逻辑与契约测试 | 10 项通过 |
-| TypeScript 与 Rollup | 通过 |
-| 候选包一致性 | 通过；与开发包字节一致 |
-| 公共发布预检 | 按预期失败；许可证、仓库、商店构建与展示图等缺项没有被忽略 |
+| Zig unit tests | 22 passed |
+| Python regression against the ReleaseSmall binary | 26 passed |
+| ReleaseSafe binary regression with runtime checks | 26 passed |
+| Frontend pure-logic and contract tests | 10 passed |
+| TypeScript and Rollup | Passed |
+| Candidate package consistency | Passed; byte-for-byte identical to the development package |
+| Public-release preflight | Failed as expected; missing items such as the license, repository, store build, and showcase images were not ignored |
 
-统一命令为 `bash scripts/check.sh`。新增覆盖包括 CPU 型号解析、敏感标识排除、实时轨迹有界性、同时间戳替换、时钟回拨、真实时间范围、缺失点、百分比刻度、负电池功率，以及陈旧发布包和版本不一致检测。该结果不等价于真实性能基准。
+The unified command was `bash scripts/check.sh`. New coverage included CPU model parsing, exclusion of sensitive identifiers, boundedness of live traces, same-timestamp replacement, clock rollback, real time ranges, missing points, percentage scaling, negative battery power, and detection of stale release packages and version mismatches. These results are not equivalent to a real-world performance benchmark.
 
-## 实际 QAM 验收
+## Actual QAM acceptance
 
-| 项目 | 观察与结论 |
+| Area | Observation and conclusion |
 | --- | --- |
-| 三条图表 | 同时渲染 CPU、GPU、功率曲线；间隔读取时三块 Canvas 的内容均有更新，原生样本计数继续递增 |
-| 时间范围 | 实际切换至 7 天并返回 5 分钟；曲线仍存在，未补造设备没有记录过的日期 |
-| 功率来源 | APU 与电池按钮可切换；文字明确区分封装功耗、充放电功率和整机功耗 |
-| 系统信息 | SteamOS 版本、构建、完整内核字符串、架构、CPU 型号、逻辑 CPU、内存、制造商、型号、BIOS 均能读取 |
-| 隐私与复制 | 实际显示 IP 后重新隐藏；系统摘要复制成功；归档截图保留遮罩，不记录实际地址 |
-| 设置 | 通过实际 QAM 控件切换 1 秒→2 秒→1 秒，并从后端回读确认；结束时隐私遮罩开启 |
-| 原生焦点 | 方向键与确认键可切换视图；逐项聚焦 OS、版本、构建、内核、架构、CPU、逻辑 CPU、内存、制造商、型号、BIOS，长页面随焦点滚动 |
-| monitor 恢复 | 单次向本插件 monitor 发送 TERM；原生进程重新启动，live_push 恢复为 true，界面文本继续变化 |
-| 关闭 QAM | live_push 变为 false，后台样本计数仍继续递增 |
-| 设备产物 | 最终安装的二进制与前端 SHA-256 均与本地产物一致；当前日志出现 `monitor ready` |
+| Three charts | CPU, GPU, and power charts rendered simultaneously. During interval reads, all three Canvas elements changed, and the native sample count continued to increase. |
+| Time range | Switched to 7 days and back to 5 minutes on the device. The charts remained present, and no dates for which the device had no records were fabricated. |
+| Power source | APU and battery buttons could be switched. The labels clearly distinguished package power, charge/discharge power, and whole-system power. |
+| System information | SteamOS version, build, complete kernel string, architecture, CPU model, logical CPU count, memory, manufacturer, model, and BIOS were all readable. |
+| Privacy and copying | The IP was displayed and then hidden again in the actual UI. Copying the system summary succeeded. Archived screenshots retain the mask and do not record the actual address. |
+| Settings | The actual QAM control was switched 1 second → 2 seconds → 1 second, with confirmation by reading the value back from the backend. The privacy mask was enabled at the end. |
+| Native focus | Directional and confirm input switched views. Focus was walked item by item through OS, version, build, kernel, architecture, CPU, logical CPU, memory, manufacturer, model, and BIOS; the long page scrolled with focus. |
+| Monitor recovery | A single TERM was sent to this plugin's monitor. The native process restarted, `live_push` returned to `true`, and the UI text continued to change. |
+| Closing QAM | `live_push` became `false`, while the background sample count continued to increase. |
+| Device artifacts | The installed binary and frontend SHA-256 values matched the local artifacts; the current log showed `monitor ready`. |
 
-方向键与确认操作通过 CEF 的合成键盘输入执行，不应写成实体手柄测试。原生退出注入只作用于本插件，不代表电源故障、内核崩溃或真实休眠恢复测试。IP 测试只证明本机字段显示，不证明外部客户端能连接 SSH/CEF。[1]
+Directional and confirm operations were performed through CEF synthetic keyboard input and must not be described as physical-controller testing. Native exit injection affected only this plugin; it does not represent a power failure, kernel crash, or real suspend/resume test. The IP check proves only that the local field can display an address; it does not prove that an external client can connect over SSH/CEF.[1]
 
-## 验收中修复的问题
+In the later 11:16 scope update, touchscreen investigation was stopped because other plugins were reportedly showing similar behavior. That report is not proof of a host-level root cause, and this document makes no such claim. D-pad access to all views and controls is the accepted interaction requirement.
 
-| 实测问题 | 修复 |
+## Issues fixed during acceptance
+
+| Observed issue | Fix |
 | --- | --- |
-| 功率切换按钮沿用原生默认全宽，第二个按钮溢出 | 采用 QAM 局部分段按钮样式和明确的宽度约束 |
-| 首屏时间轴被底部裁切 | 调整两类曲线高度，将三条曲线与共享时间轴完整保留在首屏 |
-| 原生 Dropdown 在主视窗打开选项并隐藏 QAM | 采样间隔改为 QAM 内的四个分段按钮 |
-| 普通 Focusable 容器没有实际进入焦点树 | 根据实机组件行为，为只读信息行显式传入原生 `focusable: true`；没有添加无效的点击动作 |
-| 操作按钮默认最小宽度造成横向滚动 | 对插件内操作按钮设置可收缩宽度与最小宽度；保留原生焦点高亮 |
-| 直接替换前端受到 root-owned 文件权限限制 | 停止直接写入；用户随后授权持续侧载，改用既有完整 sudo 安装和备份流程，未放宽文件权限 |
+| The power-switch buttons retained the native default full width, causing the second button to overflow | Applied the QAM-local segmented-button style with explicit width constraints |
+| The first-screen timeline was clipped at the bottom | Adjusted the heights of both chart types so all three charts and the shared timeline remained fully visible on the first screen |
+| The native Dropdown opened options in the main window and hid QAM | Replaced the sampling interval control with four segmented buttons inside QAM |
+| An ordinary Focusable container did not actually enter the focus tree | Based on real-device component behavior, explicitly passed native `focusable: true` to read-only information rows; no ineffective click action was added |
+| The default minimum width of action buttons caused horizontal scrolling | Applied shrinkable and minimum-width constraints to plugin action buttons while retaining native focus highlighting |
+| Direct frontend replacement was blocked by root-owned file permissions | Stopped direct writes; after the user authorized continued sideloading, used the established complete sudo installation and backup workflow without loosening file permissions |
 
-![实际系统信息与内核版本](qam/system.png)
+![Actual system information and kernel version](qam/system.png)
 
-![实际硬件和隐私遮罩卡片](qam/network.png)
+![Actual hardware and privacy-mask card](qam/network.png)
 
-## 产物身份
+## Artifact identity
 
-| 文件 | 大小 | SHA-256 |
+| File | Size | SHA-256 |
 | --- | ---: | --- |
-| `bin/deckscope-monitor` | 128,000 字节 | `d8156e01d2c53ec9b1d116de0b3ea8cc3ee814e710940ac9a985ad9c4d8916bb` |
-| `dist/index.js` | 49,142 字节 | `b044d7bcf8c1c4f33119150b8e4726614b83e3e76101d9bdcce83c787581cb09` |
-| `DeckScope-0.1.0-rc.1.zip` | 以归档文件为准 | `63afb51aa31acf2be59dbc4adbed2f75202038e7b679786e99b12eca28b62c61` |
+| `bin/deckscope-monitor` | 128,000 bytes | `d8156e01d2c53ec9b1d116de0b3ea8cc3ee814e710940ac9a985ad9c4d8916bb` |
+| `dist/index.js` | 49,142 bytes | `b044d7bcf8c1c4f33119150b8e4726614b83e3e76101d9bdcce83c787581cb09` |
+| `DeckScope-0.1.0-rc.1.zip` | As recorded for the archive | `63afb51aa31acf2be59dbc4adbed2f75202038e7b679786e99b12eca28b62c61` |
 
-监控预览只移除了原图右侧没有 UI 内容的空白，没有改绘任何数值或曲线。`docs/qam/` 中同时保留原始完整截图和其他视图。
+The monitoring preview only removes empty space on the right side of the original, where there was no UI content; no values or curves were redrawn. The original full screenshots and other views are retained in `docs/qam/`.
 
-## 收尾与剩余边界
+## Closeout and remaining boundaries
 
-已关闭插件面板，确认后台仍记录但不再实时推送。结束配置为 1 秒采样、IP 隐私遮罩开启。03:35:14 已主动停止本轮临时防休眠服务并关闭任务专属 SSH/CEF 隧道，没有留下依赖本会话的后台调试任务。设备可以恢复正常休眠。[1]
+The plugin panel was closed, and the backend was confirmed to continue recording without live pushing. The ending configuration was a 1-second sampling interval with the IP privacy mask enabled. At 03:35:14, the temporary sleep inhibitor for this round was deliberately stopped and the task-specific SSH/CEF tunnel was closed; no background debugging task dependent on this session remained. The device could return to normal suspend behavior.[1]
 
-本轮没有测试 LCD、非 Deck SteamOS、真实睡眠/唤醒、切换网络、实体手柄、同步电功率精度、长稳或游戏帧时间影响。没有创建公开仓库、推送 Git、打 tag、上传公开 Release 或提交商店。**正式发布的剩余要求见 [发布准备](RELEASE.md)**，不能把本次候选版验收直接当成商店批准或生产认证。
+This round did not test LCD, non-Deck SteamOS, real suspend/resume, network switching, a physical controller, synchronized electrical-power accuracy, long-duration stability, or effects on game frame timing. No public repository was created, Git was not pushed, no tag was created, no public release was uploaded, and no store submission was made. **The remaining formal-release requirements are listed in [Release preparation](RELEASE.md); this candidate acceptance must not be treated as store approval or production certification.**
+
+The sibling music project was used only as historical provenance for earlier work, if referenced by the surrounding project record. It is not a prerequisite or a future-developer dependency for this procedure.
 
 ## References
 

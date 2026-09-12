@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-12",
+  "runtime_version": "0.1.0-rc.2",
+  "runtime_changed": false,
+  "full_check": {
+    "zig_baseline_tests": 22,
+    "python_tests_per_build": 36,
+    "python_builds": [
+      "ReleaseSmall",
+      "ReleaseSafe"
+    ],
+    "node_tests": 16,
+    "typecheck": true,
+    "frontend_build": true,
+    "docs_links": true,
+    "development_zip": true
+  },
+  "isolated_source_copy": {
+    "mode": "source-only isolated copy",
+    "node_modules_present": false,
+    "preexisting_work_present": false,
+    "commands_passed": 6,
+    "command_count": 6
+  },
+  "device_smoke": {
+    "board": "Galileo",
+    "loader": "active",
+    "cdp_local_port": 8123,
+    "status_rpc": true,
+    "owned_inhibitor_observed": true,
+    "cleanup_confirmed": true,
+    "ui_actions": false,
+    "loader_restart": false,
+    "sideload": false,
+    "rollback": false
+  },
+  "runtime_sha256": {
+    "bin/deckscope-monitor": "a67ccdd1f29f48c33cf60592ec0c1780edeb5da2c633b0b5072a90790803bad5",
+    "dist/index.js": "88a6546bbfc5fdca48d93e47518b42ee6ebb412eb1dfd85b74aa287aa38be2f5"
+  }
+}

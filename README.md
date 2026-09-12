@@ -1,118 +1,66 @@
 # DeckScope / decky-scope
 
-**面向 SteamOS 的只读诊断与历史性能记录插件。** 核心使用 Zig 0.16，Decky 后端仅使用 Python 标准库，前端使用 React、TypeScript 与 Decky UI。当前为 **QAM-only 的 `0.1.0-rc.2` 候选版**，已侧载并通过本轮真实 QAM 验收；没有独立大屏或路由。**尚未公开发布，也不代表原技术方案全部完成后的生产发布版**。[1]
+**Read-only SteamOS diagnostics and performance history, entirely inside Decky QAM.** The current private candidate is `0.1.0-rc.2`. A static Zig 0.16 monitor owns collection and history, a Python-standard-library bridge owns lifecycle/RPC, and a React/TypeScript UI presents Monitor, System and Settings views. There is no separate fullscreen route.[1]
 
-最新原生 UI 与左右键修正已侧载，见 [rc.2 输入验收](docs/UI-INPUT-ACCEPTANCE.md)。触摸阻滞仍属于未稳定复现的问题，不作“彻底修复”承诺。
+The approved native UI and directional-key navigation are retained. Touchscreen investigation was stopped at the user's request; the reported obstruction is not claimed to be fixed. Device evidence is limited to one Steam Deck OLED plus local fixtures. **This is not a public release or cross-device production certification.**
 
-## 平台边界
+## Start here
 
-产品适配对象是 **SteamOS，而不只是 Steam Deck**。Steam Deck LCD（Jupiter）和 OLED（Galileo）是已知机型配置。CPU 拓扑、电池名称、DRM 编号和传感器编号均通过系统能力探测。其他 SteamOS 设备不因 DMI 机型不匹配而被拒绝。不存在的数据不伪装成零，未实测的平台不标记为兼容认证。
-
-| 场景 | 当前实现 | 验证状态 |
-| --- | --- | --- |
-| Steam Deck LCD | Jupiter 配置；动态 CPU、DRM 与电池发现 | 合成夹具通过；尚无 LCD 真机验收 |
-| Steam Deck OLED | Galileo 配置；同样不硬编码编号 | `0.1.0-rc.2` 已侧载并通过 QAM 图表、系统字段、设置、焦点与恢复验收；生产与跨机型认证仍未完成 |
-| 非 Deck SteamOS | 通用 CPU/内存/PSI/I/O/连接信息；按可读来源提供硬件指标 | 16/24 线程、BAT0/CMB0、无 GPU 等合成场景通过；尚无其他 SteamOS 真机验收 |
-| 普通 Linux 开发机 | 允许降级运行，方便测试协议与内核接口 | 当前开发机完成本地回归；不等于 SteamOS 真机认证 |
-| Intel/NVIDIA GPU、特殊 EC 风扇、多 GPU/多电池汇总 | 缺失时明确不可用；当前仅选一个可读 GPU 和一个电池 | 专用采集器、显式设备选择和多设备汇总未完成 |
-
-CPU 当前快照支持逻辑编号 0–255；超过上限会报告截断。历史暂时只保留 CPU 总体指标。GPU 利用率、温度和频率绑定到同一个选定 DRM 设备，避免把不同显卡的数据混在一起。`apu_power_mw` 只在已知 Deck APU 配置下解释为封装功耗，不把任意独立显卡功耗冒充 APU 功耗。[1]
-
-## 已实现的基础链路
-
-| 模块 | 当前能力 |
+| Goal | Guide |
 | --- | --- |
-| Zig monitor | 无 libc、静态 x86_64 ELF；单线程 `timerfd + epoll`；采样热路径无堆分配 |
-| 采集 | CPU 总体/当前每线程/频率、内存与 Swap、可用的温度/GPU/电池/风扇、PSI、整块存储设备和默认路由接口 I/O |
-| 历史 | 1,800 高频点、2,160 个十秒窗口、10,080 个分钟窗口；单调时间聚合；UTC 时间戳；缺失值独立计数 |
-| 持久化 | DSCP schema v1、128 字节记录、CRC32、按 UTC 日保留、坏尾恢复、批量追加、独占锁、写入失败时保留内存采集 |
-| 开发连接 | rtnetlink 事件驱动缓存；IPv4/IPv6 推荐地址；SSH/CEF 本地监听状态，不扫描局域网或查询公网 IP |
-| Bridge | 私有 UDS、SO_PEERCRED 校验、请求关联、纯 stdlib、设置原子写、限频重启、卸载 flush |
-| QAM-only UI | CPU/GPU/功率曲线，系统与开发连接信息，采样设置，隐私遮罩，摘要复制，原生方向键焦点；不再提供大屏 |
-| 工程工具 | 本地构建、发布/安全构建双回归、完整开发 ZIP、显式确认部署、旧插件备份、只读发现与日志脚本 |
+| Build and contribute | [Development](docs/DEVELOPMENT.md) |
+| Install or roll back on an authorized device | [Deployment](docs/DEPLOYMENT.md) |
+| Inspect logs, operate QAM or verify D-pad access | [Debugging](docs/DEBUGGING.md) |
+| Understand the protocol and stored data | [Protocol](docs/PROTOCOL.md) |
+| Check known hardware and feature limits | [Compatibility](docs/COMPATIBILITY.md) |
+| Review release blockers | [Release preparation](docs/RELEASE.md) |
+| Browse all current guides and historical evidence | [Documentation index](docs/README.md) |
 
-`battery_rate_mw` 正值为放电、负值为充电，**不是墙上整机功耗**。缺少 `power_now` 时可从电流和电压估算，并报告来源。NVMe 温度按 30 秒缓存，状态接口公开缓存年龄，历史中可能包含保持值。当前历史聚合对 CPU/GPU 保留 min/avg/max，其余指标保留均值。网络卡片在进入页面和手动刷新时读取更新后的内核缓存，尚未接入网络变化的前端主动推送。[1]
+All required developer scripts now live in this repository. No sibling checkout, external Agent Skill, or pre-existing `.work/` content is needed. Documentation and tool help are English-first; the UI has Simplified Chinese and English strings.
 
-## 目录
+## Local quick start
 
-```text
-decky-scope/
-├── main.py                 # Decky callable 白名单门面
-├── py_modules/             # 生命周期、协议、设置
-├── monitor/src/            # Zig 采集、网络、历史、持久化
-├── src/                    # React UI 和唯一 API 层
-├── tests/                  # 合成硬件、UDS、bridge、UI 纯逻辑测试
-├── scripts/                # 构建、打包、部署和只读调试
-├── docs/                   # 设计、协议、验证与后续工作
-├── bin/                    # 本地发布二进制（构建生成，Git 忽略）
-└── outputs/DeckScope-dev.zip # 完整开发包（构建生成，Git 忽略）
-```
-
-用户提供的原方案与 demo 解压保留在 `.work/reference/`，仅供追溯，不进入插件包。`sys.zig`、最小运行时和日志方案参考该 demo；bridge 门面、Decky 控件、构建/侧载思路参考相邻的 `decky-music`。没有修改 `decky-music` 项目代码，也没有把其部署目标、密码或音乐业务复制过来。
-
-## 本地构建与验证
-
-开发环境需要 Linux x86_64、Zig 0.16.x、Python 3.10+、Node.js 和 pnpm。部署辅助脚本另外使用 OpenSSH、`file` 和 `readelf`。monitor 本身不需要 Python、libc、外部命令或第三方运行库。
+Use Linux x86_64, Zig `0.16.x`, Python `3.10+`, Node `22+`, pnpm `11.3.0`, `file` and binutils. Open a terminal in this repository, then run:
 
 ```bash
-cd /home/jin/code/decky-scope
-pnpm install
+pnpm install --frozen-lockfile
 bash scripts/check.sh
 ```
 
-`check.sh` 依次运行 Zig 单元测试、ReleaseSmall 构建、保留符号的 ReleaseSafe 构建、两份二进制的 Python 集成回归、前端类型检查、UI 纯逻辑测试、前端构建和 ZIP 校验。当前验证结果与未验证项见 [验证记录](docs/VALIDATION.md)。[2]
+This builds and tests the project and writes `outputs/DeckScope-dev.zip`. It does not connect to a device or deploy. The complete command performs both ReleaseSmall and ReleaseSafe regressions, frontend/tool tests, type checking and documentation validation. See [Development](docs/DEVELOPMENT.md) for individual commands and generated paths.
+
+## Device workflow
+
+The target must be explicit and currently authorized. `user@host` is a placeholder:
 
 ```bash
-# 仅构建 Zig，生成 bin/deckscope-monitor 和 monitor/zig-debug/bin/deckscope-monitor
-bash scripts/build-monitor.sh
-
-# 重建 Zig 和前端后，输出完整开发包
-bash scripts/package.sh
+export DECK_HOST=user@host
+python3 scripts/debug-session.py start --ttl 1800
+python3 scripts/debug-session.py status
+node scripts/cdp.mjs targets
+# Only when installation and a Loader restart are authorized:
+bash scripts/deploy.sh --confirm
+bash scripts/device-check.sh
+bash scripts/logs.sh
+python3 scripts/debug-session.py stop
 ```
 
-原生进程调用形式为 `deckscope-monitor <uds_socket_path> <history_directory> [fixture_root]`。UDS server 必须先存在；该程序不是命令行交互 shell。`tests/support.py` 提供本地 mock bridge，硬件夹具由测试按需生成。
+The session owns a loopback-only SSH/CDP tunnel and a bounded sleep inhibitor. The deployer always rebuilds, installs via sudo, and keeps the previous plugin outside Decky's scan directory. It does not change permanent SSH/CEF, power or fan settings. Read [Deployment](docs/DEPLOYMENT.md) and [Debugging](docs/DEBUGGING.md) before using the mutation or UI commands.
 
-## 真机部署与调试
+## Features and boundaries
 
-**2026-09-12，当前 `0.1.0-rc.2` 已侧载到 Galileo 并完成 QAM-only 验收。** 三图更新、范围/功率切换、系统字段、设置、隐私、复制、方向键焦点和 monitor 恢复均已执行。当前结果见 [QAM 验收记录](docs/QAM-ACCEPTANCE.md)。[4] 早期大屏版本的历史验收仍保存在 [初版验收记录](docs/DEVICE-ACCEPTANCE.md)，其 UI 描述不再代表当前产品。[3]
+The QAM contains real CPU/GPU and APU-or-battery power charts, SteamOS/kernel/hardware information, local SSH/CEF listener state, masked IP and summary copying, and sampling settings. Closing the UI stops live pushing, not background collection. The monitor records available CPU, memory, sensor, battery, PSI and I/O metrics with explicit missing-value handling. Battery and package power are not total-system consumption.[1] [2]
 
-用户已临时授权当前设备空闲调试期内的侧载与必要 Loader 重启，无需逐次询问。仍应确认设备地址和目标用户；设备开始使用、目标变化或需要修改无关设置时需重新确认。调试前挂带自动到期上限的临时防休眠锁，结束后解除。本轮 QAM 验收使用最长一小时的临时锁，并已于 03:35 主动解除；临时 SSH/CDP 隧道同时关闭。部署会安装/替换 `DeckScope` 并重启 `plugin_loader`，可能短暂影响其他 Decky 插件；不会修改系统功耗、风扇、SSH 或 CEF 配置。
+Seven-day, day-granularity persistence uses checksummed schema-v1 records and batched writes; abrupt loss can discard unflushed data. Dedicated non-AMD collectors, automatic game sessions, full chart cursor/zoom and broader device/performance certification remain deferred. The [compatibility guide](docs/COMPATIBILITY.md) preserves the detailed implementation and evidence limits.
 
-```bash
-# 只读查找，不扫描整个局域网；地址不要写进仓库
-bash scripts/discover.sh steamdeck.local
+## Source map and provenance
 
-# 以下命令仅在用户明确批准部署后执行；user@ip 是占位符
-DECK_HOST=user@ip bash scripts/deploy.sh --confirm
+`monitor/src/` owns native collection and storage; `py_modules/` and `main.py` own the bridge; `src/` owns the QAM; `scripts/` and `tests/` own development workflows. `docs/` separates current guides from immutable historical evidence. Generated binaries, packages, local session state and scratch files are ignored by Git.
 
-# 只读查看当前插件日志
-DECK_HOST=user@ip bash scripts/logs.sh
-```
-
-部署脚本每次重建全部产物，使用远端登录用户的 `$HOME/homebrew/plugins`，不假设用户名必为 `deck`。认证由 SSH/sudo 交互或已有密钥负责；不要把密码写进脚本或环境文件。旧版本保存在 `homebrew/deckscope-backups/`，不放在插件扫描目录内。首次安装及替换备份路径已经在真机执行；回退恢复尚未实机验收。安装成功不代表全部插件功能正常，也不代表 Decky 商店安装验收。
-
-如果 CEF 只监听回环地址，可通过用户主动运行的 SSH 转发访问，例如 `ssh -L 8080:127.0.0.1:8080 user@ip`。项目不自动打开调试端口。实际 Steam UI 的调试方法可继续参考 `decky-music` 中的 `decky-dev` 与 `steam-cdp` 说明；用户随后明确授权功能验收，本轮已操作插件相关 Steam UI，并进行仅针对本插件 monitor 的退出注入；未修改无关应用设置。
-
-## 数据与隐私
-
-历史数据保存在插件专属 runtime/data 目录下的 `history/`。仅保留当前 UTC 日和前六日，时钟回拨后落在窗口外的文件也会被清理，因此重要测试记录应先归档再修改系统时间。默认每十条分钟聚合批量写出；异常掉电或强杀可能丢失尚未 flush 的批次。历史恢复和格式细节见 [协议说明](docs/PROTOCOL.md)。[1]
-
-插件不采集 SteamID、MAC、SSID、设备序列号、其他进程的环境或完整命令行。它不联网外传。摘要导出使用字段白名单，而不是试图从任意原始日志里事后删除敏感信息。实时指标仅在挂载的消费者需要时启用；没有 AI 调用、云端定时任务或前端定时轮询。
-
-## 发布准备
-
-本地候选包使用 `python3 scripts/package-candidate.py` 归档。主许可证和参考代码授权、第三方通知、发布仓库、商店构建适配、pnpm 9 目标验证及展示图仍需完成。`python3 scripts/release-check.py --public` 当前会明确失败；本轮没有推送、tag、公开 Release 或商店提交。详见 [发布准备](docs/RELEASE.md)。
-
-## 下一阶段
-
-当前基础版本没有自动游戏会话识别、会话摘要、PSI 阈值事件、历史时间线事件、完整手柄游标/缩放、存储容量/显示器信息和 Intel/NVIDIA 专用 GPU 采集。网络选择只覆盖主路由表，VPN 排除仍为启发式，复杂策略路由与 multipart 中断恢复还需要专门回归。新设备热插拔目前主要依赖重启或休眠恢复时重新探测。持久化启动恢复仍读取有界的七日数据，尚未实现惰性索引读取。
-
-本台 OLED 的本轮功能验收已经完成。下一步应验证真实休眠/唤醒、网络切换、实体手柄、实际充放电切换及同步数值精度，随后收集 LCD 与至少一台非 Deck SteamOS 的实际来源清单。48 小时长稳、游戏 frametime AB、真实 P99 和商店发布都仍未验收。**不要把本地成功编译或单机启动成功，当作跨机型生产验收。**
+The original user-supplied technical proposal and demo informed the low-level runtime and monitor baseline. Earlier local projects informed the bridge, Decky controls and CDP development helpers. The adapted helpers are now maintained locally under `scripts/lib/` and `scripts/probes/`; historical provenance is not a runtime/build dependency. License and reference-code redistribution rights still require review before public distribution.[3]
 
 ## References
 
-[1]: docs/PROTOCOL.md "DeckScope protocol, data semantics and on-disk schema"
-[2]: docs/VALIDATION.md "DeckScope local validation record"
-[3]: docs/DEVICE-ACCEPTANCE.md "DeckScope OLED functional acceptance and original screenshots"
-
-[4]: docs/QAM-ACCEPTANCE.md "DeckScope QAM-only release candidate acceptance, 2026-09-12"
+[1]: docs/DESIGN.md "DeckScope architecture and product boundaries"
+[2]: docs/PROTOCOL.md "Protocol, units, persistence and privacy semantics"
+[3]: docs/RELEASE.md "Private candidate and unresolved public-release requirements"

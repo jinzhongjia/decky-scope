@@ -1,58 +1,47 @@
-# DeckScope 0.1.0 发布准备
+# Release Preparation
 
-**当前版本：0.1.0-rc.2。状态：本地候选包，已侧载验证，未公开发布。更新：2026-09-12。**
+**Current private candidate: `0.1.0-rc.2`. No public release or store submission has been made.** The current repository is self-contained for local development and sideloading, but that is not a license grant, a completed store-build adaptation, or production certification.
 
-## 产品定位
+## Product and acceptance status
 
-DeckScope 是面向 SteamOS 的 **QAM-only 系统信息与监控工具**。它没有独立大屏、路由或“大屏打开”入口。监控页包含 CPU、GPU 和功率曲线，系统页集中展示 SteamOS、内核、硬件与开发连接信息。关闭面板不停止原生后台记录。
+DeckScope is a QAM-only SteamOS system-information and monitoring tool. CPU/GPU and APU/battery power charts use real history and live data. IP is masked by default; summary export uses a whitelist. Closing QAM leaves native recording active. The native rc.2 UI and all-view/control directional navigation are the accepted interface baseline. Touchscreen investigation was stopped; the reported problem is not marked resolved.[1]
 
-本轮候选版在一台 Steam Deck OLED 上执行了实际 QAM 视觉与交互测试。商店兼容验证、长期性能认证和其他硬件验证仍不能从单机测试推导。详细结果见 [QAM 验收记录](QAM-ACCEPTANCE.md)。
+The historical OLED runs demonstrate specific startup, functional and input behavior on one device. They do not establish Stable/Beta coverage, other-device compatibility, electrical accuracy, endurance or a game-frametime/P99 budget. Use the dated acceptance documents for exact artifact identities, not for blanket release approval.
 
-rc.2 已改用原生 Field/PanelSection，修正两组按钮的横向导航。触摸原始问题尚未稳定复现，详见 [输入验收](UI-INPUT-ACCEPTANCE.md)。
+## Public-release blockers
 
-## 候选版变更说明
-
-CPU 与 GPU 以并排曲线呈现，并显示当前频率。功率图可在 APU 封装功耗和电池充放电功率之间切换。所有曲线来自真实历史与实时数据，支持 5 分钟、30 分钟、6 小时和 7 天查询范围。CPU/GPU 均使用 0–100% 刻度，缺失数据保留断点，电池充电保持负号，不把 APU 功耗伪装为整机功耗。
-
-系统页显示处理器型号、逻辑 CPU 数、操作系统可见内存、制造商、型号、BIOS、内核、SteamOS 版本与构建、IP、网卡以及 SSH/CEF 的本机监听状态。IP 默认隐藏，可手动显示或复制。系统摘要采用字段白名单，不含 IP、序列号或 SteamID。
-
-设置页以分段按钮提供 0.5、1、2、5 秒采样间隔，避免原生下拉菜单转移到 Steam 主视窗。静态系统字段也参加原生焦点树，方便使用方向键逐项阅读。UI 事件最高约 1 Hz，不等于全部历史采样率。
-
-## 公开发布前仍须完成
-
-| 项目 | 当前证据与待办 |
+| Area | Outstanding requirement |
 | --- | --- |
-| 主许可证与参考代码权利 | 仓库没有 LICENSE；用户提供的参考包中也未找到许可文件。需要用户确认授权来源和主许可证，不能由代理默认替用户授予许可。 |
-| 第三方通知 | 当前安装的 `@decky/api`、`@decky/ui` 元数据声明 LGPL-2.1，`react-icons` 声明 MIT。还需核对实际分发内容和所用图标的原始许可，归档所需通知；不能把这些元数据当作完整法律审查。 |
-| 发布渠道和仓库 | 当前 Git 没有 remote。GitHub 与 GitHub CLI 连接器在本会话未启用。需要确定仓库、可见性、发布账号及先走 GitHub Release 还是商店。 |
-| 商店后端构建 | 官方模板要求自定义后端通过 CLI/Docker 构建并输出至 `backend/out`，源码布局要求见官方说明。当前使用 `monitor/` 与本机 Zig 0.16；尚未完成官方商店构建适配及验证。[2] |
-| 前端构建工具 | 官方模板说明要求 pnpm 9；当前项目锁定 pnpm 11.3.0。应在实际目标构建环境验证并协调，不把本地构建通过当成商店 CI 通过。[2] |
-| 商店展示图 | `plugin.json.publish.image` 仍为空。已有真实 QAM 截图，但未上传公共地址。 |
-| 稳定版验证范围 | 尚未完成 SteamOS Stable/Beta 通道组合、其他机型、真实休眠/网络切换、48 小时稳定性和游戏 frametime/P99 验证。官方数据库也要求遵守其提交清单。[1] |
-| 稳定版本号及公开动作 | 当前明确为 `0.1.0-rc.2`，不是 `0.1.0` 稳定版。完成待办后再修改版本、创建 tag、推送或发布；本轮没有执行这些公开动作。 |
+| Main license and reference rights | There is no project LICENSE. The user-supplied reference package had no identified license. Confirm provenance and authorization; do not assign a license on the owner's behalf. |
+| Third-party notices | Dependency metadata lists LGPL-2.1 for `@decky/api` and `@decky/ui`, and MIT for `react-icons`. Verify actual redistributed code/icons and required notices; metadata alone is not a legal review. |
+| Destination and authority | Confirm repository, visibility, publishing account and channel. No remote is configured at this review point. Connecting an account or viewing a README is not permission to push or publish. |
+| Official backend build | The official template describes custom-backend builds through Decky CLI/Docker, with source under `backend/src` and output under `backend/out`. This project uses `monitor/` and local Zig 0.16; the official build adaptation is not implemented or tested.[2] |
+| Package manager | The official template explicitly recommends pnpm 9 for submission CI. This repository pins pnpm 11.3.0. Validate and reconcile the target environment rather than assuming local success proves store compatibility.[2] |
+| Showcase image | `plugin.json.publish.image` remains empty. Existing private screenshots have not been uploaded as public release assets. |
+| Validation matrix | SteamOS Stable/Beta, additional hardware, actual suspend/network transitions, physical controls, endurance and performance evidence remain incomplete. Follow the database's actual submission checklist.[3] |
+| Stable identity and external actions | The current version remains an RC. A stable version, tag, push, public upload and store submission need their own reviewed payload and authorization. |
 
-官方数据库说明，首次商店提交需要以子模块形式向 `decky-plugin-database` 发起 pull request，后续更新也需要更新版本与子模块引用。官方模板同时允许以 URL 分发符合布局的 ZIP，因此“可侧载 ZIP”和“商店发布通过”不是同一个结论。[1] [2]
+The official plugin database describes first submission as a pull request adding the plugin as a submodule, with later updates changing the version/submodule reference. The template also describes URL-distributed plugin ZIPs. A working private sideload ZIP and an approved store entry are different outcomes. The official README pages were read again on 2026-09-12; they are not a substitute for the linked wiki or the current review checklist.[2] [3]
 
-本次已读取两份官方 GitHub README。官方 wiki 的正文抓取失败，没有将未读取内容当成已经核验的发布规则。
-
-## 本地命令
+## Local candidate commands
 
 ```bash
 bash scripts/check.sh
 python3 scripts/release-check.py
 python3 scripts/package-candidate.py
 
-# 严格公共发布预检；当前会因明确的发布缺项而失败
+# Strict public preflight intentionally fails while the blockers remain:
 python3 scripts/release-check.py --public
 ```
 
-预检只做机械一致性检查，不替代许可证审查或商店审批。候选包允许本地私有测试，不表示已经具备对外分发许可或正式版资格。
+The preflight checks mechanical artifact and metadata consistency only. It cannot grant redistribution rights or approve a store submission. Candidate archiving produces a version-named ZIP, SHA-256 file and preflight JSON under `outputs/`. A source/developer archive is not an installable plugin ZIP; do not sideload it.
 
-## 升级与数据
+## Upgrade and rollback
 
-从早期大屏版本升级后，只从 Decky QAM 进入插件；旧 `/deckscope` 路由不再提供。当前历史 schema 保持 v1，升级不删除既有历史和设置。原生异常退出仍可能丢失尚未批量写入的分钟记录。候选版已采用保留旧插件目录的完整侧载脚本，不使用直接写入 root-owned 前端文件的方式。
+The old `/deckscope` fullscreen route is retired. History remains schema v1, and installation/rollback preserve settings and stored history rather than erasing them. Abrupt process loss can still discard a pending minute-record batch. Follow [Deployment](DEPLOYMENT.md) for complete-package installation, backup selection and safe rollback. A file restore does not itself verify that Loader or the plugin is healthy.
 
 ## References
 
-[1]: https://github.com/SteamDeckHomebrew/decky-plugin-database "Decky Plugin Database submission README, accessed 2026-09-12"
-[2]: https://github.com/SteamDeckHomebrew/decky-plugin-template "Decky Plugin Template build, binary layout and distribution README, accessed 2026-09-12"
+[1]: UI-INPUT-ACCEPTANCE.md "rc.2 native UI, input acceptance and scope decision"
+[2]: https://github.com/SteamDeckHomebrew/decky-plugin-template "Official Decky Plugin Template build and ZIP distribution README, read 2026-09-12"
+[3]: https://github.com/SteamDeckHomebrew/decky-plugin-database "Official Decky Plugin Database submission README, read 2026-09-12"
