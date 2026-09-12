@@ -43,3 +43,5 @@ The QAM charts seed bounded history on mount/range change and merge live samples
 ## Native QAM input contract
 
 Prefer native Field/PanelSection/PanelSectionRow and DialogButton styling. Do not replace gamepad focus styles. Side-by-side action pairs require an explicit horizontal Focusable, not CSS flex alone. The host owns scrolling; avoid nested overflow containers, touch-action overrides, gesture interception and forced scroll positioning. rc.2 synthetic swipes pass, but the original physical-touch complaint remains unconfirmed; see UI-INPUT-ACCEPTANCE.md.
+
+At 11:16 on 2026-09-12, the user stopped touchscreen-specific investigation after observing similar behavior in other plugins. Current acceptance prioritizes directional-key access to all QAM views and controls; preserve the approved rc.2 appearance and do not add touch workarounds without a new request. No host root cause is asserted.
