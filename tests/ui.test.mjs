@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = new URL('../.work/ui-test-build/', import.meta.url);
 fs.mkdirSync(output, { recursive: true });
-execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', 'src/Controls.tsx', '--jsx', 'react-jsx', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
+execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', 'src/Controls.tsx', 'src/SystemDetails.tsx', 'src/HistoryIntegrity.tsx', '--jsx', 'react-jsx', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
 
 function moduleFrom(name, extra = {}) {
   const js = fs.readFileSync(new URL(name.replace('.ts', '.js'), output), 'utf8');
@@ -126,4 +126,43 @@ test('system and settings omit the redundant root-permission tagline in both lan
   }
   const strings=fs.readFileSync(root+'src/i18n.ts','utf8');
   assert.ok(!strings.includes('readOnly:'));
+});
+
+test('new chart groups cover recorded metrics without timer-based polling', () => {
+  const source=fs.readFileSync(root+'src/MonitorPane.tsx','utf8');
+  for(const key of ['mem_used_mb','swap_used_mb','cpu_temp_mc','gpu_temp_mc','nvme_temp_mc','fan_rpm','disk_read_kbps','disk_write_kbps','net_rx_kbps','net_tx_kbps','psi_cpu_some_x100','psi_mem_some_x100','psi_mem_full_x100','psi_io_some_x100','psi_io_full_x100']) assert.ok(source.includes('"'+key+'"'),key);
+  assert.ok(!/setInterval|setTimeout/.test(source));
+});
+
+test('PSI percentage axes and known gaps remain distinct from utilization and interpolation', () => {
+  const {chartDomain,splitSegments,validateHistory}=moduleFrom('trends.ts');
+  assert.equal(JSON.stringify(chartDomain([],'psi_io_some_x100')),'[0,10000]');
+  assert.equal(splitSegments([{ts_wall_ms:1,value:0},{ts_wall_ms:50,value:0}],1000,[{from_ms:2,to_ms:49}]).length,2);
+  assert.throws(()=>validateHistory({metric:'gpu_pct',resolution_ms:1000,samples:[],coverage:{from_ms:0,to_ms:100,estimated_covered_ms:Infinity,uncovered_ms:0,gaps:[]}},'gpu_pct'));
+});
+
+function detailModule(name) {
+  const jsx=(type,props)=>({type,props});
+  const i18n=moduleFrom('i18n.ts',{navigator:{language:'en-US'}});
+  return moduleFrom(name,{require:(id)=>id==='react/jsx-runtime'?{jsx,jsxs:jsx}:id==='./i18n'?i18n:{Row:'Row',Section:'Section'}});
+}
+function rows(node) {
+  if(Array.isArray(node))return node.flatMap(rows);
+  if(!node||typeof node!=='object')return [];
+  return [...(node.type==='Row'?[node.props]:[]),...rows(node.props?.children)];
+}
+test('battery fields preserve zero cycle count and missing voltage in rendered rows', () => {
+  const {SystemDetails}=detailModule('SystemDetails.ts');
+  const result=rows(SystemDetails({pane:'battery',device:{battery:{present:true,status:'Full',full_capacity:50000,design_capacity:50000,capacity_unit:'mWh',health_pct_x10:1000,cycle_count:0,voltage_mv:null}}}));
+  assert.equal(result.find(r=>r.label==='Cycle count').value,0);
+  assert.equal(result.find(r=>r.label==='Battery voltage').value,'—');
+  assert.equal(result.find(r=>r.label==='Full-charge capacity').value,'50.00 Wh');
+  assert.equal(result.find(r=>r.label==='Estimated health').value,'100.0%');
+});
+test('integrity rows do not label unexplained gaps as suspend and support old responses', () => {
+  const {HistoryIntegrity}=detailModule('HistoryIntegrity.ts');
+  const result=rows(HistoryIntegrity({metricLabel:'CPU',status:null,history:{coverage:{estimated_covered_ms:1000,uncovered_ms:2000,to_ms:3000,gaps:[{from_ms:0,to_ms:2000}]},events:[]}}));
+  assert.ok(result.some(r=>r.label==='No data'));
+  assert.ok(!result.some(r=>r.label.startsWith('Suspend')));
+  assert.doesNotThrow(()=>HistoryIntegrity({metricLabel:'CPU',status:null}));
 });

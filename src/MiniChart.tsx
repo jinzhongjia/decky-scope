@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import type { Coverage, HistoryEvent } from "./api";
 import { chartDomain, Point, splitSegments } from "./trends";
 import { formatMetric, t } from "./i18n";
 export function MiniChart({
@@ -8,6 +9,8 @@ export function MiniChart({
   from,
   to,
   gapMs,
+  gaps = [],
+  events = [],
   compact = false,
 }: {
   points: Point[];
@@ -17,6 +20,8 @@ export function MiniChart({
   to: number;
   gapMs: number;
   compact?: boolean;
+  gaps?: Coverage["gaps"];
+  events?: HistoryEvent[];
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const domain = chartDomain(points, metric);
@@ -48,10 +53,29 @@ export function MiniChart({
         c.lineTo(width, yy);
         c.stroke();
       }
+      c.fillStyle = "rgba(180,180,180,.10)";
+      for (const gap of gaps) {
+        const start = Math.max(from, gap.from_ms),
+          end = Math.min(to, gap.to_ms);
+        if (end > start) c.fillRect(x(start), 0, x(end) - x(start), height);
+      }
+      c.setLineDash([2, 2]);
+      c.strokeStyle = "rgba(241,190,107,.7)";
+      for (const event of events) {
+        if (event.kind !== "suspend_resume") continue;
+        for (const time of [event.from_ms, event.to_ms])
+          if (time >= from && time <= to) {
+            c.beginPath();
+            c.moveTo(x(time), 0);
+            c.lineTo(x(time), height);
+            c.stroke();
+          }
+      }
+      c.setLineDash([]);
       const gradient = c.createLinearGradient(0, 0, 0, height);
       gradient.addColorStop(0, color + "32");
       gradient.addColorStop(1, color + "00");
-      for (const segment of splitSegments(points, gapMs)) {
+      for (const segment of splitSegments(points, gapMs, gaps)) {
         if (segment.length > 1) {
           c.beginPath();
           c.moveTo(x(segment[0].ts_wall_ms), y(0));
@@ -81,7 +105,7 @@ export function MiniChart({
     const observer = new ResizeObserver(draw);
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [points, metric, color, from, to, gapMs, compact]);
+  }, [points, metric, color, from, to, gapMs, compact, gaps, events]);
   return (
     <div className="ds-chart" style={{ height: compact ? 40 : 50 }}>
       <canvas

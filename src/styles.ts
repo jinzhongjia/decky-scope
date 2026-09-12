@@ -50,6 +50,8 @@ export const styles = `
 .ds-chart-floor { top: auto; bottom: 0; }
 .ds-chart-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #b8bcbf; font-size: 12px; pointer-events: none; }
 .ds-chart-caption { display: flex; justify-content: space-between; font-size: 11px; color: #b8bcbf; margin-top: 6px; }
+.ds-extra-charts > .ds-card + .ds-card { margin-top: 18px; }
+.ds-group-picker { margin-bottom: 12px; }
 .ds-telemetry { margin-top: 12px; }
 .ds-field-value { overflow-wrap: anywhere; font-size: 13px; }
 .ds-device-name { font-size: 18px; font-weight: 600; margin: 4px 0; }

@@ -111,6 +111,111 @@ const words = {
     "历史暂时不可读，可刷新重试",
     "History unavailable. Refresh to retry.",
   ],
+  curveGroup: ["指标类别", "Metric group"],
+  performanceGroup: ["性能", "CPU/GPU"],
+  memoryGroup: ["内存", "Memory"],
+  thermalGroup: ["温度", "Thermal"],
+  ioGroup: ["磁盘 / 网络", "Disk / Network"],
+  pressureGroup: ["压力", "PSI"],
+  diskRead: ["磁盘读取", "Disk read"],
+  diskWrite: ["磁盘写入", "Disk write"],
+  netReceive: ["网络接收", "Network receive"],
+  netSend: ["网络发送", "Network send"],
+  psiCpu: ["CPU 等待（some）", "CPU stalls (some)"],
+  psiMemSome: ["内存等待（some）", "Memory stalls (some)"],
+  psiMemFull: ["内存等待（full）", "Memory stalls (full)"],
+  psiIoSome: ["I/O 等待（some）", "I/O stalls (some)"],
+  psiIoFull: ["I/O 等待（full）", "I/O stalls (full)"],
+  psiNote: [
+    "PSI 表示任务因资源不足而等待的时间比例，不是资源使用率。",
+    "PSI measures time stalled for resources, not utilization.",
+  ],
+  integrity: ["记录完整性", "RECORDING COVERAGE"],
+  coverageEstimate: ["有效记录时长（估算）", "Estimated coverage"],
+  noDataTime: ["无记录时长", "Uncovered time"],
+  coverageNote: [
+    "按该指标的查询分辨率估算；空白不自动判定为休眠。",
+    "Estimated at this metric’s query resolution. Gaps do not automatically mean suspend.",
+  ],
+  coverageAsOf: ["查询截至", "Query through"],
+  noDataGap: ["无记录", "No data"],
+  suspendResume: [
+    "休眠 → 恢复（估算边界）",
+    "Suspend → resume (estimated bounds)",
+  ],
+  clockChange: ["系统时间变化", "Clock change"],
+  eventNote: [
+    "只标记本版本采集器检测到的事件；旧空白保留为未知原因。",
+    "Only events detected by this collector version are labeled; older gaps remain unexplained.",
+  ],
+  lastPersisted: ["最新落盘记录时间", "Latest persisted record"],
+  lastSync: ["本次最后同步", "Last sync this run"],
+  pendingRecords: ["待落盘分钟记录", "Pending minute records"],
+  limitedEvents: ["区间过多，仅显示部分", "Only some intervals are shown"],
+  eventStorageError: [
+    "事件日志保存异常；分钟采集独立运行。",
+    "Event log unavailable; minute collection is independent.",
+  ],
+  storageCapacity: ["存储空间", "FILESYSTEM CAPACITY"],
+  systemVolume: ["系统分区", "System filesystem"],
+  homeVolume: ["用户数据", "User data"],
+  removableVolume: ["可移动存储", "Removable storage"],
+  capacityTotal: ["总容量", "Total capacity"],
+  capacityAvailable: ["可用容量", "Available capacity"],
+  mounted: ["已挂载", "Mounted"],
+  unmounted: ["已检测到，未找到支持的挂载", "Detected; no supported mount"],
+  noRemovable: [
+    "未检测到已挂载可移动存储",
+    "No mounted removable storage detected",
+  ],
+  storageCapacityNote: [
+    "显示本地文件系统容量，不等于整块 SSD 容量；不重复累计共享挂载。",
+    "Local filesystem capacity, not physical SSD capacity; shared mounts are not summed.",
+  ],
+  batteryDetails: ["电池详情", "BATTERY DETAILS"],
+  batteryStatus: ["电池状态", "Battery state"],
+  fullCapacity: ["满充容量", "Full-charge capacity"],
+  designCapacity: ["设计容量", "Design capacity"],
+  batteryHealth: ["健康度（估算）", "Estimated health"],
+  cycleCount: ["循环次数", "Cycle count"],
+  voltage: ["电池电压", "Battery voltage"],
+  healthNote: [
+    "由满充容量 / 设计容量估算，不是校准后的寿命诊断；缺失字段显示 —。",
+    "Full/design capacity estimate, not a calibrated lifespan diagnosis. Missing fields stay unavailable.",
+  ],
+  charging: ["充电中", "Charging"],
+  discharging: ["放电中", "Discharging"],
+  full: ["已充满", "Full"],
+  notCharging: ["未充电", "Not charging"],
+  systemRuntime: ["系统运行信息", "SYSTEM RUNTIME"],
+  systemElapsed: ["开机时长（含休眠）", "Time since boot (includes sleep)"],
+  systemAwake: ["累计清醒时长", "Awake since boot"],
+  systemSuspended: ["累计休眠时长", "Suspended since boot"],
+  loadAverage: ["负载 1 / 5 / 15 分钟", "Load average 1 / 5 / 15 min"],
+  memoryAvailable: ["可用内存", "Available memory"],
+  memoryCached: ["文件缓存", "File cache"],
+  memoryReclaimable: ["可回收内核缓存", "Reclaimable kernel cache"],
+  memoryDirty: ["待写回内存", "Dirty memory"],
+  memoryWriteback: ["正在写回", "Writeback memory"],
+  swapTotal: ["Swap 总量", "Swap total"],
+  swapFree: ["Swap 可用", "Swap free"],
+  zramOriginal: ["zram 原始数据", "zram original data"],
+  zramCompressed: ["zram 压缩数据", "zram compressed data"],
+  zramMemory: ["zram 实占内存", "zram memory used"],
+  zswapEnabled: ["zswap 已启用", "zswap enabled"],
+  enabled: ["是", "Yes"],
+  disabled: ["否", "No"],
+  runtimeNote: [
+    "系统时长从本次系统启动累计，与插件采集器时长不同。",
+    "System clocks count from OS boot, separately from sampler uptime.",
+  ],
+  deviceTab: ["设备", "Device"],
+  storageTab: ["存储", "Storage"],
+  runtimeTab: ["运行", "Runtime"],
+  gapLegend: [
+    "灰色区间：无记录；黄色虚线：检测到的休眠 / 恢复。",
+    "Gray areas: no records. Yellow markers: detected suspend / resume.",
+  ],
 } as const;
 export type TextKey = keyof typeof words;
 export const locale = () =>
@@ -158,4 +263,15 @@ export function listenerLabel(value?: string) {
       : value === "not_listening"
         ? t("notDetected")
         : t("unknown");
+}
+
+export function bytes(value?: number | null): string {
+  return value === null || value === undefined || !Number.isFinite(value)
+    ? "—"
+    : `${(value / 1073741824).toFixed(2)} GiB`;
+}
+export function kib(value?: number | null): string {
+  return value === null || value === undefined
+    ? "—"
+    : `${(value / 1024).toFixed(1)} MiB`;
 }
