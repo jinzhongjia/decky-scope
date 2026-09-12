@@ -1,0 +1,63 @@
+{
+  "version": "0.1.0-rc.2",
+  "device": "Steam Deck OLED Galileo",
+  "focus": {
+    "results": [
+      {
+        "names": [
+          "隐藏 IP",
+          "复制 IP"
+        ],
+        "right": "复制 IP",
+        "left": "隐藏 IP"
+      },
+      {
+        "names": [
+          "复制系统摘要",
+          "刷新数据"
+        ],
+        "right": "刷新数据",
+        "left": "复制系统摘要"
+      }
+    ],
+    "overflow": []
+  },
+  "scroll": {
+    "focused-final": {
+      "start": 80,
+      "end": 304,
+      "delta": 224,
+      "reverse_steps_over_2px": 0
+    },
+    "focused-monitor-final": {
+      "start": 211.3333282470703,
+      "end": 442.6666564941406,
+      "delta": 231.3333282470703,
+      "reverse_steps_over_2px": 0
+    },
+    "diagonal-monitor-card-final": {
+      "start": 8,
+      "end": 234,
+      "delta": 226,
+      "reverse_steps_over_2px": 0
+    }
+  },
+  "original_touch_complaint_reproduced": false,
+  "physical_finger_acceptance": false,
+  "privacy_restored": true,
+  "inhibitor_released": true,
+  "tunnel_closed": true,
+  "screenshots": {
+    "monitor-final.png": "397afd79ac8466585088972d3152c6e1f2fbefe3139724e23f8f75695e508639",
+    "system-final.png": "70c0afade92f84bf61afa98c5ffc5ea2f9c8f432201fd5563e313cc97ec76624",
+    "ip-actions-final.png": "bcb0aba19bcadf4e21c68e1e6645e031166e11679d64d263330a4384bb5b7655",
+    "summary-actions-final.png": "d7cc11a90ea85a8fe1b101c6e7b6f2cbe9f18a9ed4ccde9c42006dd04e48e2be",
+    "monitor-preview.png": "fa9c084bdd3ccbbb3238ab1f8286cdc81f92655a9713141b2c374fb7147e7781",
+    "system-preview.png": "554ccf7697b3fb985bafd08db1d22786407fda7d0a8b17411ef4f8e6484ff9aa"
+  },
+  "artifacts": {
+    "bin/deckscope-monitor": "a67ccdd1f29f48c33cf60592ec0c1780edeb5da2c633b0b5072a90790803bad5",
+    "dist/index.js": "88a6546bbfc5fdca48d93e47518b42ee6ebb412eb1dfd85b74aa287aa38be2f5",
+    "outputs/DeckScope-0.1.0-rc.2.zip": "34e883216ef99bcda65bd64c306e8e1d2ab1f92821a2cb3355e46690980f9b22"
+  }
+}
