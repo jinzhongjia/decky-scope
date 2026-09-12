@@ -1,0 +1,336 @@
+{
+  "date": "2026-09-12",
+  "runtime": "0.1.0-rc.2",
+  "board": "Galileo",
+  "code_changed": false,
+  "sideload": false,
+  "loader_restart": false,
+  "ui_input": false,
+  "suspend_intervals": [
+    {
+      "sleep": "2026-09-12T12:15:48+08:00",
+      "resume": "2026-09-12T12:49:58+08:00"
+    },
+    {
+      "sleep": "2026-09-12T13:05:38+08:00",
+      "resume": "2026-09-12T13:09:34+08:00"
+    },
+    {
+      "sleep": "2026-09-12T14:09:48+08:00",
+      "resume": "2026-09-12T16:06:07+08:00"
+    }
+  ],
+  "status_before": {
+    "samples": 9005,
+    "bytes_written": 19200,
+    "resumes": 3,
+    "protocol_errors": 0,
+    "invalid_history_files": 0,
+    "persistence_failed": false
+  },
+  "status_after": {
+    "samples": 9426,
+    "bytes_written": 20480,
+    "resumes": 3,
+    "protocol_errors": 0,
+    "invalid_history_files": 0,
+    "persistence_failed": false
+  },
+  "current_metric_availability_mask": 33554431,
+  "query_coverage": {
+    "1800000/cpu_pct_x10": {
+      "resolution_ms": 1000,
+      "count": 235,
+      "valid": 234,
+      "min": 12,
+      "max": 327,
+      "mean": 27.91025641025641,
+      "segments": [
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:10:01.577Z",
+          "count": 235
+        }
+      ]
+    },
+    "1800000/gpu_pct": {
+      "resolution_ms": 1000,
+      "count": 235,
+      "valid": 235,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "segments": [
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:10:01.577Z",
+          "count": 235
+        }
+      ]
+    },
+    "1800000/apu_power_mw": {
+      "resolution_ms": 1000,
+      "count": 235,
+      "valid": 235,
+      "min": 2101,
+      "max": 5249,
+      "mean": 2188.991489361702,
+      "segments": [
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:10:01.577Z",
+          "count": 235
+        }
+      ]
+    },
+    "21600000/cpu_pct_x10": {
+      "resolution_ms": 60000,
+      "count": 202,
+      "valid": 202,
+      "min": 13,
+      "max": 645,
+      "mean": 33.21782178217822,
+      "segments": [
+        {
+          "start": "2026-09-12T02:21:06.697Z",
+          "end": "2026-09-12T04:15:26.412Z",
+          "count": 120
+        },
+        {
+          "start": "2026-09-12T04:49:58.731Z",
+          "end": "2026-09-12T05:05:33.811Z",
+          "count": 17
+        },
+        {
+          "start": "2026-09-12T05:09:34.725Z",
+          "end": "2026-09-12T06:09:28.097Z",
+          "count": 61
+        },
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:08:44.577Z",
+          "count": 4
+        }
+      ]
+    },
+    "21600000/gpu_pct": {
+      "resolution_ms": 60000,
+      "count": 202,
+      "valid": 202,
+      "min": 0,
+      "max": 44,
+      "mean": 0.7524752475247525,
+      "segments": [
+        {
+          "start": "2026-09-12T02:21:06.697Z",
+          "end": "2026-09-12T04:15:26.412Z",
+          "count": 120
+        },
+        {
+          "start": "2026-09-12T04:49:58.731Z",
+          "end": "2026-09-12T05:05:33.811Z",
+          "count": 17
+        },
+        {
+          "start": "2026-09-12T05:09:34.725Z",
+          "end": "2026-09-12T06:09:28.097Z",
+          "count": 61
+        },
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:08:44.577Z",
+          "count": 4
+        }
+      ]
+    },
+    "21600000/apu_power_mw": {
+      "resolution_ms": 60000,
+      "count": 202,
+      "valid": 202,
+      "min": 2084,
+      "max": 7998,
+      "mean": 2302.5742574257424,
+      "segments": [
+        {
+          "start": "2026-09-12T02:21:06.697Z",
+          "end": "2026-09-12T04:15:26.412Z",
+          "count": 120
+        },
+        {
+          "start": "2026-09-12T04:49:58.731Z",
+          "end": "2026-09-12T05:05:33.811Z",
+          "count": 17
+        },
+        {
+          "start": "2026-09-12T05:09:34.725Z",
+          "end": "2026-09-12T06:09:28.097Z",
+          "count": 61
+        },
+        {
+          "start": "2026-09-12T08:06:07.703Z",
+          "end": "2026-09-12T08:08:44.577Z",
+          "count": 4
+        }
+      ]
+    }
+  },
+  "storage": [
+    {
+      "filename": "20707.dscp",
+      "bytes": 15904,
+      "mode": "0o600",
+      "header_valid": true,
+      "valid_records": 124,
+      "bad_crc_records": 0,
+      "partial_bytes": 0,
+      "first_utc": "2026-09-11T18:01:22.702000+00:00",
+      "last_utc": "2026-09-11T19:54:31.701000+00:00",
+      "modified_utc": "2026-09-12T02:27:27.005162+00:00",
+      "valid_per_metric": {
+        "cpu_pct_x10": 124,
+        "cpu_mhz": 124,
+        "gpu_pct": 124,
+        "gpu_mhz": 124,
+        "mem_used_mb": 124,
+        "mem_total_mb": 124,
+        "swap_used_mb": 124,
+        "cpu_temp_mc": 124,
+        "gpu_temp_mc": 124,
+        "nvme_temp_mc": 124,
+        "apu_power_mw": 124,
+        "battery_rate_mw": 95,
+        "battery_pct": 124,
+        "fan_rpm": 124,
+        "psi_cpu_some_x100": 124,
+        "psi_mem_some_x100": 124,
+        "psi_mem_full_x100": 124,
+        "psi_io_some_x100": 124,
+        "psi_io_full_x100": 124,
+        "disk_read_kbps": 124,
+        "disk_write_kbps": 124,
+        "net_rx_kbps": 124,
+        "net_tx_kbps": 124,
+        "net_rx_errors_delta": 124,
+        "net_tx_errors_delta": 124
+      },
+      "segments": [
+        {
+          "start_utc": "2026-09-11T18:01:22.702000+00:00",
+          "end_utc": "2026-09-11T19:54:31.701000+00:00",
+          "records": 124
+        }
+      ]
+    },
+    {
+      "filename": "20708.dscp",
+      "bytes": 26656,
+      "mode": "0o600",
+      "header_valid": true,
+      "valid_records": 208,
+      "bad_crc_records": 0,
+      "partial_bytes": 0,
+      "first_utc": "2026-09-12T02:21:06.697000+00:00",
+      "last_utc": "2026-09-12T08:14:44.577000+00:00",
+      "modified_utc": "2026-09-12T08:15:44.576495+00:00",
+      "valid_per_metric": {
+        "cpu_pct_x10": 208,
+        "cpu_mhz": 208,
+        "gpu_pct": 208,
+        "gpu_mhz": 208,
+        "mem_used_mb": 208,
+        "mem_total_mb": 208,
+        "swap_used_mb": 208,
+        "cpu_temp_mc": 208,
+        "gpu_temp_mc": 208,
+        "nvme_temp_mc": 208,
+        "apu_power_mw": 208,
+        "battery_rate_mw": 208,
+        "battery_pct": 208,
+        "fan_rpm": 208,
+        "psi_cpu_some_x100": 208,
+        "psi_mem_some_x100": 208,
+        "psi_mem_full_x100": 208,
+        "psi_io_some_x100": 208,
+        "psi_io_full_x100": 208,
+        "disk_read_kbps": 208,
+        "disk_write_kbps": 208,
+        "net_rx_kbps": 208,
+        "net_tx_kbps": 208,
+        "net_rx_errors_delta": 208,
+        "net_tx_errors_delta": 208
+      },
+      "segments": [
+        {
+          "start_utc": "2026-09-12T02:21:06.697000+00:00",
+          "end_utc": "2026-09-12T04:15:26.412000+00:00",
+          "records": 120
+        },
+        {
+          "start_utc": "2026-09-12T04:49:58.731000+00:00",
+          "end_utc": "2026-09-12T05:05:33.811000+00:00",
+          "records": 17
+        },
+        {
+          "start_utc": "2026-09-12T05:09:34.725000+00:00",
+          "end_utc": "2026-09-12T06:09:28.097000+00:00",
+          "records": 61
+        },
+        {
+          "start_utc": "2026-09-12T08:06:07.703000+00:00",
+          "end_utc": "2026-09-12T08:14:44.577000+00:00",
+          "records": 10
+        }
+      ]
+    }
+  ],
+  "normal_flush": {
+    "changes": [
+      {
+        "filename": "20708.dscp",
+        "before": 198,
+        "after": 208,
+        "latest_utc": "2026-09-12T08:14:44.577000+00:00",
+        "crc_errors": 0
+      }
+    ],
+    "samples_before": 9005,
+    "samples_after": 9426,
+    "bytes_written_before": 19200,
+    "bytes_written_after": 20480,
+    "persistence_failed": false
+  },
+  "ui_metadata": {
+    "mounted": true,
+    "selectedRange": "6\u65f6",
+    "charts": [
+      {
+        "metric": "cpu_pct_x10",
+        "from": 1789179234577,
+        "to": 1789200834577,
+        "points": 459,
+        "first": 1789179666697,
+        "last": 1789200834577,
+        "valid": 459
+      },
+      {
+        "metric": "gpu_pct",
+        "from": 1789179234577,
+        "to": 1789200834577,
+        "points": 459,
+        "first": 1789179666697,
+        "last": 1789200834577,
+        "valid": 459
+      },
+      {
+        "metric": "apu_power_mw",
+        "from": 1789179234577,
+        "to": 1789200834577,
+        "points": 459,
+        "first": 1789179666697,
+        "last": 1789200834577,
+        "valid": 459
+      }
+    ]
+  },
+  "cleanup_confirmed": true
+}

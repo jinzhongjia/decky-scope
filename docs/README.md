@@ -22,8 +22,9 @@
 | [Early device acceptance](DEVICE-ACCEPTANCE.md) | `2bb2daa`; includes the retired fullscreen UI |
 | [QAM-only acceptance](QAM-ACCEPTANCE.md) | `0.1.0-rc.1`; initial QAM layout and lifecycle checks |
 | [Native UI and input](UI-INPUT-ACCEPTANCE.md) | `0.1.0-rc.2`; approved appearance, horizontal navigation and the decision to stop touch investigation |
+| [Recording and history audit](HISTORY-AUDIT-20260912.md) | `0.1.0-rc.2`; sleep-aligned history gaps and normal batch persistence |
 
-The `acceptance/`, `qam/` and `native-ui/` directories retain original screenshots and machine-readable evidence. Their hashes and counts describe those particular runs. Local scratch files are not prerequisites and are excluded from distribution. The latest accepted product is QAM-only; the old `/deckscope` route is not available.[1]
+The `acceptance/`, `qam/`, `native-ui/` and `tooling/` directories retain original screenshots or machine-readable evidence. Their hashes and counts describe those particular runs. Local scratch files are not prerequisites and are excluded from distribution. The latest accepted product is QAM-only; the old `/deckscope` route is not available.[1]
 
 ## Language and maintenance
 
