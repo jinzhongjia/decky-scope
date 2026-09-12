@@ -250,6 +250,8 @@ export function timeLabel(ms: number, days = false) {
   ).format(ms);
 }
 export function duration(ms: number) {
+  if (ms > 0 && ms < 1000) return "<1 s";
+  if (ms < 60000) return `${Math.floor(ms / 1000)} s`;
   const minutes = Math.floor(ms / 60000);
   return minutes < 60
     ? `${minutes} min`

@@ -105,6 +105,7 @@ export interface Coverage {
   to_ms: number;
   source_records: number;
   valid_records: number;
+  live_records?: number;
   estimated_covered_ms: number;
   uncovered_ms: number;
   truncated: boolean;

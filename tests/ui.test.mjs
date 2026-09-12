@@ -166,3 +166,11 @@ test('integrity rows do not label unexplained gaps as suspend and support old re
   assert.ok(!result.some(r=>r.label.startsWith('Suspend')));
   assert.doesNotThrow(()=>HistoryIntegrity({metricLabel:'CPU',status:null}));
 });
+
+test('sub-minute coverage durations do not display as zero minutes', () => {
+  const {duration}=moduleFrom('i18n.ts');
+  assert.equal(duration(59537),'59 s');
+  assert.equal(duration(500),'<1 s');
+  assert.equal(duration(0),'0 s');
+  assert.equal(duration(60000),'1 min');
+});

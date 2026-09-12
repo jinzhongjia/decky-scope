@@ -64,8 +64,8 @@ pub fn history(w: *std.Io.Writer, st: *const Store, a: Args, interval_ms: u32, e
     const coverage = @import("history_coverage.zig");
     switch (tier) {
         0 => try coverage.write(w, &st.hi, a.from, a.to, a.metric, resolution, events),
-        1 => try coverage.write(w, &st.mid, a.from, a.to, a.metric, resolution, events),
-        else => try coverage.write(w, &st.lo, a.from, a.to, a.metric, resolution, events),
+        1 => try coverage.extended(w, &st.mid, a.from, a.to, a.metric, resolution, events, .{ .ring = &st.hi, .step = interval_ms }),
+        else => try coverage.extended(w, &st.lo, a.from, a.to, a.metric, resolution, events, .{ .ring = &st.hi, .step = interval_ms }),
     }
     try w.writeByte('}');
 }
