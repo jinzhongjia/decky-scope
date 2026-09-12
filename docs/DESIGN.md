@@ -45,3 +45,9 @@ The QAM charts seed bounded history on mount/range change and merge live samples
 Prefer native Field/PanelSection/PanelSectionRow and DialogButton styling. Do not replace gamepad focus styles. Side-by-side action pairs require an explicit horizontal Focusable, not CSS flex alone. The host owns scrolling; avoid nested overflow containers, touch-action overrides, gesture interception and forced scroll positioning. rc.2 synthetic swipes pass, but the original physical-touch complaint remains unconfirmed; see UI-INPUT-ACCEPTANCE.md.
 
 At 11:16 on 2026-09-12, the user stopped touchscreen-specific investigation after observing similar behavior in other plugins. Current acceptance prioritizes directional-key access to all QAM views and controls; preserve the approved rc.2 appearance and do not add touch workarounds without a new request. No host root cause is asserted.
+
+## rc.3 capability expansion
+
+Five monitoring groups reuse the existing metric pipeline: performance, memory, thermal, disk/network I/O and PSI. Native system details are split into bounded battery, local-filesystem and OS runtime modules called only for an on-demand device snapshot. The exported environment summary retains its original whitelist and does not automatically include these nested objects.
+
+History responses include resolution-based coverage estimates computed before display decimation, explicit unknown gaps, and a separate bounded event sidecar for observed suspend/resume and clock changes. No DSCP record migration is required. Last persisted aggregate time and successful sync time are separate fields. Incoming live samples can trigger a history refresh once per minute; a ten-second active-consumer heartbeat prevents stale constant-data views. No frontend polling or touch/scroll workaround is introduced. See [rc.3 feature notes](FEATURES-RC3.md) for units, limitations and acceptance status.

@@ -19,17 +19,17 @@ Request IDs are unsigned 32-bit integers. Unknown fields and invalid numeric typ
 
 | Native method | Arguments | Result |
 | --- | --- | --- |
-| `get_status` | `{}` | Latest sample, topology, per-thread current CPU values, source names, RRD lengths, sample costs and error counters |
-| `get_device_info` | `{}` | OS, build, kernel, BIOS, board, detected profile and monitor version |
+| `get_status` | `{}` | Latest sample, topology, per-thread current CPU values, source names, RRD lengths, sample costs, error counters and recording persistence status |
+| `get_device_info` | `{}` | OS/build/kernel/BIOS/profile, battery details, mounted local filesystem capacity and OS runtime snapshot |
 | `get_connectivity` | `{}` | Best-effort main-table address/interface selection and local SSH/CEF listener state |
 | `set_config` | Optional `interval_ms` 500–5000 and `live_push` boolean | Empty success object |
-| `query_history` | `from`, `to` UTC milliseconds; `metric`; `max_points` 1–1200 | Chosen base resolution and bounded single-metric samples |
+| `query_history` | `from`, `to` UTC milliseconds; `metric`; `max_points` 1–1200 | Chosen base resolution, bounded single-metric samples, estimated coverage, gaps and detected events |
 | `flush` | `{}` | Flush current partial aggregate and pending records; reports write failure |
 | `export_summary` | `{}` | Native environment object; the public bridge export applies a narrower whitelist |
 
 The public Decky API contains six methods: all of the above except `flush`. The bridge's `set_config` additionally accepts `privacy_mask`. The bridge's `export_summary` returns a redacted text object rather than the native environment object. The whitelist excludes board names, BIOS strings, hostname, IP, username, serial numbers and user paths. `query_sessions` and `session_mark` are deliberately **not advertised** until session recording is implemented.
 
-The metrics event is enabled by UI reference counting, rate limited to at most 1 Hz, and suppressed inside metric-specific deadbands. The bridge retains current live-subscription intent in memory across monitor restarts, but never persists it to settings; closing the last consumer during recovery keeps it disabled. Device and history pages query on entry or explicit refresh, not on a timer. The native network cache is refreshed by rtnetlink events; the initial UI connection card refreshes on entry or with its Refresh button. Network-change push events are not yet part of the exposed implementation.
+The metrics event is enabled by UI reference counting, rate limited to at most 1 Hz, and suppressed inside metric-specific deadbands except for a ten-second live heartbeat. The bridge retains current live-subscription intent in memory across monitor restarts, but never persists it to settings; closing the last consumer during recovery keeps it disabled. Device details query on entry or explicit refresh. Open Monitor history also refreshes from incoming live events at most once per minute, without a polling timer. The native network cache is refreshed by rtnetlink events; the initial UI connection card refreshes on entry or with its Refresh button. Network-change push events are not yet part of the exposed implementation.
 
 ## Metrics and units
 
@@ -64,3 +64,15 @@ Each 128-byte record contains an 8-byte timestamp, 4-byte availability mask, 25 
 Only the current UTC day and six preceding UTC day files are retained; files outside this window are removed (including future-dated files after a backwards clock correction), so day-granularity cleanup is not an exact sliding 168-hour window. A hard cap of 2,880 records per day also bounds repeated short-session flushes. Invalid schema files are preserved and refused. Invalid tails stop restore; opening that known-schema file for append truncates only to the last valid record. Write/sync failure disables further persistence for that monitor lifetime while collection remains in memory.
 
 The initial implementation reads the bounded seven-day archive into the Low ring at startup. Lazy range reads and tail indexes described in the reference proposal are not implemented. Subsequent appends reuse the open daily descriptor and append offset. These are explicit first-version tradeoffs, not claims that the entire original production proposal has been completed.
+
+## rc.3 response additions
+
+`get_device_info` includes nested `battery`, `storage` and `system` objects. Their exact TypeScript contract is in [src/api.ts](../src/api.ts); the native writers are [device_details.zig](../monitor/src/device_details.zig), [battery_details.zig](../monitor/src/battery_details.zig), [storage_details.zig](../monitor/src/storage_details.zig) and [system_details.zig](../monitor/src/system_details.zig). These are bounded on-demand snapshots, not new periodic sampling loops. Missing fields are null. Battery presence can be null for an unreadable presence attribute; cycle count zero remains a real reported zero. Charge/energy use mAh/mWh internally and Ah/Wh in the UI. Filesystem capacity is bytes, memory is KiB, zram counters are bytes, load is x1000 and OS durations are milliseconds.
+
+`get_status.recording` contains `last_persisted_sample_ms`, `last_sync_ms`, `pending_records` and `events_persistence_failed`. The persisted timestamp is the latest aggregate's first sample, not its write time. The sync timestamp is known only after a successful write/sync in the current process; restore does not invent a previous fsync time.
+
+`query_history` adds `coverage` with `estimated:true`, UTC `from_ms`/`to_ms`, source/valid record counts, `estimated_covered_ms`, `uncovered_ms`, first/last valid timestamps, `truncated`, and up to 256 `gaps` with `kind:"no_data"`. Coverage uses the entire selected ring before point reduction, sorts timestamps, and unions base-resolution support intervals. It is not an exact duty-cycle measurement: partial aggregate windows, sampling-interval changes and unavailable samples affect precision. Raw `resolution_ms` follows the current configured sampling interval.
+
+Queries also return `events`, `events_truncated` and `events_persistence_failed`. Event kinds are `suspend_resume` and `clock_change`, with UTC `from_ms`/`to_ms` and `estimated:true`. Only newly observed clock relationships are classified. No historical gap is automatically labeled suspend. The first metric displayed in a monitoring group is explicitly named as the coverage source.
+
+The private `events.v1` sidecar is separate from DSCP v1. Each 32-byte little-endian record contains `DSE1` at 0–3, kind at 4 (1 suspend/resume; 2 clock change), reserved zeros at 5–7, from/to uint64 timestamps at 8 and 16, reserved zeros at 24–27, and CRC32 over bytes 0–27 at 28. At most 128 events are retained. Writes use a temporary file, file sync, atomic rename and directory fsync. Seven-day pruning runs during minute processing. Invalid event data is reported separately from metric persistence failure; unknown/corrupt sidecar data is not represented as authoritative events. Existing metric headers and records do not change.

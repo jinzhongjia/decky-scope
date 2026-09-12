@@ -44,18 +44,30 @@ pub fn failure(w: *std.Io.Writer, id: ?u32, code: []const u8) !void {
     try string(w, code);
     try w.writeAll(",\"message\":\"Request could not be completed\"}}\n");
 }
-pub fn history(w: *std.Io.Writer, st: *const Store, a: Args) !void {
+pub fn history(w: *std.Io.Writer, st: *const Store, a: Args, interval_ms: u32, events: *const @import("history_events.zig").Log) !void {
     const span = a.to -| a.from;
     const hi_covered = st.hi.len > 0 and a.from >= st.hi.at(0).ts_wall_ms;
     const mid_covered = st.mid.len > 0 and a.from >= st.mid.at(0).ts_wall_ms;
-    const resolution: u32 = if (span <= 1800000 and (hi_covered or (st.mid.len == 0 and st.lo.len == 0))) 1000 else if (span <= 21600000 and (mid_covered or st.lo.len == 0)) 10000 else 60000;
+    const tier: u8 = if (span <= 1800000 and (hi_covered or (st.mid.len == 0 and st.lo.len == 0))) 0 else if (span <= 21600000 and (mid_covered or st.lo.len == 0)) 1 else 2;
+    const resolution: u32 = switch (tier) {
+        0 => interval_ms,
+        1 => 10000,
+        else => 60000,
+    };
     try w.print("{{\"resolution_ms\":{d},\"metric\":\"{s}\",\"samples\":[", .{ resolution, @tagName(a.metric) });
-    switch (resolution) {
-        1000 => try points(w, &st.hi, a, false),
-        10000 => try points(w, &st.mid, a, true),
+    switch (tier) {
+        0 => try points(w, &st.hi, a, false),
+        1 => try points(w, &st.mid, a, true),
         else => try points(w, &st.lo, a, true),
     }
-    try w.writeAll("]}");
+    try w.writeByte(']');
+    const coverage = @import("history_coverage.zig");
+    switch (tier) {
+        0 => try coverage.write(w, &st.hi, a.from, a.to, a.metric, resolution, events),
+        1 => try coverage.write(w, &st.mid, a.from, a.to, a.metric, resolution, events),
+        else => try coverage.write(w, &st.lo, a.from, a.to, a.metric, resolution, events),
+    }
+    try w.writeByte('}');
 }
 fn points(w: *std.Io.Writer, ring: anytype, a: Args, comptime agg: bool) !void {
     var count: usize = 0;

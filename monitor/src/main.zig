@@ -15,6 +15,7 @@ pub const panic = runtime.panic;
 pub const std_options = runtime.std_options;
 pub const std_options_debug_threaded_io: ?*std.Io.Threaded = null;
 var store: Store = .{};
+var history_events: @import("history_events.zig").Log = .{};
 var transport: Transport = .{};
 var response: [proto.MAX_LINE]u8 = @splat(0);
 var parse_memory: [32768]u8 = @splat(0);
@@ -51,6 +52,7 @@ fn run(init: std.process.Init.Minimal) !void {
     persistence.restore(&store, sys.wallMs());
     defer persistence.deinit();
     if (persistence.lock_conflict) return error.HistoryAlreadyInUse;
+    history_events.restore(history_path, sys.wallMs());
     defer {
         if (store.flush()) |a| persistence.add(a);
         persistence.flush();
@@ -109,6 +111,10 @@ fn tick(state: *State, sampler: *Sampler, io: *IoStats, persistence: *Persistenc
     const mono = sys.nowMs();
     const boot = sys.bootMs();
     if (state.last_boot > 0 and boot -| state.last_boot > (mono -| state.last_mono) + 2000) {
+        if (store.last_wall > 0) {
+            history_events.add(.{ .kind = .suspend_resume, .from_ms = store.last_wall, .to_ms = sys.wallMs() });
+            history_events.save(persistence.directory);
+        }
         if (store.flush()) |a| persistence.add(a);
         store.last_wall = 0;
         store.mid_bucket = null;
@@ -128,8 +134,17 @@ fn tick(state: *State, sampler: *Sampler, io: *IoStats, persistence: *Persistenc
     state.sample_total_us += elapsed;
     state.sample_max_us = @max(state.sample_max_us, elapsed);
     state.samples += 1;
-    if (store.push(state.last, mono)) |a| persistence.add(a);
-    if (state.live and mono -| state.last_sent_ms >= 1000 and changed(state.last_sent, state.last)) {
+    const old_clock = store.clock_changes;
+    const old_wall = store.last_wall;
+    if (store.push(state.last, mono)) |a| {
+        persistence.add(a);
+        if (history_events.prune(state.last.ts_wall_ms)) history_events.save(persistence.directory);
+    }
+    if (store.clock_changes > old_clock) {
+        history_events.add(.{ .kind = .clock_change, .from_ms = old_wall, .to_ms = state.last.ts_wall_ms });
+        history_events.save(persistence.directory);
+    }
+    if (state.live and mono -| state.last_sent_ms >= 1000 and (changed(state.last_sent, state.last) or mono -| state.last_sent_ms >= 10000)) {
         var w = std.Io.Writer.fixed(&response);
         try w.writeAll("{\"type\":\"event\",\"name\":\"metrics\",\"data\":");
         try M.writeValues(&w, &state.last);
@@ -182,9 +197,13 @@ fn handle(line: []const u8, state: *State, sampler: *Sampler, device: *const Dev
         if (sampler.sensors.nvme_value != null and sampler.sensors.nvme_read_us != null) {
             try w.print("{d}", .{(sys.nowUs() -| sampler.sensors.nvme_read_us.?) / 1000});
         } else try w.writeAll("null");
-        try w.writeAll("}}");
+        try w.writeAll("},\"recording\":{\"last_persisted_sample_ms\":");
+        if (persistence.last_persisted_sample_ms) |v| try w.print("{d}", .{v}) else try w.writeAll("null");
+        try w.writeAll(",\"last_sync_ms\":");
+        if (persistence.last_sync_ms) |v| try w.print("{d}", .{v}) else try w.writeAll("null");
+        try w.print(",\"pending_records\":{d},\"events_persistence_failed\":{}}}}}", .{ persistence.len, history_events.failed });
     } else if (std.mem.eql(u8, method, "get_device_info") or std.mem.eql(u8, method, "export_summary")) {
-        try device.write(&w);
+        if (std.mem.eql(u8, method, "get_device_info")) try @import("device_details.zig").write(&w, device, @import("device.zig").z(&sampler.sensors.battery_source)) else try device.write(&w);
     } else if (std.mem.eql(u8, method, "get_connectivity")) {
         try net.write(&w);
     } else if (std.mem.eql(u8, method, "set_config")) {
@@ -198,7 +217,7 @@ fn handle(line: []const u8, state: *State, sampler: *Sampler, device: *const Dev
         }
         try w.writeAll("{}");
     } else if (std.mem.eql(u8, method, "query_history")) {
-        try proto.history(&w, &store, request.args);
+        try proto.history(&w, &store, request.args, state.interval_ms, &history_events);
     } else {
         if (store.flush()) |a| persistence.add(a);
         persistence.flush();

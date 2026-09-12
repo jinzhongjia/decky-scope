@@ -54,6 +54,8 @@ pub const Persistence = struct {
     failed: bool = false,
     bytes_written: u64 = 0,
     invalid_files: u32 = 0,
+    last_persisted_sample_ms: ?u64 = null,
+    last_sync_ms: ?u64 = null,
     last_cleanup_day: ?u64 = null,
     fn path(self: *const Persistence, buf: []u8, day: u64) ![:0]const u8 {
         return std.fmt.bufPrintZ(buf, "{s}/{d}.dscp", .{ self.directory, day });
@@ -110,6 +112,7 @@ pub const Persistence = struct {
                     break;
                 }
                 st.lo.push(a);
+                self.last_persisted_sample_ms = @max(self.last_persisted_sample_ms orelse 0, a.ts_wall_ms);
             }
         }
         self.cleanup(today);
@@ -125,14 +128,24 @@ pub const Persistence = struct {
             self.len = 0;
             return;
         }
-        for (self.pending[0..self.len]) |a| self.append(a) catch {
-            self.failed = true;
-            break;
-        };
+        var newest = self.last_persisted_sample_ms;
+        const before = self.bytes_written;
+        for (self.pending[0..self.len]) |a| {
+            const item_before = self.bytes_written;
+            self.append(a) catch {
+                self.failed = true;
+                break;
+            };
+            if (self.bytes_written > item_before) newest = @max(newest orelse 0, a.ts_wall_ms);
+        }
         self.len = 0;
         if (self.file_fd >= 0) sys.sync(self.file_fd) catch {
             self.failed = true;
         };
+        if (!self.failed and self.bytes_written > before) {
+            self.last_persisted_sample_ms = newest;
+            self.last_sync_ms = sys.wallMs();
+        }
     }
     pub fn deinit(self: *Persistence) void {
         self.flush();
