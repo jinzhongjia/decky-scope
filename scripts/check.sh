@@ -7,4 +7,5 @@ MONITOR_BINARY="$PWD/monitor/zig-debug/bin/deckscope-monitor" python3 -m unittes
 pnpm typecheck
 pnpm test:ui
 pnpm build
+python3 scripts/check-docs.py
 python3 scripts/package.py
