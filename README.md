@@ -1,5 +1,7 @@
 # DeckScope / decky-scope
 
+**Metric selection:** categories and concrete metrics now use [two separate levels](docs/TWO-LEVEL-PICKER.md), opening directly in the current metric category.
+
 **Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](docs/MONITOR-UX.md).
 
 **rc.3:** grouped monitoring curves, recording coverage, storage capacity, battery details and OS runtime are implemented. Local regression and an isolated native device snapshot pass; the revised candidate also passes installed QAM and directional-key acceptance. See [device results](docs/RC3-ACCEPTANCE.md). See [feature notes](docs/FEATURES-RC3.md).

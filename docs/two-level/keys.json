@@ -1,0 +1,65 @@
+{
+  "method": "CEF directional and Enter input",
+  "trace": [
+    {
+      "text": "CPU 使用率",
+      "className": "ds-action ds-metric-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "返回分类",
+      "className": "ds-action ds-category-back DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "性能",
+      "className": "ds-action ds-category-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "内存",
+      "className": "ds-action ds-category-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "内存",
+      "className": "ds-action ds-metric-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "交换空间",
+      "className": "ds-action ds-metric-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "交换空间",
+      "className": "ds-metric-trigger DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "交换空间",
+      "className": "ds-action ds-metric-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "返回分类",
+      "className": "ds-action ds-category-back DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "内存",
+      "className": "ds-action ds-category-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "CPU 使用率",
+      "className": "ds-action ds-metric-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "CPU 使用率",
+      "className": "ds-metric-trigger DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "5分",
+      "className": "ds-range-trigger DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "5分",
+      "className": "ds-action ds-range-option DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    },
+    {
+      "text": "5分",
+      "className": "ds-range-trigger DialogButton _DialogLayout Secondary cXzBZxhPBl7fZs9LODEnc Focusable gpfocus gpfocuswithin"
+    }
+  ]
+}

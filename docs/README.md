@@ -1,5 +1,7 @@
 # Documentation
 
+**Metric selection:** categories and concrete metrics now use [two separate levels](TWO-LEVEL-PICKER.md), opening directly in the current metric category.
+
 **Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](MONITOR-UX.md).
 
 [rc.3 monitoring and system details](FEATURES-RC3.md) documents the new functionality, native snapshot and field semantics. [rc.3 device acceptance](RC3-ACCEPTANCE.md) records the installed QAM and directional-key results.

@@ -1,0 +1,19 @@
+{
+  "board": "Galileo",
+  "installed_sha256": {
+    "main.py": "b9fb939ab0a2f5175c4887e6c79bca72aa234d9b5a56b6e1c657c3a9944393f7",
+    "plugin.json": "0879222f30b8842382c4401341ce97e06f9d7b878672bb8a474e71a41a664a06",
+    "dist/index.js": "2f1066465d9bbcc94187da95fc46c75cee06a06a1288567d6c6500fc97a87ccb",
+    "bin/deckscope-monitor": "6cfdb8ec2113003dcdc63168fc760137946dcc78138c3fbdf31110f78b74e0cb"
+  },
+  "live_push_after_close": false,
+  "persistence_failed": false,
+  "samples": 219,
+  "inhibitor_released": true,
+  "tunnel_closed": true,
+  "screenshots": {
+    "categories.png": "cdc583d306e22733b0a77a1b989604b125d763ddb34fc9c4b5f17e8c9214700a",
+    "performance.png": "2ebc591dc36df9929be0a7c931671ba5e9a8b26226046ecb0f1e669abffad958",
+    "memory.png": "0537b481a11e39236c5e61bee1b9328a2f271c7822b5647871b4370ffec96e2a"
+  }
+}

@@ -55,3 +55,5 @@ History responses include resolution-based coverage estimates computed before di
 ## Single-metric Monitor presentation
 
 The 17:45 feedback replaces the dense simultaneous-chart default. Monitor opens with CPU usage, one chart, a metric selector and a range selector. The 19 supported UI metrics remain in a categorized inline picker; opening a picker replaces the chart temporarily rather than stacking more content above it. Selection restores focus to its trigger. Integrity and chart explanations are progressively disclosed. Native controls and host-owned scrolling remain unchanged. Only the selected metric is queried for chart history; the Zig sampling and recording pipeline still collects all supported metrics.
+
+The 18:21 revision separates that picker into mutually exclusive category and metric levels. Opening enters the selected metric category; explicit Back to categories returns focus to the browsing category. Categories navigate without committing a metric, while metric selection closes the picker and restores its trigger. See [two-level picker acceptance](TWO-LEVEL-PICKER.md).

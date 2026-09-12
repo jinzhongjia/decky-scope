@@ -1,5 +1,7 @@
 # Single-metric Monitor UI
 
+**Current picker update:** the 18:21 revision replaces the same-screen category controls shown below with [two separate selection levels](TWO-LEVEL-PICKER.md). This record and its hashes remain evidence of the earlier single-chart revision.
+
 **2026-09-12, after the 17:45 density feedback.** The installed development UI now opens with one CPU-usage chart rather than several equally weighted graphs and permanently visible category buttons. This revision changes presentation, not the recorded metric set. The native monitor binary and bridge are unchanged.[1]
 
 ## Information hierarchy

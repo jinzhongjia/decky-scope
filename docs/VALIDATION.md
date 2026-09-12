@@ -1,6 +1,6 @@
 # Validation Record
 
-**Latest UI revision:** the single-metric Monitor passes installed QAM checks and 25 frontend/tooling tests. The native monitor is unchanged. See [Monitor UX](MONITOR-UX.md) for current screenshots and navigation results.
+**Latest UI revision:** the two-level metric picker passes installed QAM checks and 28 frontend/tooling tests. The native monitor is unchanged. See [two-level picker acceptance](TWO-LEVEL-PICKER.md) for current screenshots and navigation results.
 
 ## rc.3 current development candidate
 

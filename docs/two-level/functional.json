@@ -1,0 +1,127 @@
+{
+  "categories": [
+    "性能",
+    "内存",
+    "温度",
+    "磁盘 / 网络",
+    "压力"
+  ],
+  "metrics": [
+    {
+      "category": "性能",
+      "label": "CPU 使用率",
+      "title": "性能指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "性能",
+      "label": "GPU 使用率",
+      "title": "性能指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "性能",
+      "label": "APU 封装功耗",
+      "title": "性能指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "性能",
+      "label": "电池充放电",
+      "title": "性能指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "内存",
+      "label": "内存",
+      "title": "内存指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "内存",
+      "label": "交换空间",
+      "title": "内存指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "温度",
+      "label": "CPU 温度",
+      "title": "温度指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "温度",
+      "label": "GPU 温度",
+      "title": "温度指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "温度",
+      "label": "SSD 温度",
+      "title": "温度指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "温度",
+      "label": "风扇",
+      "title": "温度指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "磁盘 / 网络",
+      "label": "磁盘读取",
+      "title": "磁盘 / 网络指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "磁盘 / 网络",
+      "label": "磁盘写入",
+      "title": "磁盘 / 网络指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "磁盘 / 网络",
+      "label": "网络接收",
+      "title": "磁盘 / 网络指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "磁盘 / 网络",
+      "label": "网络发送",
+      "title": "磁盘 / 网络指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "压力",
+      "label": "CPU 等待（some）",
+      "title": "压力指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "压力",
+      "label": "内存等待（some）",
+      "title": "压力指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "压力",
+      "label": "内存等待（full）",
+      "title": "压力指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "压力",
+      "label": "I/O 等待（some）",
+      "title": "压力指标",
+      "selected_and_reopened": true
+    },
+    {
+      "category": "压力",
+      "label": "I/O 等待（full）",
+      "title": "压力指标",
+      "selected_and_reopened": true
+    }
+  ],
+  "exclusive_levels": true,
+  "cancel_preserves_selection": true
+}

@@ -8,6 +8,8 @@ The user clarified on 2026-09-12 that the product is QAM-only: no independent fu
 
 On 2026-09-12 at 17:45 the user rejected the dense Monitor layout. Default to one selected metric and one clear chart; keep the full metric catalog accessible through progressive selection. Recording integrity and explanatory details should be collapsed by default. Do not replace density with smaller text or a wall of equally weighted controls.
 
+The 18:21 direction adopts a two-level metric picker: category navigation and concrete metric options must never share a level. Open directly in the selected metric category, provide an explicit Back to categories action, and retain the single-chart Monitor default.
+
 ## Architecture
 
 React UI communicates only through `src/api.ts` with the stdlib-only Python bridge. The Zig 0.16 monitor owns sampling and history. Use direct Linux syscalls, no libc, no shell execution or external network calls in the monitor. UI closed means live metrics disabled. Never collect credentials, MAC/SSID, Steam IDs, serial numbers or other processes' environment.

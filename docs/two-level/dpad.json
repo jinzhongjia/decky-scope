@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "method": "CEF directional keys; not physical-controller or touch acceptance",
+  "views": [
+    {
+      "view": "监控",
+      "visited": [
+        {
+          "index": 5,
+          "nav": -1,
+          "label": "CPU 使用率",
+          "group": "ds-monitor-toolbar Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 6,
+          "nav": -1,
+          "label": "5分",
+          "group": "ds-monitor-toolbar Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 7,
+          "nav": -1,
+          "label": "记录完整性覆盖 ≈ 5 min"
+        },
+        {
+          "index": 8,
+          "nav": -1,
+          "label": "数据说明"
+        },
+        {
+          "index": 9,
+          "nav": -1,
+          "label": "刷新曲线"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "系统",
+      "visited": [
+        {
+          "index": 5,
+          "nav": -1,
+          "label": "设备",
+          "group": "ds-ranges Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 6,
+          "nav": -1,
+          "label": "存储",
+          "group": "ds-ranges Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 7,
+          "nav": -1,
+          "label": "电池",
+          "group": "ds-ranges Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 8,
+          "nav": -1,
+          "label": "运行",
+          "group": "ds-ranges Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 9,
+          "nav": -1,
+          "label": "系统SteamOS"
+        },
+        {
+          "index": 10,
+          "nav": -1,
+          "label": "SteamOS 版本3.8.16"
+        },
+        {
+          "index": 11,
+          "nav": -1,
+          "label": "系统构建20260716.1"
+        },
+        {
+          "index": 12,
+          "nav": -1,
+          "label": "内核版本6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45"
+        },
+        {
+          "index": 13,
+          "nav": -1,
+          "label": "架构x86_64"
+        },
+        {
+          "index": 14,
+          "nav": -1,
+          "label": "处理器AMD Custom APU 0932"
+        },
+        {
+          "index": 15,
+          "nav": -1,
+          "label": "逻辑处理器8"
+        },
+        {
+          "index": 16,
+          "nav": -1,
+          "label": "可用物理内存总量14.46 GiB"
+        },
+        {
+          "index": 17,
+          "nav": -1,
+          "label": "制造商Valve"
+        },
+        {
+          "index": 18,
+          "nav": -1,
+          "label": "型号Galileo"
+        },
+        {
+          "index": 19,
+          "nav": -1,
+          "label": "BIOS / 固件F7G0114"
+        },
+        {
+          "index": 21,
+          "nav": -1,
+          "label": "隐藏 IP",
+          "group": "ds-actions Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 22,
+          "nav": -1,
+          "label": "复制 IP",
+          "group": "ds-actions Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 23,
+          "nav": -1,
+          "label": "SSH · 22非回环监听"
+        },
+        {
+          "index": 24,
+          "nav": -1,
+          "label": "CEF · 8080仅本机"
+        },
+        {
+          "index": 25,
+          "nav": -1,
+          "label": "CPUacpitz"
+        },
+        {
+          "index": 26,
+          "nav": -1,
+          "label": "GPUcard0"
+        },
+        {
+          "index": 27,
+          "nav": -1,
+          "label": "电池BAT1"
+        },
+        {
+          "index": 28,
+          "nav": -1,
+          "label": "电池充放电current_x_voltage"
+        },
+        {
+          "index": 29,
+          "nav": -1,
+          "label": "SSD 温度 · 30秒缓存33.9 °C"
+        },
+        {
+          "index": 30,
+          "nav": -1,
+          "label": "DeckScope0.1.0-rc.3"
+        },
+        {
+          "index": 31,
+          "nav": -1,
+          "label": "Decky Loaderv3.2.8"
+        },
+        {
+          "index": 33,
+          "nav": -1,
+          "label": "复制系统摘要",
+          "group": "ds-actions Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 34,
+          "nav": -1,
+          "label": "刷新数据",
+          "group": "ds-actions Panel Focusable gpfocuswithin"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "设置",
+      "visited": [
+        {
+          "index": 5,
+          "nav": -1,
+          "label": "0.5 s",
+          "group": "ds-ranges ds-interval Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 6,
+          "nav": -1,
+          "label": "1 s",
+          "group": "ds-ranges ds-interval Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 7,
+          "nav": -1,
+          "label": "2 s",
+          "group": "ds-ranges ds-interval Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 8,
+          "nav": -1,
+          "label": "5 s",
+          "group": "ds-ranges ds-interval Panel Focusable gpfocuswithin"
+        },
+        {
+          "index": 10,
+          "nav": -1,
+          "label": ""
+        },
+        {
+          "index": 11,
+          "nav": -1,
+          "label": "内存中的分钟记录472"
+        },
+        {
+          "index": 12,
+          "nav": -1,
+          "label": "累计采样189"
+        },
+        {
+          "index": 13,
+          "nav": -1,
+          "label": "本次采集已运行3 min"
+        },
+        {
+          "index": 14,
+          "nav": -1,
+          "label": "版本0.1.0-rc.3"
+        },
+        {
+          "index": 15,
+          "nav": -1,
+          "label": "刷新数据"
+        }
+      ],
+      "missing": []
+    }
+  ]
+}
