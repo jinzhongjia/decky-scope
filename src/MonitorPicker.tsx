@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { DialogButton, Focusable } from "@decky/ui";
-import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
-import { Segments } from "./Controls";
+import {
+  FaChevronDown,
+  FaChevronUp,
+  FaChevronLeft,
+  FaChevronRight,
+  FaCheck,
+} from "react-icons/fa";
 import { monitorGroups } from "./monitorMetrics";
 import { t } from "./i18n";
 export type PickerMode = "metric" | "range" | null;
@@ -28,9 +33,15 @@ export function MonitorPicker({
   const selected = groups[currentGroup].items.find(
     (item) => item.metric === metric,
   )!;
-  const [group, setGroup] = useState(currentGroup);
+  const [group, setGroup] = useState<string | null>(currentGroup);
   const metricRef = useRef<HTMLDivElement>(null),
     rangeRef = useRef<HTMLDivElement>(null);
+  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const levelTarget = useRef<{
+    kind: "category" | "metric";
+    key: string;
+  } | null>(null);
   const returning = useRef<"metric" | "range" | null>(null);
   const ranges = [
     { value: 300000, label: t("fiveMin") },
@@ -45,6 +56,24 @@ export function MonitorPicker({
       returning.current = null;
     }
   }, [mode]);
+  // A level transition is user-driven. Live sample updates never move focus.
+  useEffect(() => {
+    if (mode !== "metric" || !levelTarget.current) return;
+    const { kind, key } = levelTarget.current;
+    (kind === "category" ? categoryRefs : itemRefs).current[key]?.focus();
+    levelTarget.current = null;
+  }, [mode, group]);
+  const enterGroup = (value: string) => {
+    const item =
+      groups[value].items.find((item) => item.metric === metric) ||
+      groups[value].items[0];
+    levelTarget.current = { kind: "metric", key: item.metric };
+    setGroup(value);
+  };
+  const backToCategories = () => {
+    levelTarget.current = { kind: "category", key: group || currentGroup };
+    setGroup(null);
+  };
   const chooseMetric = (value: string) => {
     returning.current = "metric";
     onMetric(value);
@@ -55,10 +84,6 @@ export function MonitorPicker({
     onRange(value);
     onMode(null);
   };
-  const options = Object.entries(groups).map(([value, g]) => ({
-    value,
-    label: g.label,
-  }));
   return (
     <>
       <Focusable className="ds-monitor-toolbar" flow-children="horizontal">
@@ -67,7 +92,10 @@ export function MonitorPicker({
           className="ds-metric-trigger"
           aria-expanded={mode === "metric"}
           onClick={() => {
-            setGroup(currentGroup);
+            if (mode !== "metric") {
+              levelTarget.current = { kind: "metric", key: metric };
+              setGroup(currentGroup);
+            }
             onMode(mode === "metric" ? null : "metric");
           }}
         >
@@ -85,35 +113,59 @@ export function MonitorPicker({
         </DialogButton>
       </Focusable>
       {mode === "metric" && (
-        <div className="ds-metric-picker">
-          <h3>{t("chooseMetric")}</h3>
-          <Segments
-            value={group}
-            onChange={setGroup}
-            options={options.slice(0, 3)}
-            label={t("curveGroup")}
-            className="ds-ranges"
-          />
-          <Segments
-            value={group}
-            onChange={setGroup}
-            options={options.slice(3)}
-            label={t("curveGroup")}
-            className="ds-ranges"
-          />
-          <div className="ds-metric-options">
-            {groups[group].items.map((item) => (
+        <div
+          className="ds-metric-picker"
+          data-picker-level={group === null ? "categories" : "metrics"}
+        >
+          {group === null ? (
+            <>
+              <h3>{t("chooseCategory")}</h3>
+              <div className="ds-metric-options ds-category-options">
+                {Object.entries(groups).map(([key, category]) => (
+                  <DialogButton
+                    key={key}
+                    ref={(node) => {
+                      categoryRefs.current[key] = node;
+                    }}
+                    className="ds-action ds-category-option"
+                    onClick={() => enterGroup(key)}
+                  >
+                    <span>{category.label}</span>
+                    <FaChevronRight aria-hidden="true" />
+                  </DialogButton>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
               <DialogButton
-                key={item.metric}
-                className="ds-action ds-metric-option"
-                aria-pressed={metric === item.metric}
-                onClick={() => chooseMetric(item.metric)}
+                className="ds-action ds-category-back"
+                onClick={backToCategories}
               >
-                <span>{item.label}</span>
-                {metric === item.metric && <FaCheck />}
+                <FaChevronLeft aria-hidden="true" />
+                <span>{t("backToCategories")}</span>
               </DialogButton>
-            ))}
-          </div>
+              <h3>
+                {t("groupMetricTitle").replace("{group}", groups[group].label)}
+              </h3>
+              <div className="ds-metric-options">
+                {groups[group].items.map((item) => (
+                  <DialogButton
+                    key={item.metric}
+                    ref={(node) => {
+                      itemRefs.current[item.metric] = node;
+                    }}
+                    className="ds-action ds-metric-option"
+                    aria-pressed={metric === item.metric}
+                    onClick={() => chooseMetric(item.metric)}
+                  >
+                    <span>{item.label}</span>
+                    {metric === item.metric && <FaCheck aria-hidden="true" />}
+                  </DialogButton>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
       {mode === "range" && (

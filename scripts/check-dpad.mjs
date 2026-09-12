@@ -94,6 +94,11 @@ try {
           const a = await state();
           await key("ArrowLeft");
           const b = await state();
+          // Native groups can remember their right-hand entry point.
+          if (b.group === p.group && !seen.has(b.index)) {
+            seen.add(b.index);
+            visited.push(b);
+          }
           if (a.index === b.index) break;
           if (b.group !== p.group) {
             await key("ArrowRight");

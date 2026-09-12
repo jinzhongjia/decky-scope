@@ -1,6 +1,9 @@
 const words = {
   cpuUsage: ["CPU 使用率", "CPU usage"],
   gpuUsage: ["GPU 使用率", "GPU usage"],
+  chooseCategory: ["选择指标分类", "Choose a category"],
+  backToCategories: ["返回分类", "Back to categories"],
+  groupMetricTitle: ["{group}指标", "{group} metrics"],
   chooseMetric: ["选择监控项", "Choose a metric"],
   chooseRange: ["选择时间范围", "Choose a time range"],
   chartDetails: ["数据说明", "About this chart"],

@@ -216,3 +216,60 @@ test('default monitor render contains one chart and keeps diagnostics behind dis
   assert.equal(nodes.find(n=>n.type==='MonitorPicker').props.mode,null);
   assert.ok(nodes.filter(n=>n.type==='MonitorDisclosure').every(n=>n.props.open===false));
 });
+
+function pickerHarness(language) {
+  const jsx=(type,props)=>({type,props});
+  const hooks=[];let cursor=0;
+  const i18n=moduleFrom('i18n.ts',{navigator:{language}});
+  const catalog=moduleFrom('monitorMetrics.ts',{require:()=>i18n});
+  const selected=[];
+  const props={metric:'cpu_pct_x10',range:300000,mode:null,onMode:v=>props.mode=v,onMetric:v=>{props.metric=v;selected.push(v);},onRange:v=>props.range=v};
+  const {MonitorPicker}=moduleFrom('MonitorPicker.ts',{require:id=>{
+    if(id==='react/jsx-runtime')return {jsx,jsxs:jsx,Fragment:'Fragment'};
+    if(id==='react')return {
+      useState:v=>{const i=cursor++;if(!(i in hooks))hooks[i]=v;return [hooks[i],next=>hooks[i]=next];},
+      useRef:v=>{const i=cursor++;if(!(i in hooks))hooks[i]={current:v};return hooks[i];},
+      useEffect:()=>{},
+    };
+    if(id==='./i18n')return i18n;
+    if(id==='./monitorMetrics')return catalog;
+    return {DialogButton:'DialogButton',Focusable:'Focusable',FaCheck:'FaCheck',FaChevronLeft:'FaChevronLeft',FaChevronRight:'FaChevronRight',FaChevronUp:'FaChevronUp',FaChevronDown:'FaChevronDown'};
+  }});
+  const flat=n=>Array.isArray(n)?n.flatMap(flat):n&&typeof n==='object'?[n,...flat(n.props?.children)]:[];
+  const text=n=>Array.isArray(n)?n.map(text).join(''):typeof n==='string'?n:n&&typeof n==='object'?text(n.props?.children):'';
+  const render=()=>{cursor=0;return flat(MonitorPicker(props));};
+  const byClass=(name)=>render().filter(n=>n.props?.className?.split(' ').includes(name));
+  const click=(name,label)=>{const n=byClass(name).find(n=>label===undefined||text(n)===label);assert.ok(n,`${name}: ${label}`);n.props.onClick();};
+  return {render,byClass,click,text,props,selected,t:i18n.t,flat};
+}
+for(const language of ['zh-CN','en-US']) {
+  test(`two-level picker separates navigation from selection (${language})`,()=>{
+    const h=pickerHarness(language);
+    h.click('ds-metric-trigger');
+    assert.equal(h.byClass('ds-category-option').length,0);
+    assert.equal(h.byClass('ds-metric-option').length,4);
+    assert.equal(h.byClass('ds-metric-option').filter(n=>n.props['aria-pressed']).length,1);
+    assert.ok(h.render().some(n=>n.type==='h3'&&h.text(n)===h.t('groupMetricTitle').replace('{group}',h.t('performanceGroup'))));
+    h.click('ds-category-back');
+    assert.equal(h.byClass('ds-metric-option').length,0);
+    assert.equal(h.byClass('ds-category-option').length,5);
+    for(const n of h.byClass('ds-category-option')){
+      assert.equal(n.props['aria-pressed'],undefined);
+      assert.ok(h.flat(n).some(n=>n.type==='FaChevronRight'));
+      assert.ok(!h.flat(n).some(n=>n.type==='FaCheck'));
+    }
+    h.click('ds-category-option',h.t('memoryGroup'));
+    assert.equal(h.selected.length,0,'category navigation must not change the selected metric');
+    assert.equal(h.byClass('ds-category-option').length,0);
+    assert.equal(h.byClass('ds-metric-option').length,2);
+    h.click('ds-metric-option',h.t('memory'));
+    assert.equal(h.props.metric,'mem_used_mb');assert.equal(h.props.mode,null);
+    assert.equal(h.byClass('ds-metric-option').length,0);
+    h.click('ds-metric-trigger');
+    assert.equal(h.byClass('ds-metric-option').length,2,'open in selected metric category');
+    h.click('ds-category-back');h.click('ds-category-option',h.t('performanceGroup'));
+    h.click('ds-metric-trigger');h.click('ds-metric-trigger');
+    assert.equal(h.byClass('ds-metric-option').length,2,'discard uncommitted browsing category');
+    assert.deepEqual(h.selected,['mem_used_mb']);
+  });
+}

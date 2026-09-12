@@ -1,4 +1,5 @@
 import test from "node:test";
+import fs from "node:fs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -136,4 +137,12 @@ test("developer CLI help works offline and write RPCs require explicit intent", 
       ),
     (error) => error.stderr.toString().includes("allowlist"),
   );
+});
+
+test("D-pad audit records controls reached when returning left in a group", () => {
+  const source=fs.readFileSync(root+"scripts/check-dpad.mjs","utf8");
+  const left=source.slice(source.indexOf("// Return left within this group"),source.indexOf("const required ="));
+  assert.match(left,/b\.group === p\.group && !seen\.has\(b\.index\)/);
+  assert.match(left,/seen\.add\(b\.index\)/);
+  assert.match(left,/visited\.push\(b\)/);
 });
