@@ -1,5 +1,7 @@
 # Documentation
 
+**Packaging automation:** [GitHub CI and Releases](CI-RELEASE.md) documents tag/version rules, Actions artifacts, automatic release uploads and recovery.
+
 **Metric selection:** categories and concrete metrics now use [two separate levels](TWO-LEVEL-PICKER.md), opening directly in the current metric category.
 
 **Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](MONITOR-UX.md).

@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs/DeckScope-dev.zip"
 FILES = [Path("main.py"), Path("plugin.json"), Path("package.json"), Path("dist/index.js"), Path("bin/deckscope-monitor")]
 FILES += sorted(path.relative_to(ROOT) for path in (ROOT / "py_modules").glob("*.py"))
+FILES += [Path(name) for name in ("LICENSE", "LICENSE.md", "LICENSE.txt", "THIRD-PARTY-NOTICES.md") if (ROOT / name).is_file()]
+FILES += sorted(path.relative_to(ROOT) for path in (ROOT / "licenses").glob("*.txt"))
 for relative in FILES:
     if not (ROOT / relative).is_file() or (ROOT / relative).stat().st_size == 0:
         raise SystemExit(f"Missing build artifact: {relative}")

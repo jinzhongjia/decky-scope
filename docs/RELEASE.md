@@ -2,7 +2,7 @@
 
 **rc.3 acceptance gate:** grouped charts and system details are locally tested and their native snapshot works on Galileo. The revised candidate is installed and passes QAM rendering and CEF directional-key acceptance; exact hashes and remaining limitations are in [device acceptance](RC3-ACCEPTANCE.md). See [feature notes](FEATURES-RC3.md).
 
-**Current private candidate: `0.1.0-rc.3`. No public release or store submission has been made.** The current repository is self-contained for local development and sideloading, but that is not a license grant, a completed store-build adaptation, or production certification.
+**Current development version: `0.1.0-rc.3`. No version tag, GitHub Release or store submission was created by the CI setup.** The current repository is self-contained for local development and sideloading, but that is not a license grant, a completed store-build adaptation, or production certification.
 
 ## Product and acceptance status
 
@@ -10,18 +10,22 @@ DeckScope is a QAM-only SteamOS system-information and monitoring tool. CPU/GPU 
 
 The historical OLED runs demonstrate specific startup, functional and input behavior on one device. They do not establish Stable/Beta coverage, other-device compatibility, electrical accuracy, endurance or a game-frametime/P99 budget. Use the dated acceptance documents for exact artifact identities, not for blanket release approval.
 
-## Public-release blockers
+## GitHub packages versus official-store readiness
+
+The user authorized the public GitHub destination and source/CI push on September 12 at 18:51. [GitHub CI](CI-RELEASE.md) handles versioned sideload packages independently of Decky Store requirements. A future matching tag push is the trigger for automatic Release publication; the setup itself does not publish a version. The legacy `release-check.py --public` checks conservative stable/store readiness, not GitHub packaging eligibility.
+
+## Remaining licensing, stable and store requirements
 
 | Area | Outstanding requirement |
 | --- | --- |
 | Main license and reference rights | There is no project LICENSE. The user-supplied reference package had no identified license. Confirm provenance and authorization; do not assign a license on the owner's behalf. |
-| Third-party notices | Dependency metadata lists LGPL-2.1 for `@decky/api` and `@decky/ui`, and MIT for `react-icons`. Verify actual redistributed code/icons and required notices; metadata alone is not a legal review. |
-| Destination and authority | Confirm repository, visibility, publishing account and channel. No remote is configured at this review point. Connecting an account or viewing a README is not permission to push or publish. |
+| Third-party notices | The [dependency inventory](../THIRD-PARTY-NOTICES.md) and upstream license texts are included in packages. Review redistribution obligations and prototype provenance; this inventory is not a legal certification. |
+| Destination and authority | `origin` is the user-designated public [GitHub repository](https://github.com/jinzhongjia/decky-scope). Source/CI push is authorized. No version tag or Release is created during initial setup. |
 | Official backend build | The official template describes custom-backend builds through Decky CLI/Docker, with source under `backend/src` and output under `backend/out`. This project uses `monitor/` and local Zig 0.16; the official build adaptation is not implemented or tested.[2] |
 | Package manager | The official template explicitly recommends pnpm 9 for submission CI. This repository pins pnpm 11.3.0. Validate and reconcile the target environment rather than assuming local success proves store compatibility.[2] |
 | Showcase image | `plugin.json.publish.image` remains empty. Existing private screenshots have not been uploaded as public release assets. |
 | Validation matrix | SteamOS Stable/Beta, additional hardware, actual suspend/network transitions, physical controls, endurance and performance evidence remain incomplete. Follow the database's actual submission checklist.[3] |
-| Stable identity and external actions | The current version remains an RC. A stable version, tag, push, public upload and store submission need their own reviewed payload and authorization. |
+| Stable identity and external actions | The version remains an RC. A maintainer deliberately pushing a matching version tag activates automatic publication. Stable certification and store submission remain independent decisions. |
 
 The official plugin database describes first submission as a pull request adding the plugin as a submodule, with later updates changing the version/submodule reference. The template also describes URL-distributed plugin ZIPs. A working private sideload ZIP and an approved store entry are different outcomes. The official README pages were read again on 2026-09-12; they are not a substitute for the linked wiki or the current review checklist.[2] [3]
 
@@ -32,7 +36,7 @@ bash scripts/check.sh
 python3 scripts/release-check.py
 python3 scripts/package-candidate.py
 
-# Strict public preflight intentionally fails while the blockers remain:
+# Conservative stable/store preflight remains separate from GitHub packaging:
 python3 scripts/release-check.py --public
 ```
 

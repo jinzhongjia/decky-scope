@@ -25,5 +25,13 @@
     "prettier": "^3.9.6",
     "rollup": "^4.62.4",
     "typescript": "^7.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jinzhongjia/decky-scope.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jinzhongjia/decky-scope/issues"
+  },
+  "homepage": "https://github.com/jinzhongjia/decky-scope#readme"
 }

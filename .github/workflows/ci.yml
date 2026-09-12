@@ -1,0 +1,119 @@
+name: Build, test and package
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deckscope-${{ github.event.release.tag_name || github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) }}
+
+jobs:
+  build:
+    name: Linux x86_64 / test and package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      commit: ${{ steps.meta.outputs.commit }}
+      version: ${{ steps.meta.outputs.version }}
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || '' }}
+    steps:
+      - name: Checkout exact event source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate versions and tag identity
+        id: meta
+        run: python3 ci/release.py metadata
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ steps.meta.outputs.python }}
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ steps.meta.outputs.node }}
+          package-manager-cache: false
+      - name: Install pinned pnpm
+        env:
+          PNPM_VERSION: ${{ steps.meta.outputs.pnpm }}
+        run: npm install --global "pnpm@$PNPM_VERSION"
+      - name: Install locked frontend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install verified Zig toolchain
+        run: python3 ci/install-zig.py --destination "$RUNNER_TEMP/deckscope-zig"
+      - name: Full regression and development package
+        run: |
+          mkdir -p .work/ci
+          set -o pipefail
+          bash scripts/check.sh 2>&1 | tee .work/ci/check.log
+      - name: Create validated versioned assets
+        run: |
+          git diff --exit-code
+          python3 ci/release.py package
+      - name: Upload installable package and checksums
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeckScope-${{ steps.meta.outputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: outputs/ci/*
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+      - name: Preserve test diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .work/ci/check.log
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish:
+    name: Attach assets to GitHub Release
+    needs: build
+    if: >-
+      github.repository == 'jinzhongjia/decky-scope' &&
+      (github.event_name == 'release' ||
+       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: deckscope-publish-${{ needs.build.outputs.tag }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout verified build commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.build.outputs.commit }}
+          persist-credentials: false
+      - name: Download only this run's validated assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeckScope-${{ needs.build.outputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/deckscope-assets
+      - name: Verify remote tag and publish without overwriting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+          RELEASE_COMMIT: ${{ needs.build.outputs.commit }}
+        run: >-
+          python3 ci/publish.py
+          --assets "$RUNNER_TEMP/deckscope-assets"
+          --tag "$RELEASE_TAG"
+          --commit "$RELEASE_COMMIT"

@@ -37,3 +37,7 @@ The user additionally authorized functional acceptance on 2026-09-12: Steam CEF 
 At 03:19 the user explicitly authorized continuing all sideload iterations autonomously while they sleep. Use the established sudo-backed full installer for root-owned plugin files, retain backups, and do not try direct unprivileged frontend writes. This does not authorize public publishing, pushing, or changing permanent system settings.
 
 The user prefers repository-only delivery: make and verify changes in this Git checkout and report the outcome/commit concisely. Do not repeatedly attach source or installation ZIPs unless requested. Build ZIPs used internally for authorized sideloading are not user deliverables.
+
+## GitHub CI and release workflow
+
+On 2026-09-12 at 18:51 the user authorized setting `origin` to `https://github.com/jinzhongjia/decky-scope.git` and pushing the code and packaging CI. The destination is an existing public repository. This request does not require creating a release/tag now. Future version-tag pushes or owner-published releases invoke `.github/workflows/ci.yml`; review `docs/CI-RELEASE.md` before modifying those workflows. Do not invent a main project license or claim Decky Store compatibility from GitHub CI. Keep build/PR jobs read-only, actions pinned, tags version-checked, release uploads fail-closed on differing existing assets, and runtime credentials out of CI.

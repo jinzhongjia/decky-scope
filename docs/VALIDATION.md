@@ -1,5 +1,7 @@
 # Validation Record
 
+**Latest tooling revision:** [GitHub packaging CI](CI-RELEASE.md) passes local official-Zig/frozen-lockfile checks, 46 Zig tests, 55 Python tests per native build and 28 frontend/tooling tests. Release network actions are mocked locally; hosted build acceptance is recorded separately.
+
 **Latest UI revision:** the two-level metric picker passes installed QAM checks and 28 frontend/tooling tests. The native monitor is unchanged. See [two-level picker acceptance](TWO-LEVEL-PICKER.md) for current screenshots and navigation results.
 
 ## rc.3 current development candidate

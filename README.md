@@ -1,5 +1,9 @@
 # DeckScope / decky-scope
 
+[![Build, test and package](https://github.com/jinzhongjia/decky-scope/actions/workflows/ci.yml/badge.svg)](https://github.com/jinzhongjia/decky-scope/actions/workflows/ci.yml)
+
+**Builds and releases:** see the [CI/Release guide](docs/CI-RELEASE.md). Pushes to `main` and PRs run full checks; version tags or published Releases produce an installable ZIP, SHA256SUMS and a build manifest.
+
 **Metric selection:** categories and concrete metrics now use [two separate levels](docs/TWO-LEVEL-PICKER.md), opening directly in the current metric category.
 
 **Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](docs/MONITOR-UX.md).

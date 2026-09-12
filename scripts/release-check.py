@@ -63,7 +63,7 @@ def inspect():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--public", action="store_true", help="Fail for unresolved public-release gates")
+    parser.add_argument("--public", action="store_true", help="Conservative stable/store readiness checks; separate from GitHub packaging")
     args = parser.parse_args()
     result = inspect()
     print(json.dumps(result, indent=2, ensure_ascii=False))

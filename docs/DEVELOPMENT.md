@@ -74,3 +74,7 @@ Read `AGENTS.md`, then the relevant current guide. Keep modules focused, update 
 [1]: ../AGENTS.md "DeckScope development and safety rules"
 [2]: RELEASE.md "Local toolchain versus official store release requirements"
 [3]: ../scripts/package.py "Development ZIP allowlist and permissions"
+
+## Hosted CI
+
+The pinned build environment is defined in `ci/toolchains.json`. GitHub runs the same `scripts/check.sh` entry point for branch, PR and release builds, then validates the installable package. Read [CI and Releases](CI-RELEASE.md) before tagging a version or changing CI permissions. No Steam Deck credential is required by these jobs.
