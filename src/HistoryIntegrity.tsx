@@ -5,17 +5,19 @@ export function HistoryIntegrity({
   history,
   status,
   metricLabel,
+  showTitle = true,
 }: {
   history?: History;
   status: Status | null;
   metricLabel: string;
+  showTitle?: boolean;
 }) {
   const c = history?.coverage,
     r = status?.recording;
   const stamp = (v?: number | null) => (v == null ? "—" : timeLabel(v, true));
   const events = (history?.events || []).slice(-8).reverse();
-  return (
-    <Section title={t("integrity")}>
+  const content = (
+    <>
       <div>
         <Row label={t("source")} value={metricLabel} />
         <Row
@@ -67,6 +69,11 @@ export function HistoryIntegrity({
       {(history?.events_persistence_failed || r?.events_persistence_failed) && (
         <p className="ds-error">{t("eventStorageError")}</p>
       )}
-    </Section>
+    </>
+  );
+  return showTitle ? (
+    <Section title={t("integrity")}>{content}</Section>
+  ) : (
+    <div className="ds-integrity-details">{content}</div>
   );
 }

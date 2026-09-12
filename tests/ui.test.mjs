@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = new URL('../.work/ui-test-build/', import.meta.url);
 fs.mkdirSync(output, { recursive: true });
-execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', 'src/Controls.tsx', 'src/SystemDetails.tsx', 'src/HistoryIntegrity.tsx', '--jsx', 'react-jsx', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
+execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', 'src/Controls.tsx', 'src/SystemDetails.tsx', 'src/HistoryIntegrity.tsx', 'src/monitorMetrics.ts', 'src/MonitorPicker.tsx', 'src/MonitorPane.tsx', '--jsx', 'react-jsx', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
 
 function moduleFrom(name, extra = {}) {
   const js = fs.readFileSync(new URL(name.replace('.ts', '.js'), output), 'utf8');
@@ -129,7 +129,7 @@ test('system and settings omit the redundant root-permission tagline in both lan
 });
 
 test('new chart groups cover recorded metrics without timer-based polling', () => {
-  const source=fs.readFileSync(root+'src/MonitorPane.tsx','utf8');
+  const source=fs.readFileSync(root+'src/monitorMetrics.ts','utf8');
   for(const key of ['mem_used_mb','swap_used_mb','cpu_temp_mc','gpu_temp_mc','nvme_temp_mc','fan_rpm','disk_read_kbps','disk_write_kbps','net_rx_kbps','net_tx_kbps','psi_cpu_some_x100','psi_mem_some_x100','psi_mem_full_x100','psi_io_some_x100','psi_io_full_x100']) assert.ok(source.includes('"'+key+'"'),key);
   assert.ok(!/setInterval|setTimeout/.test(source));
 });
@@ -173,4 +173,46 @@ test('sub-minute coverage durations do not display as zero minutes', () => {
   assert.equal(duration(500),'<1 s');
   assert.equal(duration(0),'0 s');
   assert.equal(duration(60000),'1 min');
+});
+
+test('monitor defaults to a single CPU chart and collapsed optional details', () => {
+ const source=fs.readFileSync(root+'src/MonitorPane.tsx','utf8');
+ assert.ok(source.includes('useState("cpu_pct_x10")'));
+ assert.ok(source.includes('const metrics = [metric]'));
+ assert.ok(source.includes('const [integrityOpen, setIntegrityOpen] = useState(false)'));
+ assert.ok(source.includes('const [infoOpen, setInfoOpen] = useState(false)'));
+ assert.ok(!/ds-extra-charts|ds-telemetry|setInterval|setTimeout/.test(source));
+});
+test('all 19 metrics remain available in both locales', () => {
+ for(const language of ['en-US','zh-CN']){
+  const i18n=moduleFrom('i18n.ts',{navigator:{language}});
+  const {monitorGroups}=moduleFrom('monitorMetrics.ts',{require:()=>i18n});
+  const all=Object.values(monitorGroups()).flatMap(g=>g.items);
+  assert.equal(all.length,19);assert.equal(new Set(all.map(m=>m.metric)).size,19);
+  assert.ok(all.every(m=>typeof m.label==='string'&&m.label.length>0));
+  assert.ok(all.find(m=>m.metric==='battery_rate_mw').note);
+ }
+});
+
+test('default monitor render contains one chart and keeps diagnostics behind disclosures', () => {
+  const jsx=(type,props)=>({type,props});
+  const i18n=moduleFrom('i18n.ts');
+  const catalog=moduleFrom('monitorMetrics.ts',{require:()=>i18n});
+  const trends=moduleFrom('trends.ts');
+  const {MonitorPane}=moduleFrom('MonitorPane.ts',{
+    require:(id)=>{
+      if(id==='react/jsx-runtime')return {jsx,jsxs:jsx,Fragment:'Fragment'};
+      if(id==='react')return {useState:v=>[v,()=>{}],useEffect:()=>{},useRef:v=>({current:v}),useMemo:f=>f()};
+      if(id==='./i18n')return i18n;
+      if(id==='./monitorMetrics')return catalog;
+      if(id==='./trends')return trends;
+      if(id==='./live')return {useLive:()=>({latest:{ts_wall_ms:Date.now(),cpu_pct_x10:127,cpu_mhz:2000},status:{interval_ms:1000},recent:[],refresh:()=>{}})};
+      return {DialogButton:'DialogButton',MiniChart:'MiniChart',MonitorPicker:'MonitorPicker',MonitorDisclosure:'MonitorDisclosure',HistoryIntegrity:'HistoryIntegrity'};
+    }
+  });
+  const flatten=n=>Array.isArray(n)?n.flatMap(flatten):n&&typeof n==='object'?[n,...flatten(n.props?.children)]:[];
+  const nodes=flatten(MonitorPane());
+  assert.equal(nodes.filter(n=>n.type==='MiniChart').length,1);
+  assert.equal(nodes.find(n=>n.type==='MonitorPicker').props.mode,null);
+  assert.ok(nodes.filter(n=>n.type==='MonitorDisclosure').every(n=>n.props.open===false));
 });

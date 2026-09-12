@@ -28,7 +28,7 @@ async function ev(code) {
 const key = (k) => dispatchKey(s, k, { settleMs: 70 });
 const state = () =>
   ev(
-    `(()=>{const focus=document.querySelector('.ds .gpfocus');const nodes=[...document.querySelectorAll('.ds button:not([disabled]), .ds .ds-kv, .ds [role="switch"], .ds .Focusable')];const node=focus&&(focus.closest('button,.ds-kv,[role="switch"]')||focus);const nav=[...document.querySelectorAll('.ds-nav button')];return {index:nodes.indexOf(node),nav:nav.findIndex(n=>n===node||n.contains(node)),label:node?.textContent?.trim().slice(0,70),group:node?.closest('.ds-actions,.ds-ranges,.ds-power-modes')?.className};})()`,
+    `(()=>{const focus=document.querySelector('.ds .gpfocus');const nodes=[...document.querySelectorAll('.ds button:not([disabled]), .ds .ds-kv, .ds [role="switch"], .ds .Focusable')];const node=focus&&(focus.closest('button,.ds-kv,[role="switch"]')||focus);const nav=[...document.querySelectorAll('.ds-nav button')];return {index:nodes.indexOf(node),nav:nav.findIndex(n=>n===node||n.contains(node)),label:node?.textContent?.trim().slice(0,70),group:node?.closest('.ds-actions,.ds-ranges,.ds-power-modes,.ds-monitor-toolbar')?.className};})()`,
   );
 const result = [];
 try {

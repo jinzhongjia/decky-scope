@@ -12,6 +12,7 @@ export function MiniChart({
   gaps = [],
   events = [],
   compact = false,
+  height: preferredHeight,
 }: {
   points: Point[];
   metric: string;
@@ -20,6 +21,7 @@ export function MiniChart({
   to: number;
   gapMs: number;
   compact?: boolean;
+  height?: number;
   gaps?: Coverage["gaps"];
   events?: HistoryEvent[];
 }) {
@@ -31,7 +33,7 @@ export function MiniChart({
       const canvas = ref.current;
       if (!canvas) return;
       const width = canvas.clientWidth,
-        height = compact ? 40 : 50;
+        height = preferredHeight ?? (compact ? 40 : 50);
       if (width <= 0) return;
       const dpr = canvas.ownerDocument.defaultView?.devicePixelRatio || 1;
       canvas.width = Math.round(width * dpr);
@@ -43,11 +45,11 @@ export function MiniChart({
       const x = (time: number) =>
         2 + ((time - from) / Math.max(1, to - from)) * (width - 4);
       const y = (value: number) =>
-        height - 4 - ((value - lo) / (hi - lo)) * (height - 8);
+        height - 4 - ((value - lo) / (hi - lo)) * (height - 22);
       c.strokeStyle = "rgba(160,187,211,.12)";
       c.lineWidth = 1;
       for (const ratio of [0, 0.5, 1]) {
-        const yy = 4 + (height - 8) * ratio;
+        const yy = 18 + (height - 22) * ratio;
         c.beginPath();
         c.moveTo(0, yy);
         c.lineTo(width, yy);
@@ -105,14 +107,31 @@ export function MiniChart({
     const observer = new ResizeObserver(draw);
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [points, metric, color, from, to, gapMs, compact, gaps, events]);
+  }, [
+    points,
+    metric,
+    color,
+    from,
+    to,
+    gapMs,
+    compact,
+    preferredHeight,
+    gaps,
+    events,
+  ]);
   return (
-    <div className="ds-chart" style={{ height: compact ? 40 : 50 }}>
+    <div
+      className="ds-chart"
+      style={{ height: preferredHeight ?? (compact ? 40 : 50) }}
+    >
       <canvas
         ref={ref}
         role="img"
         aria-label={`${metric}: ${formatMetric(metric, domain[0])} – ${formatMetric(metric, domain[1])}`}
-        style={{ width: "100%", height: compact ? 40 : 50 }}
+        style={{
+          width: "100%",
+          height: preferredHeight ?? (compact ? 40 : 50),
+        }}
       />
       <span className="ds-chart-scale">{formatMetric(metric, domain[1])}</span>
       {domain[0] < 0 && (

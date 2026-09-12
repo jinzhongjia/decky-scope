@@ -65,4 +65,23 @@ export const styles = `
 .ds-progress { height: 3px; background: #3d4148; margin: 3px 0 8px; }
 .ds-progress>span { display: block; height: 100%; background: #1a9fff; }
 .ds-loading { padding: 20px 16px; }
+.ds-monitor-toolbar { display: flex; gap: 8px; margin: 0 0 18px; }
+.ds .ds-monitor-toolbar button { min-width: 0 !important; width: auto !important; padding: 7px 10px !important; font-size: 13px !important; line-height: 20px !important; }
+.ds-monitor-toolbar .ds-metric-trigger { flex: 1 1 0; }
+.ds-monitor-toolbar .ds-range-trigger { flex: 0 0 76px; }
+.ds .ds-metric-trigger, .ds .ds-range-trigger, .ds .ds-metric-option, .ds .ds-range-option, .ds .ds-disclosure-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ds-monitor-toolbar svg, .ds-disclosure-end svg, .ds-metric-options svg { flex-shrink: 0; width: 10px; height: 10px; }
+.ds-primary-reading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ds-primary-reading strong { font-size: 30px; font-weight: 600; line-height: 1.2; }
+.ds-primary-reading>span { font-size: 12px; color: #b8bcbf; }
+.ds-primary-metric { margin-bottom: 18px; }
+.ds-monitor-status { display: flex; justify-content: space-between; font-size: 12px; color: #b8bcbf; margin-bottom: 12px; }
+.ds-monitor-disclosure { margin-top: 8px; }
+.ds .ds-disclosure-trigger { padding: 7px 10px !important; line-height: 20px !important; }
+.ds-disclosure-end { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; }
+.ds-integrity-details, .ds-chart-details { padding: 8px 0; }
+.ds-monitor-refresh { margin-top: 12px; }
+.ds-metric-picker h3, .ds-range-picker h3 { font-size: 14px; font-weight: 500; margin: 8px 0 14px; }
+.ds-metric-options { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; margin-top: 16px; }
+.ds .ds-metric-options button { text-align: left; padding: 9px 12px !important; line-height: 20px !important; }
 `;
