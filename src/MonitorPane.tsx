@@ -100,7 +100,7 @@ export function MonitorPane() {
       ? Math.max(0, Math.min(100, (memory / total) * 100))
       : 0;
   return (
-    <>
+    <div className="ds-monitor">
       <div className="ds-topline">
         <span className="ds-record">
           <i className="ds-dot" />
@@ -190,7 +190,7 @@ export function MonitorPane() {
         </div>
       )}
       <div className="ds-telemetry">
-        <dl>
+        <div>
           <Row
             label={t("memory")}
             value={
@@ -199,7 +199,7 @@ export function MonitorPane() {
                 : "—"
             }
           />
-        </dl>
+        </div>
         <div
           className="ds-progress"
           role="meter"
@@ -210,7 +210,7 @@ export function MonitorPane() {
         >
           <span style={{ width: `${percent}%` }} />
         </div>
-        <dl>
+        <div>
           <Row
             label={t("temperature")}
             value={f("cpu_temp_mc", latest?.cpu_temp_mc)}
@@ -236,7 +236,7 @@ export function MonitorPane() {
             label={t("diskIO")}
             value={`${f("disk_read_kbps", latest?.disk_read_kbps)} / ${f("disk_write_kbps", latest?.disk_write_kbps)}`}
           />
-        </dl>
+        </div>
       </div>
       <p className="ds-note">
         {Object.values(history).some(
@@ -254,6 +254,6 @@ export function MonitorPane() {
       >
         {t("refreshHistory")}
       </DialogButton>
-    </>
+    </div>
   );
 }

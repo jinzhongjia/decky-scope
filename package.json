@@ -1,6 +1,6 @@
 {
   "name": "decky-scope",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.2",
   "description": "Read-only SteamOS diagnostics and performance history",
   "type": "module",
   "packageManager": "pnpm@11.3.0",

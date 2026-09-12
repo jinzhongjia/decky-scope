@@ -51,10 +51,6 @@ function Panel() {
       ) : (
         <SettingsPane />
       )}
-      <footer className="ds-footer">
-        <span>DECKSCOPE</span>
-        <span>STEAMOS SYSTEM TOOLS</span>
-      </footer>
     </div>
   );
 }

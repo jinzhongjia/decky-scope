@@ -1,5 +1,12 @@
 import type { ReactNode } from "react";
-import { DialogButton, Focusable } from "@decky/ui";
+import {
+  DialogButton,
+  Field,
+  Focusable,
+  PanelSection,
+  PanelSectionRow,
+} from "@decky/ui";
+
 export function Segments<T extends string | number>({
   value,
   options,
@@ -34,6 +41,16 @@ export function Segments<T extends string | number>({
     </Focusable>
   );
 }
+
+// A flex row alone does not describe the gamepad navigation tree.
+export function Actions({ children }: { children: ReactNode }) {
+  return (
+    <Focusable className="ds-actions" flow-children="horizontal">
+      {children}
+    </Focusable>
+  );
+}
+
 export function Row({
   label,
   value,
@@ -44,17 +61,23 @@ export function Row({
   long?: boolean;
 }) {
   return (
-    <Focusable
-      {...{ focusable: true }}
-      className={`ds-kv${long ? " ds-kv-long" : ""}`}
-    >
-      <dt>{label}</dt>
-      <dd>
-        {value === null || value === undefined || value === "" ? "—" : value}
-      </dd>
-    </Focusable>
+    <PanelSectionRow>
+      <Field
+        label={label}
+        focusable
+        padding="standard"
+        bottomSeparator="standard"
+        childrenLayout={long ? "below" : "inline"}
+        className="ds-kv"
+      >
+        <span className="ds-field-value">
+          {value === null || value === undefined || value === "" ? "—" : value}
+        </span>
+      </Field>
+    </PanelSectionRow>
   );
 }
+
 export function Section({
   title,
   children,
@@ -63,9 +86,8 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="ds-section">
-      <h3>{title}</h3>
-      {children}
-    </section>
+    <div className="ds-section">
+      <PanelSection title={title}>{children}</PanelSection>
+    </div>
   );
 }

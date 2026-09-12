@@ -3,7 +3,7 @@ import { DialogButton } from "@decky/ui";
 import { api, unwrap } from "./api";
 import { copyText } from "./clipboard";
 import { useDetails } from "./useDetails";
-import { Row, Section } from "./Controls";
+import { Actions, Row, Section } from "./Controls";
 import { formatMetric as f, listenerLabel, t } from "./i18n";
 export function SystemPane() {
   const { device, status, network, error, loading, refresh } = useDetails();
@@ -51,24 +51,26 @@ export function SystemPane() {
         <div className="ds-loading">{t("loading")}</div>
       ) : (
         <>
-          <div className="ds-topline">
-            <span>{t("readOnly")}</span>
+          <div className="ds-intro">
+            <div className="ds-topline">
+              <span>{t("readOnly")}</span>
+            </div>
+            <div className="ds-device-name">{title}</div>
+            <span className="ds-tag">
+              {get("os_name") || "—"} {get("os_version")}
+            </span>
           </div>
-          <div className="ds-device-name">{title}</div>
-          <span className="ds-tag">
-            {get("os_name") || "—"} {get("os_version")}
-          </span>
           <Section title={t("operatingSystem")}>
-            <dl>
+            <div>
               <Row label={t("os")} value={get("os_name")} />
               <Row label={t("osVersion")} value={get("os_version")} />
               <Row label={t("build")} value={get("os_build")} />
               <Row label={t("kernel")} value={get("kernel")} long />
               <Row label={t("architecture")} value={get("arch")} />
-            </dl>
+            </div>
           </Section>
           <Section title={t("hardware")}>
-            <dl>
+            <div>
               <Row label={t("processor")} value={get("cpu_model")} long />
               <Row label={t("logicalCpu")} value={status?.cpu_online} />
               <Row
@@ -82,7 +84,7 @@ export function SystemPane() {
               <Row label={t("manufacturer")} value={get("vendor")} />
               <Row label={t("model")} value={get("product") || get("board")} />
               <Row label={t("firmware")} value={get("bios")} />
-            </dl>
+            </div>
           </Section>
           <Section title={t("connection")}>
             <div className="ds-card">
@@ -95,7 +97,7 @@ export function SystemPane() {
               >
                 {privacy ? "•••.•••.•••.•••" : network?.recommended_ip || "—"}
               </div>
-              <div className="ds-actions">
+              <Actions>
                 <DialogButton
                   className="ds-action"
                   onClick={() => void togglePrivacy()}
@@ -110,16 +112,16 @@ export function SystemPane() {
                 >
                   {t("copyIp")}
                 </DialogButton>
-              </div>
+              </Actions>
             </div>
-            <dl>
+            <div>
               <Row label="SSH · 22" value={listenerLabel(network?.ssh)} />
               <Row label="CEF · 8080" value={listenerLabel(network?.cef)} />
-            </dl>
+            </div>
             <p className="ds-note">{t("addressNote")}</p>
           </Section>
           <Section title={t("source")}>
-            <dl>
+            <div>
               <Row label="CPU" value={status?.sources.cpu_temperature} />
               <Row label="GPU" value={status?.sources.gpu} />
               <Row label={t("battery")} value={status?.sources.battery} />
@@ -131,15 +133,15 @@ export function SystemPane() {
                 label={t("nvmeTemp")}
                 value={f("nvme_temp_mc", status?.latest?.nvme_temp_mc)}
               />
-            </dl>
+            </div>
           </Section>
           <Section title={t("about")}>
-            <dl>
+            <div>
               <Row label="DeckScope" value={get("monitor_version")} />
               <Row label="Decky Loader" value={get("decky_version")} />
-            </dl>
+            </div>
             <p className="ds-note">{t("privacyNote")}</p>
-            <div className="ds-actions">
+            <Actions>
               <DialogButton
                 className="ds-action"
                 onClick={() => void copy("summary")}
@@ -149,7 +151,7 @@ export function SystemPane() {
               <DialogButton className="ds-action" onClick={refresh}>
                 {t("refresh")}
               </DialogButton>
-            </div>
+            </Actions>
           </Section>
         </>
       )}

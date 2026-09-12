@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = new URL('../.work/ui-test-build/', import.meta.url);
 fs.mkdirSync(output, { recursive: true });
-execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
+execFileSync(root + 'node_modules/.bin/tsc', ['src/api.ts', 'src/i18n.ts', 'src/clipboard.ts', 'src/trends.ts', 'src/Controls.tsx', '--jsx', 'react-jsx', '--outDir', fileURLToPath(output), '--target', 'ES2020', '--module', 'commonjs', '--ignoreConfig', '--skipLibCheck', '--noCheck'], { cwd: root });
 
 function moduleFrom(name, extra = {}) {
   const js = fs.readFileSync(new URL(name.replace('.ts', '.js'), output), 'utf8');
@@ -92,9 +92,29 @@ test('CPU/GPU share percent axes; signed power and gaps are not fabricated', () 
 });
 
 
-test('readable system rows opt into native gamepad focus without dummy actions', () => {
-  const controls=fs.readFileSync(root+'src/Controls.tsx','utf8');
-  assert.match(controls,/focusable: true/);
-  const settings=fs.readFileSync(root+'src/SettingsPane.tsx','utf8');
-  assert.ok(!settings.includes('Dropdown'));
+function controlsModule() {
+  const jsx=(type,props)=>({type,props});
+  return moduleFrom('Controls.ts',{require:(name)=>name==='react/jsx-runtime'?{jsx,jsxs:jsx}:{Field:'Field',Focusable:'Focusable',DialogButton:'DialogButton',PanelSection:'PanelSection',PanelSectionRow:'PanelSectionRow'}});
+}
+test('readable rows use native Field focus without dummy activation handlers', () => {
+  const {Row}=controlsModule();const field=Row({label:'Kernel',value:'6.16',long:true}).props.children;
+  assert.equal(field.type,'Field');assert.equal(field.props.focusable,true);
+  assert.equal(field.props.childrenLayout,'below');assert.equal(field.props.onActivate,undefined);
+  assert.equal(Row({label:'zero',value:0}).props.children.props.children.props.children,0);
+  assert.equal(Row({label:'missing',value:null}).props.children.props.children.props.children,'—');
+});
+test('both action pairs belong to horizontal native focus groups', () => {
+  const {Actions}=controlsModule();const node=Actions({children:['left','right']});
+  assert.equal(node.type,'Focusable');assert.equal(node.props['flow-children'],'horizontal');
+  const system=fs.readFileSync(root+'src/SystemPane.tsx','utf8');
+  assert.equal((system.match(/<Actions>/g)||[]).length,2);
+  assert.ok(!system.includes('<div className="ds-actions">'));
+});
+test('native styling keeps one host scroller and does not intercept touch', () => {
+  const css=fs.readFileSync(root+'src/styles.ts','utf8');
+  assert.ok(!css.includes('touch-action:'));
+  assert.ok(!/\.gpfocus|:focus-visible|linear-gradient|overflow(?:-x|-y)?:/.test(css));
+  const index=fs.readFileSync(root+'src/index.tsx','utf8');
+  assert.ok(!index.includes('<footer'));
+  assert.ok(!/onTouchMove|onWheel|preventDefault|scrollIntoView/.test(index));
 });

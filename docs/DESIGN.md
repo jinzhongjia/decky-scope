@@ -39,3 +39,7 @@ The subsequent authorized functional acceptance exercised actual Overview/Histor
 ## QAM-only release candidate
 
 The QAM charts seed bounded history on mount/range change and merge live samples without polling. All series retain UTC millisecond x-coordinates, explicit units and missing-value gaps. CPU/GPU use a shared 0–100% scale. Power distinguishes APU package from signed battery electrical power; unavailable whole-device power is never inferred from APU power. System information includes kernel, SteamOS build, CPU model, architecture, firmware, interface and masked IP. The plugin does not add desktop/fullscreen routes.
+
+## Native QAM input contract
+
+Prefer native Field/PanelSection/PanelSectionRow and DialogButton styling. Do not replace gamepad focus styles. Side-by-side action pairs require an explicit horizontal Focusable, not CSS flex alone. The host owns scrolling; avoid nested overflow containers, touch-action overrides, gesture interception and forced scroll positioning. rc.2 synthetic swipes pass, but the original physical-touch complaint remains unconfirmed; see UI-INPUT-ACCEPTANCE.md.

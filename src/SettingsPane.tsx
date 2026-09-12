@@ -27,7 +27,7 @@ export function SettingsPane() {
     return <div className="ds-loading">{t("loading")}</div>;
   return (
     <>
-      <div className="ds-topline">
+      <div className="ds-topline ds-intro">
         <span>{t("readOnly")}</span>
       </div>
       <Section title={t("interval")}>
@@ -58,14 +58,14 @@ export function SettingsPane() {
         <p className="ds-note">{t("privacyNote")}</p>
       </Section>
       <Section title={t("storage")}>
-        <dl>
+        <div>
           <Row label={t("records")} value={status?.lo_len} />
           <Row label={t("monitoring")} value={status?.samples} />
           <Row
             label={t("uptime")}
             value={status ? duration(status.uptime_ms) : "—"}
           />
-        </dl>
+        </div>
         <p className="ds-note">{t("historyNote")}</p>
         {status?.persistence_failed && (
           <p className="ds-error" role="alert">
@@ -74,9 +74,9 @@ export function SettingsPane() {
         )}
       </Section>
       <Section title={t("about")}>
-        <dl>
+        <div>
           <Row label={t("version")} value={status?.version} />
-        </dl>
+        </div>
         <p className="ds-note">
           {t("powerUnavailable")}
           <br />
@@ -88,9 +88,11 @@ export function SettingsPane() {
           {issue || error}
         </div>
       )}
-      <DialogButton className="ds-action" onClick={refresh}>
-        {t("refresh")}
-      </DialogButton>
+      <div className="ds-intro">
+        <DialogButton className="ds-action" onClick={refresh}>
+          {t("refresh")}
+        </DialogButton>
+      </div>
     </>
   );
 }
