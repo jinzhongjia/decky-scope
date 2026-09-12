@@ -177,6 +177,7 @@ class ReleasePipelineTests(unittest.TestCase):
         self.assertNotIn('pull_request_target', source)
         self.assertIn('contents: read', source)
         self.assertIn('needs: build', source)
+        self.assertIn("format('pr-{0}', github.event.pull_request.number)", source)
         self.assertIn("github.event_name == 'release'", source)
         self.assertIn('pnpm install --frozen-lockfile', source)
         for line in source.splitlines():
