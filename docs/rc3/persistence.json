@@ -1,0 +1,38 @@
+{
+  "samples": 594,
+  "live_push": false,
+  "recording": {
+    "last_persisted_sample_ms": 1789205926258,
+    "last_sync_ms": 1789205986269,
+    "pending_records": 0,
+    "events_persistence_failed": false
+  },
+  "persistence_failed": false,
+  "disk_checked_at_utc": "2026-09-12T09:40:29.336270+00:00",
+  "history_mode": "0o700",
+  "files": [
+    {
+      "filename": "20707.dscp",
+      "bytes": 15904,
+      "mode": "0o600",
+      "header_valid": true,
+      "valid_records": 124,
+      "bad_crc_records": 0,
+      "partial_bytes": 0,
+      "last_utc": "2026-09-11T19:54:31.701000+00:00"
+    },
+    {
+      "filename": "20708.dscp",
+      "bytes": 37920,
+      "mode": "0o600",
+      "header_valid": true,
+      "valid_records": 296,
+      "bad_crc_records": 0,
+      "partial_bytes": 0,
+      "last_utc": "2026-09-12T09:38:46.258000+00:00"
+    }
+  ],
+  "qam_closed": true,
+  "inhibitor_released": true,
+  "tunnel_closed": true
+}

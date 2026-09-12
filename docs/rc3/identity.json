@@ -1,0 +1,24 @@
+{
+  "board": "Galileo",
+  "kernel": "6.16.12-valve24.5-1-neptune-616-gb2f7cfe85e45",
+  "loader": "active",
+  "installed_sha256": {
+    "main.py": "b9fb939ab0a2f5175c4887e6c79bca72aa234d9b5a56b6e1c657c3a9944393f7",
+    "plugin.json": "0879222f30b8842382c4401341ce97e06f9d7b878672bb8a474e71a41a664a06",
+    "dist/index.js": "041ffe041c4eb745ac1323fcd03452fe2cd2dc7d4308b17e2f107a74688095b0",
+    "bin/deckscope-monitor": "6cfdb8ec2113003dcdc63168fc760137946dcc78138c3fbdf31110f78b74e0cb"
+  },
+  "package_sha256": "9453bf0641f4e746a301c2c617442d0a06f18112c3ccecb419f58f5e7eb49a4a",
+  "screenshots": {
+    "memory.png": "0d2e3d58dc5462c110c4d1dbeef7109401043e8d5493a78ec7bf33990f0f990d",
+    "thermal.png": "b0f09b5a8728e297e676b0d711cecd54fde093a4cb5c14b6bcd2c49d73c5ef1c",
+    "io.png": "74ee48c30f463acbb0b627e319782e74aa730a752353b91c72fbe88aa9fbce11",
+    "psi.png": "7690242516112bd74490456f2deee49d63f12fd1e36540f286f28458be0723bf",
+    "storage.png": "b57c51bc30951ccaa9e5df53435dd65dab35b829785dc845c509016da54972b2",
+    "battery.png": "9ddb0d43abc0d05cf28ef1fa2c74abd33eda2a2bb41ee1a3ce8c5963a4634f75",
+    "runtime.png": "b7526bd9295a5e54df5a703c3c42d36a9e1b9e0dc658c5ed9943bc1c5281c833",
+    "storage-bottom.png": "643f2067ea46b880d349fb75dfce449d0dc77b7b7b529353be53d54394fbeb9d",
+    "runtime-bottom.png": "0fa95db84514a58ce7cbea71a5d4605c87df168ab65545ecbbd0480b1183fc4f",
+    "integrity.png": "d6d6fbaa0766f8be0b9d70332a7f6c000314cd33900b7d15bb79aa0e96c80f6d"
+  }
+}

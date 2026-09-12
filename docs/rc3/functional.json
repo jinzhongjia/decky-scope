@@ -1,0 +1,165 @@
+{
+  "groups": [
+    {
+      "label": "内存",
+      "text": "监控\n系统\n设置\n后台采集\n1 s · 仅存本机\n5分\n30分\n6时\n7天\n性能\n内存\n温度\n磁盘 / 网络\n压力\n内存\n2634MiB\n3000 MiB\n交换空间\n0MiB\n1000 MiB\n17:25\n17:30\n记录完整性\n采集来源\n内存\n有效记录时长（估算）\n5 min\n无记录时长\n0 s\n查询截至\n09/12 17:30\n最新落盘记录时间\n09/12 17:29\n本次最后同步\n—\n待落盘分钟记录\n1\n\n按该指标的查询分辨率估算；空白不自动判定为休眠。\n\n灰色区间：无记录；黄色虚线：检测到的休眠 / 恢复。\n\n只标记本版本采集器检测到的事件；旧空白保留为未知原因。\n\n历史均值 + 实时点\n\n刷新曲线",
+      "errors": [],
+      "charts": [
+        {
+          "label": "mem_used_mb: 0 MiB – 3000 MiB",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "swap_used_mb: 0 MiB – 1000 MiB",
+          "width": 402,
+          "height": 75
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "label": "温度",
+      "text": "监控\n系统\n设置\n后台采集\n1 s · 仅存本机\n5分\n30分\n6时\n7天\n性能\n内存\n温度\n磁盘 / 网络\n压力\nCPU 温度\n60.0°C\n70.0 °C\nGPU 温度\n58.0°C\n60.0 °C\nSSD 温度 · 30秒缓存\n33.9°C\n40.0 °C\n风扇\n0RPM\n1000 RPM\n17:25\n17:30\n记录完整性\n采集来源\nCPU 温度\n有效记录时长（估算）\n5 min\n无记录时长\n0 s\n查询截至\n09/12 17:30\n最新落盘记录时间\n09/12 17:29\n本次最后同步\n—\n待落盘分钟记录\n1\n\n按该指标的查询分辨率估算；空白不自动判定为休眠。\n\n灰色区间：无记录；黄色虚线：检测到的休眠 / 恢复。\n\n只标记本版本采集器检测到的事件；旧空白保留为未知原因。\n\n历史均值 + 实时点\n\n刷新曲线",
+      "errors": [],
+      "charts": [
+        {
+          "label": "cpu_temp_mc: 0.0 °C – 70.0 °C",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "gpu_temp_mc: 0.0 °C – 60.0 °C",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "nvme_temp_mc: 0.0 °C – 40.0 °C",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "fan_rpm: 0 RPM – 1000 RPM",
+          "width": 402,
+          "height": 75
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "label": "磁盘 / 网络",
+      "text": "监控\n系统\n设置\n后台采集\n1 s · 仅存本机\n5分\n30分\n6时\n7天\n性能\n内存\n温度\n磁盘 / 网络\n压力\n磁盘读取\n0KiB/s\n1000 KiB/s\n磁盘写入\n0KiB/s\n2000 KiB/s\n网络接收\n2KiB/s\n1000 KiB/s\n网络发送\n59KiB/s\n1000 KiB/s\n17:25\n17:30\n记录完整性\n采集来源\n磁盘读取\n有效记录时长（估算）\n5 min\n无记录时长\n0 s\n查询截至\n09/12 17:30\n最新落盘记录时间\n09/12 17:29\n本次最后同步\n—\n待落盘分钟记录\n1\n\n按该指标的查询分辨率估算；空白不自动判定为休眠。\n\n灰色区间：无记录；黄色虚线：检测到的休眠 / 恢复。\n\n只标记本版本采集器检测到的事件；旧空白保留为未知原因。\n\n历史均值 + 实时点\n\n刷新曲线",
+      "errors": [],
+      "charts": [
+        {
+          "label": "disk_read_kbps: 0 KiB/s – 1000 KiB/s",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "disk_write_kbps: 0 KiB/s – 2000 KiB/s",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "net_rx_kbps: 0 KiB/s – 1000 KiB/s",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "net_tx_kbps: 0 KiB/s – 1000 KiB/s",
+          "width": 402,
+          "height": 75
+        }
+      ],
+      "overflow": []
+    },
+    {
+      "label": "压力",
+      "text": "监控\n系统\n设置\n后台采集\n1 s · 仅存本机\n5分\n30分\n6时\n7天\n性能\n内存\n温度\n磁盘 / 网络\n压力\nCPU 等待（some）\n1.24%\n100.00%\n内存等待（some）\n0.00%\n100.00%\n内存等待（full）\n0.00%\n100.00%\nI/O 等待（some）\n0.31%\n100.00%\nI/O 等待（full）\n0.30%\n100.00%\n\nPSI 表示任务因资源不足而等待的时间比例，不是资源使用率。\n\n17:25\n17:30\n记录完整性\n采集来源\nCPU 等待（some）\n有效记录时长（估算）\n5 min\n无记录时长\n0 s\n查询截至\n09/12 17:30\n最新落盘记录时间\n09/12 17:29\n本次最后同步\n—\n待落盘分钟记录\n1\n\n按该指标的查询分辨率估算；空白不自动判定为休眠。\n\n灰色区间：无记录；黄色虚线：检测到的休眠 / 恢复。\n\n只标记本版本采集器检测到的事件；旧空白保留为未知原因。\n\n历史均值 + 实时点\n\n刷新曲线",
+      "errors": [],
+      "charts": [
+        {
+          "label": "psi_cpu_some_x100: 0.00% – 100.00%",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "psi_mem_some_x100: 0.00% – 100.00%",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "psi_mem_full_x100: 0.00% – 100.00%",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "psi_io_some_x100: 0.00% – 100.00%",
+          "width": 402,
+          "height": 75
+        },
+        {
+          "label": "psi_io_full_x100: 0.00% – 100.00%",
+          "width": 402,
+          "height": 75
+        }
+      ],
+      "overflow": []
+    }
+  ],
+  "details": [
+    {
+      "label": "存储",
+      "text": "监控\n系统\n设置\nSteam Deck OLED\nSteamOS 3.8.16\n设备\n存储\n电池\n运行\n存储空间\n系统分区\nbtrfs · 已挂载\n总容量\n5.00 GiB\n可用容量\n0.85 GiB\n用户数据\next4 · 已挂载\n总容量\n464.61 GiB\n可用容量\n113.79 GiB\n\n已检测到，未找到支持的挂载\n\n显示本地文件系统容量，不等于整块 SSD 容量；不重复累计共享挂载。\n\n关于 DECKSCOPE\nDeckScope\n0.1.0-rc.3\nDecky Loader\nv3.2.8\n\n默认隐藏地址。系统摘要始终不含 IP、序列号、SteamID。\n\n复制系统摘要\n刷新数据",
+      "errors": [],
+      "charts": [],
+      "overflow": []
+    },
+    {
+      "label": "电池",
+      "text": "监控\n系统\n设置\nSteam Deck OLED\nSteamOS 3.8.16\n设备\n存储\n电池\n运行\n电池详情\n电池状态\n未充电\n满充容量\n6.80 Ah\n设计容量\n6.47 Ah\n健康度（估算）\n105.1%\n循环次数\n0\n电池电压\n8.429 V\n\n由满充容量 / 设计容量估算，不是校准后的寿命诊断；缺失字段显示 —。\n\n关于 DECKSCOPE\nDeckScope\n0.1.0-rc.3\nDecky Loader\nv3.2.8\n\n默认隐藏地址。系统摘要始终不含 IP、序列号、SteamID。\n\n复制系统摘要\n刷新数据",
+      "errors": [],
+      "charts": [],
+      "overflow": []
+    },
+    {
+      "label": "运行",
+      "text": "监控\n系统\n设置\nSteam Deck OLED\nSteamOS 3.8.16\n设备\n存储\n电池\n运行\n系统运行信息\n开机时长（含休眠）\n26 h 10 min\n累计清醒时长\n11 h 0 min\n累计休眠时长\n15 h 10 min\n负载 1 / 5 / 15 分钟\n0.55 / 0.38 / 0.23\n\n系统时长从本次系统启动累计，与插件采集器时长不同。\n\n内存\n可用内存\n12164.8 MiB\n文件缓存\n8229.1 MiB\n可回收内核缓存\n303.7 MiB\n待写回内存\n2.4 MiB\n正在写回\n0.0 MiB\nSwap 总量\n8426.5 MiB\nSwap 可用\n8426.5 MiB\nzram 原始数据\n0.0 MiB\nzram 压缩数据\n0.0 MiB\nzram 实占内存\n0.0 MiB\nzswap 已启用\n否\n关于 DECKSCOPE\nDeckScope\n0.1.0-rc.3\nDecky Loader\nv3.2.8\n\n默认隐藏地址。系统摘要始终不含 IP、序列号、SteamID。\n\n复制系统摘要\n刷新数据",
+      "errors": [],
+      "charts": [],
+      "overflow": []
+    }
+  ],
+  "history": {
+    "resolution_ms": 60000,
+    "samples": 33,
+    "coverage": {
+      "estimated": true,
+      "from_ms": 1789203652835,
+      "to_ms": 1789205452835,
+      "source_records": 34,
+      "valid_records": 34,
+      "live_records": 45,
+      "estimated_covered_ms": 1800000,
+      "uncovered_ms": 0,
+      "truncated": false,
+      "first_ms": 1789203645771,
+      "last_ms": 1789205452258,
+      "gaps": []
+    },
+    "events": []
+  },
+  "status": {
+    "version": "0.1.0-rc.3",
+    "samples_before": 39,
+    "samples_after": 52,
+    "recording": {
+      "last_persisted_sample_ms": 1789205399234,
+      "last_sync_ms": null,
+      "pending_records": 1,
+      "events_persistence_failed": false
+    },
+    "live_push_after_system": false
+  }
+}

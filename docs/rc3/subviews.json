@@ -1,0 +1,428 @@
+{
+  "method": "CEF directional keys; not physical controls",
+  "results": [
+    {
+      "view": "监控",
+      "sub": "内存",
+      "visited": [
+        {
+          "index": 5,
+          "label": "5分"
+        },
+        {
+          "index": 11,
+          "label": "内存"
+        },
+        {
+          "index": 14,
+          "label": "磁盘 / 网络"
+        },
+        {
+          "index": 16,
+          "label": "采集来源内存"
+        },
+        {
+          "index": 17,
+          "label": "有效记录时长（估算）5 min"
+        },
+        {
+          "index": 18,
+          "label": "无记录时长0 s"
+        },
+        {
+          "index": 19,
+          "label": "查询截至09/12 17:32"
+        },
+        {
+          "index": 20,
+          "label": "最新落盘记录时间09/12 17:29"
+        },
+        {
+          "index": 21,
+          "label": "本次最后同步—"
+        },
+        {
+          "index": 22,
+          "label": "待落盘分钟记录2"
+        },
+        {
+          "index": 23,
+          "label": "刷新曲线"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "监控",
+      "sub": "温度",
+      "visited": [
+        {
+          "index": 5,
+          "label": "5分"
+        },
+        {
+          "index": 12,
+          "label": "温度"
+        },
+        {
+          "index": 14,
+          "label": "磁盘 / 网络"
+        },
+        {
+          "index": 16,
+          "label": "采集来源CPU 温度"
+        },
+        {
+          "index": 17,
+          "label": "有效记录时长（估算）5 min"
+        },
+        {
+          "index": 18,
+          "label": "无记录时长0 s"
+        },
+        {
+          "index": 19,
+          "label": "查询截至09/12 17:32"
+        },
+        {
+          "index": 20,
+          "label": "最新落盘记录时间09/12 17:29"
+        },
+        {
+          "index": 21,
+          "label": "本次最后同步—"
+        },
+        {
+          "index": 22,
+          "label": "待落盘分钟记录2"
+        },
+        {
+          "index": 23,
+          "label": "刷新曲线"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "监控",
+      "sub": "磁盘 / 网络",
+      "visited": [
+        {
+          "index": 5,
+          "label": "5分"
+        },
+        {
+          "index": 12,
+          "label": "温度"
+        },
+        {
+          "index": 14,
+          "label": "磁盘 / 网络"
+        },
+        {
+          "index": 16,
+          "label": "采集来源磁盘读取"
+        },
+        {
+          "index": 17,
+          "label": "有效记录时长（估算）5 min"
+        },
+        {
+          "index": 18,
+          "label": "无记录时长0 s"
+        },
+        {
+          "index": 19,
+          "label": "查询截至09/12 17:32"
+        },
+        {
+          "index": 20,
+          "label": "最新落盘记录时间09/12 17:29"
+        },
+        {
+          "index": 21,
+          "label": "本次最后同步—"
+        },
+        {
+          "index": 22,
+          "label": "待落盘分钟记录2"
+        },
+        {
+          "index": 23,
+          "label": "刷新曲线"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "监控",
+      "sub": "压力",
+      "visited": [
+        {
+          "index": 5,
+          "label": "5分"
+        },
+        {
+          "index": 12,
+          "label": "温度"
+        },
+        {
+          "index": 15,
+          "label": "压力"
+        },
+        {
+          "index": 16,
+          "label": "采集来源CPU 等待（some）"
+        },
+        {
+          "index": 17,
+          "label": "有效记录时长（估算）5 min"
+        },
+        {
+          "index": 18,
+          "label": "无记录时长0 s"
+        },
+        {
+          "index": 19,
+          "label": "查询截至09/12 17:32"
+        },
+        {
+          "index": 20,
+          "label": "最新落盘记录时间09/12 17:29"
+        },
+        {
+          "index": 21,
+          "label": "本次最后同步—"
+        },
+        {
+          "index": 22,
+          "label": "待落盘分钟记录2"
+        },
+        {
+          "index": 23,
+          "label": "刷新曲线"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "view": "系统",
+      "sub": "存储",
+      "visited": [
+        {
+          "index": 6,
+          "label": "存储"
+        },
+        {
+          "index": 9,
+          "label": "系统分区 btrfs · 已挂载"
+        },
+        {
+          "index": 10,
+          "label": "总容量5.00 GiB"
+        },
+        {
+          "index": 11,
+          "label": "可用容量0.85 GiB"
+        },
+        {
+          "index": 12,
+          "label": "用户数据 ext4 · 已挂载"
+        },
+        {
+          "index": 13,
+          "label": "总容量464.61 GiB"
+        },
+        {
+          "index": 14,
+          "label": "可用容量113.79 GiB"
+        },
+        {
+          "index": 15,
+          "label": "DeckScope0.1.0-rc.3"
+        },
+        {
+          "index": 16,
+          "label": "Decky Loaderv3.2.8"
+        },
+        {
+          "index": 18,
+          "label": "复制系统摘要"
+        }
+      ],
+      "missing": [],
+      "actions": {
+        "last": {
+          "index": 18,
+          "label": "复制系统摘要"
+        },
+        "right": {
+          "index": 19,
+          "label": "刷新数据"
+        },
+        "left": {
+          "index": 18,
+          "label": "复制系统摘要"
+        }
+      }
+    },
+    {
+      "view": "系统",
+      "sub": "电池",
+      "visited": [
+        {
+          "index": 7,
+          "label": "电池"
+        },
+        {
+          "index": 9,
+          "label": "电池状态未充电"
+        },
+        {
+          "index": 10,
+          "label": "满充容量6.80 Ah"
+        },
+        {
+          "index": 11,
+          "label": "设计容量6.47 Ah"
+        },
+        {
+          "index": 12,
+          "label": "健康度（估算）105.1%"
+        },
+        {
+          "index": 13,
+          "label": "循环次数0"
+        },
+        {
+          "index": 14,
+          "label": "电池电压8.434 V"
+        },
+        {
+          "index": 15,
+          "label": "DeckScope0.1.0-rc.3"
+        },
+        {
+          "index": 16,
+          "label": "Decky Loaderv3.2.8"
+        },
+        {
+          "index": 18,
+          "label": "复制系统摘要"
+        }
+      ],
+      "missing": [],
+      "actions": {
+        "last": {
+          "index": 18,
+          "label": "复制系统摘要"
+        },
+        "right": {
+          "index": 19,
+          "label": "刷新数据"
+        },
+        "left": {
+          "index": 18,
+          "label": "复制系统摘要"
+        }
+      }
+    },
+    {
+      "view": "系统",
+      "sub": "运行",
+      "visited": [
+        {
+          "index": 8,
+          "label": "运行"
+        },
+        {
+          "index": 9,
+          "label": "开机时长（含休眠）26 h 12 min"
+        },
+        {
+          "index": 10,
+          "label": "累计清醒时长11 h 1 min"
+        },
+        {
+          "index": 11,
+          "label": "累计休眠时长15 h 10 min"
+        },
+        {
+          "index": 12,
+          "label": "负载 1 / 5 / 15 分钟0.41 / 0.38 / 0.24"
+        },
+        {
+          "index": 13,
+          "label": "可用内存12134.9 MiB"
+        },
+        {
+          "index": 14,
+          "label": "文件缓存8234.0 MiB"
+        },
+        {
+          "index": 15,
+          "label": "可回收内核缓存303.7 MiB"
+        },
+        {
+          "index": 16,
+          "label": "待写回内存0.6 MiB"
+        },
+        {
+          "index": 17,
+          "label": "正在写回0.0 MiB"
+        },
+        {
+          "index": 18,
+          "label": "Swap 总量8426.5 MiB"
+        },
+        {
+          "index": 19,
+          "label": "Swap 可用8426.5 MiB"
+        },
+        {
+          "index": 20,
+          "label": "zram 原始数据0.0 MiB"
+        },
+        {
+          "index": 21,
+          "label": "zram 压缩数据0.0 MiB"
+        },
+        {
+          "index": 22,
+          "label": "zram 实占内存0.0 MiB"
+        },
+        {
+          "index": 23,
+          "label": "zswap 已启用否"
+        },
+        {
+          "index": 24,
+          "label": "DeckScope0.1.0-rc.3"
+        },
+        {
+          "index": 25,
+          "label": "Decky Loaderv3.2.8"
+        },
+        {
+          "index": 27,
+          "label": "复制系统摘要"
+        }
+      ],
+      "missing": [],
+      "actions": {
+        "last": {
+          "index": 27,
+          "label": "复制系统摘要"
+        },
+        "right": {
+          "index": 28,
+          "label": "刷新数据"
+        },
+        "left": {
+          "index": 27,
+          "label": "复制系统摘要"
+        }
+      }
+    }
+  ]
+}

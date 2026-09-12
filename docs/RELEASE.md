@@ -1,6 +1,6 @@
 # Release Preparation
 
-**rc.3 acceptance gate:** grouped charts and system details are locally tested and their native snapshot works on Galileo. The exact candidate has not been installed into Decky yet; QAM rendering and D-pad acceptance are still required. See [feature notes](FEATURES-RC3.md).
+**rc.3 acceptance gate:** grouped charts and system details are locally tested and their native snapshot works on Galileo. The revised candidate is installed and passes QAM rendering and CEF directional-key acceptance; exact hashes and remaining limitations are in [device acceptance](RC3-ACCEPTANCE.md). See [feature notes](FEATURES-RC3.md).
 
 **Current private candidate: `0.1.0-rc.3`. No public release or store submission has been made.** The current repository is self-contained for local development and sideloading, but that is not a license grant, a completed store-build adaptation, or production certification.
 

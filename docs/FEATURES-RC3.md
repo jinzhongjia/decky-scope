@@ -1,6 +1,6 @@
 # rc.3 Monitoring and System Details
 
-**Version: `0.1.0-rc.3`.** All five requested feature groups are implemented. Local regression and an isolated native snapshot on the Galileo device pass. The installed plugin has not been replaced by this candidate; rc.3 QAM rendering, navigation and actual suspend/resume event capture still require device acceptance. This is a private candidate, not a public release.[1]
+**Version: `0.1.0-rc.3`.** All five requested feature groups are implemented. Local regression and an isolated native snapshot on the Galileo device pass. The revised candidate is now installed on Galileo; actual QAM rendering and directional-key acceptance pass. See [device acceptance](RC3-ACCEPTANCE.md) for exact installed hashes. Genuine suspend/resume event capture remains untested. This is a private candidate, not a public release.[1]
 
 ## User-visible changes
 
@@ -20,7 +20,7 @@ The Monitor view keeps native horizontal selectors and the approved SteamOS cont
 
 ## Recording semantics
 
-Coverage is computed from the selected tier's full bounded ring **before chart point reduction**. Valid metric timestamps are sorted and their resolution-sized support intervals are unioned, preventing clock rollback or duplicate timestamps from counting time twice. Coverage duration is retained even if the list of individual gaps exceeds its 256-entry response cap. Aggregate records can contain partial windows or mixed sampling intervals, so the estimate must not be presented as exact active duration. Raw support uses the current sampling interval; older raw samples collected at another interval can make this estimate less precise.[3]
+Coverage is computed from the selected tier's full bounded ring **before chart point reduction**. Mid/Low coverage also unions available recent raw samples, so pending aggregation does not create a false trailing gap. Windows overlapping the query start contribute only their clipped support. Valid metric timestamps are sorted and their resolution-sized support intervals are unioned, preventing clock rollback or duplicate timestamps from counting time twice. Coverage duration is retained even if the list of individual gaps exceeds its 256-entry response cap. Aggregate records can contain partial windows or mixed sampling intervals, so the estimate must not be presented as exact active duration. Raw support uses the current sampling interval; older raw samples collected at another interval can make this estimate less precise.[3]
 
 Gray chart regions indicate uncovered intervals. Detected suspend/resume bounds appear as yellow markers and as labeled rows. Unknown gaps remain **No data**: shutdown, old suspends, process downtime and unavailable sensors cannot be distinguished retrospectively from the existing metric archive alone. Clock-change events are labeled separately. Real suspend/resume boundaries are estimated between observations, not imported from system journal records.[3]
 
@@ -42,7 +42,7 @@ Zram totals become unavailable if a detected device cannot supply the required c
 
 ## Device snapshot evidence
 
-An isolated rc.3 monitor was copied to a task-created temporary directory and connected to its own private test socket/history directory on the existing Galileo device. It did not replace the plugin, connect to the plugin's monitor socket, restart Decky, or touch the user's history. The temporary files were removed after the process exited. The raw non-identifying snapshot is archived separately.[1]
+Before sideloading, an isolated rc.3 monitor was copied to a task-created temporary directory and connected to its own private test socket/history directory on the existing Galileo device. It did not replace the plugin, connect to the plugin's monitor socket, restart Decky, or touch the user's history. The temporary files were removed after the process exited. The raw non-identifying snapshot is archived separately.[1]
 
 | Field | Observed result |
 | --- | --- |
@@ -59,9 +59,9 @@ An isolated rc.3 monitor was copied to a task-created temporary directory and co
 
 ## Validation and remaining acceptance
 
-The final local suite runs **45 Zig unit tests**, **42 Python tests against both ReleaseSmall and ReleaseSafe**, and **21 frontend/tooling tests**, plus TypeScript, Rollup, documentation checks and package verification. Tests cover missing and zero-valued battery attributes, charge units, filesystem deduplication/redaction, unmounted SD discovery, fixture-root isolation, mixed readable/unreadable zram devices, persisted coverage before decimation, corrupt event sidecars, unknown gaps, PSI axes and rendered field formatting.[5]
+The final local suite runs **46 Zig unit tests**, **42 Python tests against both ReleaseSmall and ReleaseSafe**, and **22 frontend/tooling tests**, plus TypeScript, Rollup, documentation checks and package verification. Tests cover missing and zero-valued battery attributes, charge units, filesystem deduplication/redaction, unmounted SD discovery, fixture-root isolation, mixed readable/unreadable zram devices, persisted coverage before decimation, corrupt event sidecars, unknown gaps, PSI axes and rendered field formatting.[5]
 
-The remaining gate is installation of the exact candidate followed by real QAM rendering and directional-key acceptance. Actual card mount/unmount transitions, genuine suspend/resume marker capture, long-run performance and non-OLED hardware still need their own evidence. Neither the local tests nor the isolated native snapshot replaces those checks. Public publishing prerequisites remain documented in [Release Preparation](RELEASE.md).
+The revised candidate passes installed QAM rendering and directional-key acceptance. Sub-minute durations display seconds rather than zero minutes. Actual card mount/unmount transitions, genuine suspend/resume marker capture, long-run performance and non-OLED hardware still need their own evidence. Neither the local tests nor the isolated native snapshot replaces those checks. Public publishing prerequisites remain documented in [Release Preparation](RELEASE.md).
 
 [1]: features/rc3-native.json "Isolated native snapshot on Galileo"
 [2]: ../src/SystemPane.tsx "Native system subview structure"
