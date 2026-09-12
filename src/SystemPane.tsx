@@ -52,9 +52,6 @@ export function SystemPane() {
       ) : (
         <>
           <div className="ds-intro">
-            <div className="ds-topline">
-              <span>{t("readOnly")}</span>
-            </div>
             <div className="ds-device-name">{title}</div>
             <span className="ds-tag">
               {get("os_name") || "—"} {get("os_version")}

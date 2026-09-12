@@ -99,7 +99,6 @@ const words = {
   records: ["内存中的分钟记录", "Minute records in memory"],
   uptime: ["本次采集已运行", "Sampler uptime"],
   about: ["关于 DeckScope", "ABOUT DECKSCOPE"],
-  readOnly: ["只读诊断 · 无需 root", "Read-only · no root required"],
   version: ["版本", "Version"],
   refreshHistory: ["刷新曲线", "Refresh charts"],
   retry: ["重试", "Retry"],

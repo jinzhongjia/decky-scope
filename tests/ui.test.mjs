@@ -118,3 +118,12 @@ test('native styling keeps one host scroller and does not intercept touch', () =
   assert.ok(!index.includes('<footer'));
   assert.ok(!/onTouchMove|onWheel|preventDefault|scrollIntoView/.test(index));
 });
+
+test('system and settings omit the redundant root-permission tagline in both languages', () => {
+  for (const name of ['SystemPane.tsx', 'SettingsPane.tsx']) {
+    const source=fs.readFileSync(root+'src/'+name,'utf8');
+    assert.ok(!source.includes('t("readOnly")'));
+  }
+  const strings=fs.readFileSync(root+'src/i18n.ts','utf8');
+  assert.ok(!strings.includes('readOnly:'));
+});

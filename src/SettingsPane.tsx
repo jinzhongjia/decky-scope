@@ -27,9 +27,6 @@ export function SettingsPane() {
     return <div className="ds-loading">{t("loading")}</div>;
   return (
     <>
-      <div className="ds-topline ds-intro">
-        <span>{t("readOnly")}</span>
-      </div>
       <Section title={t("interval")}>
         <div className="ds-select">
           <Segments
