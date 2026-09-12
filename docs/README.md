@@ -1,5 +1,7 @@
 # Documentation
 
+[rc.3 monitoring and system details](FEATURES-RC3.md) documents the new functionality, isolated native snapshot and remaining installation/UI acceptance gate.
+
 **This repository contains everything needed to build, sideload and debug DeckScope.** No sibling repository, external Agent Skill, pre-existing `.work/` directory, or saved device credential is required. Start with the current guides below; historical records are evidence, not instructions to replay an old workflow.
 
 ## Current guides

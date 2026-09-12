@@ -1,5 +1,9 @@
 # Validation Record
 
+## rc.3 current development candidate
+
+[rc.3 feature notes](FEATURES-RC3.md) supersede the older current-candidate label below. The new native snapshots were verified in an isolated temporary process on Galileo; the installed plugin has not been replaced. Full local regression passes with 42 Python tests per native build and 21 frontend/tooling tests. Real rc.3 QAM and physical suspend/SD-card acceptance remain pending. Earlier records below remain historical evidence.
+
 **Current runtime candidate: `0.1.0-rc.2`. Latest maintenance verification: 2026-09-12, approximately 13:16–13:17 UTC+8.** The documentation/tooling consolidation did not change `src/`, `main.py`, `py_modules/`, `monitor/`, `plugin.json` or `package.json`. It did not sideload or restart Loader. This record distinguishes offline checks, read-only device checks and earlier UI acceptance.[1]
 
 ## Latest self-contained workflow verification

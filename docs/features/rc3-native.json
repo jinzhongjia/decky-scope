@@ -1,0 +1,70 @@
+{
+  "version": "0.1.0-rc.3",
+  "profile": "steam_deck_oled",
+  "battery": {
+    "present": true,
+    "source": "BAT1",
+    "status": "Not charging",
+    "capacity_basis": "charge",
+    "full_capacity": 6804,
+    "design_capacity": 6470,
+    "capacity_unit": "mAh",
+    "health_pct_x10": 1051,
+    "cycle_count": 0,
+    "voltage_mv": 8435
+  },
+  "storage": {
+    "filesystems": [
+      {
+        "kind": "system",
+        "filesystem": "btrfs",
+        "mounted": true,
+        "total_bytes": 5368709120,
+        "available_bytes": 908554240
+      },
+      {
+        "kind": "home",
+        "filesystem": "ext4",
+        "mounted": true,
+        "total_bytes": 498868604928,
+        "available_bytes": 122169622528
+      }
+    ],
+    "removable_present": true,
+    "truncated": false
+  },
+  "system": {
+    "boot_elapsed_ms": 93609585,
+    "awake_ms": 38970049,
+    "suspended_ms": 54639536,
+    "load_x1000": [
+      40,
+      80,
+      90
+    ],
+    "memory": {
+      "available_kib": 12164756,
+      "cached_kib": 8467492,
+      "reclaimable_kib": 310324,
+      "dirty_kib": 224,
+      "writeback_kib": 0,
+      "swap_total_kib": 8628728,
+      "swap_free_kib": 8628728
+    },
+    "zram": {
+      "devices": 1,
+      "original_bytes": 4096,
+      "compressed_bytes": 64,
+      "memory_used_bytes": 20480
+    },
+    "zswap_enabled": false
+  },
+  "native_sample_available": 16382,
+  "persistence_failed": false,
+  "isolated_snapshot_only": true,
+  "native_sha256": "47f924aea931e2d3ae5f81193cbffb6262f497135c06099538aae7fcea31949d",
+  "package_sha256": "3d520ad2098c5b53022d8ae156686bf8afe2508dd6f62c89cf1603e63942514e",
+  "temporary_process_exited": true,
+  "temporary_files_removed": true,
+  "debug_session_released": true
+}
