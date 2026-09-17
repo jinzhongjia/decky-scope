@@ -1,5 +1,11 @@
 # Validation Record
 
+## Public alpha packaging — September 17, 2026
+
+`0.1.0-alpha.1` changes the package/native version and release documentation, not the runtime behavior or UI. Frozen dependency installation and `bash scripts/check.sh` pass: Zig tests and ReleaseSmall/ReleaseSafe builds, 55 Python tests per build, 28 frontend/tooling tests, TypeScript, Rollup, ELF constraints, documentation, and ZIP creation. Package allowlist/content/permission verification also passes.
+
+A local smoke run extracted the native executable from the alpha ZIP and exercised its UNIX-socket protocol against a synthetic Galileo fixture. `get_status` and `get_device_info` both reported `0.1.0-alpha.1`; live pushes remained disabled without a consumer, a bounded recent-history query returned recorded data, and flushing succeeded. This is packaged-runtime verification, not a new SteamOS/Decky UI acceptance run. Earlier device records below retain their original versions and hashes.
+
 **Latest tooling revision:** [GitHub packaging CI](CI-RELEASE.md) passes local official-Zig/frozen-lockfile checks, 46 Zig tests, 55 Python tests per native build and 28 frontend/tooling tests. Release network actions are mocked locally; hosted build acceptance is recorded separately.
 
 **Latest UI revision:** the two-level metric picker passes installed QAM checks and 28 frontend/tooling tests. The native monitor is unchanged. See [two-level picker acceptance](TWO-LEVEL-PICKER.md) for current screenshots and navigation results.

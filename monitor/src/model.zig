@@ -1,5 +1,5 @@
 const std = @import("std");
-pub const version = "0.1.0-rc.3";
+pub const version = "0.1.0-alpha.1";
 pub const Metric = enum(u5) {
     cpu_pct_x10,
     cpu_mhz,

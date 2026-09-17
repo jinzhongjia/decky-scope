@@ -20,7 +20,11 @@ DeckScope 用于观察和诊断，不负责超频、风扇控制或系统调优�
 
 可用指标取决于设备提供的数据，不支持的读数会标为不可用，而不是显示为零。电池功率和 APU 功率不等于整机插座功耗。
 
-目前处于候选版本阶段，真机验证范围仅覆盖一台 Steam Deck OLED；尚未完成 Steam Deck LCD 或其他 SteamOS 设备的兼容性验证。自动游戏场次识别与总结、完整的图表游标和缩放功能暂未提供。
+当前公开预览版本为 **`0.1.0-alpha.1`**，仅供实验性侧载使用，不是稳定版或 Decky 商店认证版本。真机验证范围仅覆盖此前候选包在一台 Steam Deck OLED 上的测试；本次 alpha 包未重新进行真机验收，Steam Deck LCD 和其他 SteamOS 设备尚未验证。自动游戏场次识别与总结、完整的图表游标和缩放功能暂未提供。
+
+### Alpha 下载
+
+前往 [GitHub prerelease](https://github.com/jinzhongjia/decky-scope/releases/tag/v0.1.0-alpha.1)，下载 **`DeckScope-0.1.0-alpha.1-linux-x86_64.zip`**，不要使用自动生成的 Source code 压缩包。发布附件同时提供 `SHA256SUMS` 和 `build-manifest.json`。使用前请阅读[部署与回滚](docs/DEPLOYMENT.md)、[兼容性限制](docs/COMPATIBILITY.md)和[第三方声明](THIRD-PARTY-NOTICES.md)；项目尚未指定主许可证。
 
 ## English
 
@@ -40,4 +44,8 @@ DeckScope is for observation and diagnostics, not overclocking, fan control, or 
 
 Available metrics depend on the data your device exposes. Unsupported readings are shown as unavailable, not as zero. Battery power and APU power are not whole-device wall power.
 
-DeckScope is currently a release candidate. On-device validation covers only one Steam Deck OLED; compatibility with Steam Deck LCD and other SteamOS devices has not yet been verified. Automatic game-session detection and summaries, full chart cursors, and zoom are not yet available.
+The current public preview is **`0.1.0-alpha.1`**, an experimental sideload build, not a stable release or Decky Store-certified package. Device evidence covers earlier candidates on one Steam Deck OLED; this alpha package has not undergone a new on-device acceptance run. Steam Deck LCD and other SteamOS devices remain unverified. Automatic game-session detection and summaries, full chart cursors, and zoom are not yet available.
+
+### Alpha download
+
+Open the [GitHub prerelease](https://github.com/jinzhongjia/decky-scope/releases/tag/v0.1.0-alpha.1) and download **`DeckScope-0.1.0-alpha.1-linux-x86_64.zip`**, not the generated Source code archives. Assets also include `SHA256SUMS` and `build-manifest.json`. Read [deployment and rollback](docs/DEPLOYMENT.md), [compatibility limits](docs/COMPATIBILITY.md), and [third-party notices](THIRD-PARTY-NOTICES.md) before use; no main project license has been selected.

@@ -18,11 +18,11 @@ The `published` Release event covers stable and prerelease publication. Releases
 
 Set **both** `package.json.version` and `monitor/src/model.zig`'s `version` constant to the same desired version. A release tag must equal `v` followed by that version. The workflow does not silently rewrite source versions or create/move tags. Review the [compatibility limits](COMPATIBILITY.md), [third-party notices](../THIRD-PARTY-NOTICES.md), and unresolved licensing/store questions in [Release Preparation](RELEASE.md).
 
-For example, to intentionally publish the existing RC version from a reviewed checkout:
+For example, to intentionally publish the first public alpha from a reviewed checkout:
 
 ```bash
 bash scripts/check.sh
-python3 ci/release.py metadata --tag v0.1.0-rc.3  # after creating the matching local tag
+python3 ci/release.py metadata --tag v0.1.0-alpha.1  # after creating the matching local tag
 ```
 
 The complete publication sequence is:
@@ -30,9 +30,9 @@ The complete publication sequence is:
 ```bash
 # Commit the reviewed version/source changes first, if any.
 git push origin main
-git tag -a v0.1.0-rc.3 -m "DeckScope 0.1.0-rc.3"
-python3 ci/release.py metadata --tag v0.1.0-rc.3
-git push origin v0.1.0-rc.3
+git tag -a v0.1.0-alpha.1 -m "DeckScope 0.1.0-alpha.1"
+python3 ci/release.py metadata --tag v0.1.0-alpha.1
+git push origin v0.1.0-alpha.1
 ```
 
 **Pushing that tag is a publication action.** Replace the example version when preparing a different release. Do not reuse or force-move an already published version. Alternatively, publish a Release through GitHub's UI using a matching version tag; the workflow then attaches the built files. If immutable Releases are enabled, prefer the tag-push route so assets upload before publication; already immutable releases cannot accept missing/replaced assets.[3]
