@@ -1,76 +1,43 @@
-# DeckScope / decky-scope
+# DeckScope
 
-[![Build, test and package](https://github.com/jinzhongjia/decky-scope/actions/workflows/ci.yml/badge.svg)](https://github.com/jinzhongjia/decky-scope/actions/workflows/ci.yml)
+[简体中文](#简体中文) · [English](#english)
 
-**Builds and releases:** see the [CI/Release guide](docs/CI-RELEASE.md). Pushes to `main` and PRs run full checks; version tags or published Releases produce an installable ZIP, SHA256SUMS and a build manifest.
+## 简体中文
 
-**Metric selection:** categories and concrete metrics now use [two separate levels](docs/TWO-LEVEL-PICKER.md), opening directly in the current metric category.
+**DeckScope 是一款面向 SteamOS 的 Decky 系统监控与历史记录插件。** 在快捷访问菜单（QAM）中查看设备状态、性能趋势和系统信息，无需离开游戏切换到桌面或独立全屏页面。
 
-**Current Monitor UI:** one selected metric, one chart, and on-demand details. All 19 metrics remain accessible. See [layout and device checks](docs/MONITOR-UX.md).
+### 能做什么
 
-**rc.3:** grouped monitoring curves, recording coverage, storage capacity, battery details and OS runtime are implemented. Local regression and an isolated native device snapshot pass; the revised candidate also passes installed QAM and directional-key acceptance. See [device results](docs/RC3-ACCEPTANCE.md). See [feature notes](docs/FEATURES-RC3.md).
+- **查看实时状态**：了解 CPU、GPU、内存、温度、功耗、磁盘和网络活动，以及系统资源压力。
+- **回看历史趋势**：查看最近七个自然日内的性能记录，观察负载、温度与功耗随时间的变化。
+- **专注一个指标**：默认只展示一个指标和一张清晰的曲线图，按分类选择其他指标，按需展开详细信息。
+- **了解设备信息**：查看 SteamOS 版本、内核、硬件、电池、存储空间和网络信息，并复制诊断摘要。
+- **使用熟悉的界面**：所有功能都在 QAM 内，支持简体中文和英文。
 
-**Read-only SteamOS diagnostics and performance history, entirely inside Decky QAM.** The current private candidate is `0.1.0-rc.3`. A static Zig 0.16 monitor owns collection and history, a Python-standard-library bridge owns lifecycle/RPC, and a React/TypeScript UI presents Monitor, System and Settings views. There is no separate fullscreen route.[1]
+### 使用边界
 
-The approved native UI and directional-key navigation are retained. Touchscreen investigation was stopped at the user's request; the reported obstruction is not claimed to be fixed. Device evidence is limited to one Steam Deck OLED plus local fixtures. **This is not a public release or cross-device production certification.**
+DeckScope 用于观察和诊断，不负责超频、风扇控制或系统调优。监控数据保留在本机，不上传；不采集账号凭据、Steam ID 或设备序列号。
 
-## Start here
+可用指标取决于设备提供的数据，不支持的读数会标为不可用，而不是显示为零。电池功率和 APU 功率不等于整机插座功耗。
 
-| Goal | Guide |
-| --- | --- |
-| Build and contribute | [Development](docs/DEVELOPMENT.md) |
-| Install or roll back on an authorized device | [Deployment](docs/DEPLOYMENT.md) |
-| Inspect logs, operate QAM or verify D-pad access | [Debugging](docs/DEBUGGING.md) |
-| Understand the protocol and stored data | [Protocol](docs/PROTOCOL.md) |
-| Check known hardware and feature limits | [Compatibility](docs/COMPATIBILITY.md) |
-| Review release blockers | [Release preparation](docs/RELEASE.md) |
-| Browse all current guides and historical evidence | [Documentation index](docs/README.md) |
+目前处于候选版本阶段，真机验证范围仅覆盖一台 Steam Deck OLED；尚未完成 Steam Deck LCD 或其他 SteamOS 设备的兼容性验证。自动游戏场次识别与总结、完整的图表游标和缩放功能暂未提供。
 
-All required developer scripts now live in this repository. No sibling checkout, external Agent Skill, or pre-existing `.work/` content is needed. Documentation and tool help are English-first; the UI has Simplified Chinese and English strings.
+## English
 
-## Local quick start
+**DeckScope is a Decky plugin for SteamOS system monitoring and performance history.** View device status, performance trends, and system information from the Quick Access Menu (QAM), without switching from your game to the desktop or a separate fullscreen page.
 
-Use Linux x86_64, Zig `0.16.x`, Python `3.10+`, Node `22+`, pnpm `11.3.0`, `file` and binutils. Open a terminal in this repository, then run:
+### What it does
 
-```bash
-pnpm install --frozen-lockfile
-bash scripts/check.sh
-```
+- **Check live status**: See CPU, GPU, memory, temperature, power, disk and network activity, and system resource pressure.
+- **Review historical trends**: Explore performance records from the last seven calendar days to see how load, temperature, and power change over time.
+- **Focus on one metric**: Start with one selected metric and one clear chart. Browse other metrics by category and expand details when needed.
+- **Understand your device**: View the SteamOS version, kernel, hardware, battery, storage capacity, and network information, and copy a diagnostic summary.
+- **Stay in a familiar interface**: Everything lives inside QAM, with Simplified Chinese and English support.
 
-This builds and tests the project and writes `outputs/DeckScope-dev.zip`. It does not connect to a device or deploy. The complete command performs both ReleaseSmall and ReleaseSafe regressions, frontend/tool tests, type checking and documentation validation. See [Development](docs/DEVELOPMENT.md) for individual commands and generated paths.
+### Scope and availability
 
-## Device workflow
+DeckScope is for observation and diagnostics, not overclocking, fan control, or system tuning. Monitoring data stays on your device and is not uploaded. Account credentials, Steam IDs, and device serial numbers are not collected.
 
-The target must be explicit and currently authorized. `user@host` is a placeholder:
+Available metrics depend on the data your device exposes. Unsupported readings are shown as unavailable, not as zero. Battery power and APU power are not whole-device wall power.
 
-```bash
-export DECK_HOST=user@host
-python3 scripts/debug-session.py start --ttl 1800
-python3 scripts/debug-session.py status
-node scripts/cdp.mjs targets
-# Only when installation and a Loader restart are authorized:
-bash scripts/deploy.sh --confirm
-bash scripts/device-check.sh
-bash scripts/logs.sh
-python3 scripts/debug-session.py stop
-```
-
-The session owns a loopback-only SSH/CDP tunnel and a bounded sleep inhibitor. The deployer always rebuilds, installs via sudo, and keeps the previous plugin outside Decky's scan directory. It does not change permanent SSH/CEF, power or fan settings. Read [Deployment](docs/DEPLOYMENT.md) and [Debugging](docs/DEBUGGING.md) before using the mutation or UI commands.
-
-## Features and boundaries
-
-The QAM contains real CPU/GPU and APU-or-battery power charts, SteamOS/kernel/hardware information, local SSH/CEF listener state, masked IP and summary copying, and sampling settings. Closing the UI stops live pushing, not background collection. The monitor records available CPU, memory, sensor, battery, PSI and I/O metrics with explicit missing-value handling. Battery and package power are not total-system consumption.[1] [2]
-
-Seven-day, day-granularity persistence uses checksummed schema-v1 records and batched writes; abrupt loss can discard unflushed data. Dedicated non-AMD collectors, automatic game sessions, full chart cursor/zoom and broader device/performance certification remain deferred. The [compatibility guide](docs/COMPATIBILITY.md) preserves the detailed implementation and evidence limits.
-
-## Source map and provenance
-
-`monitor/src/` owns native collection and storage; `py_modules/` and `main.py` own the bridge; `src/` owns the QAM; `scripts/` and `tests/` own development workflows. `docs/` separates current guides from immutable historical evidence. Generated binaries, packages, local session state and scratch files are ignored by Git.
-
-The original user-supplied technical proposal and demo informed the low-level runtime and monitor baseline. Earlier local projects informed the bridge, Decky controls and CDP development helpers. The adapted helpers are now maintained locally under `scripts/lib/` and `scripts/probes/`; historical provenance is not a runtime/build dependency. License and reference-code redistribution rights still require review before public distribution.[3]
-
-## References
-
-[1]: docs/DESIGN.md "DeckScope architecture and product boundaries"
-[2]: docs/PROTOCOL.md "Protocol, units, persistence and privacy semantics"
-[3]: docs/RELEASE.md "Private candidate and unresolved public-release requirements"
+DeckScope is currently a release candidate. On-device validation covers only one Steam Deck OLED; compatibility with Steam Deck LCD and other SteamOS devices has not yet been verified. Automatic game-session detection and summaries, full chart cursors, and zoom are not yet available.
