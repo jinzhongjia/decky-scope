@@ -26,6 +26,7 @@ jobs:
       tag: ${{ steps.meta.outputs.tag }}
       commit: ${{ steps.meta.outputs.commit }}
       version: ${{ steps.meta.outputs.version }}
+      artifact_id: ${{ steps.assets.outputs.artifact-id }}
     env:
       RELEASE_TAG: ${{ github.event.release.tag_name || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || '' }}
     steps:
@@ -64,6 +65,7 @@ jobs:
           git diff --exit-code
           python3 ci/release.py package
       - name: Upload installable package and checksums
+        id: assets
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: DeckScope-${{ steps.meta.outputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -105,7 +107,8 @@ jobs:
       - name: Download only this run's validated assets
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: DeckScope-${{ needs.build.outputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}
+          artifact-ids: ${{ needs.build.outputs.artifact_id }}
+          merge-multiple: true
           path: ${{ runner.temp }}/deckscope-assets
       - name: Verify remote tag and publish without overwriting
         env:

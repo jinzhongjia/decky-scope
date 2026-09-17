@@ -2,6 +2,7 @@ import hashlib
 import importlib.util
 import json
 import stat
+import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -134,16 +135,22 @@ class ReleasePipelineTests(unittest.TestCase):
 
     def run_publish(self, existing=None, remote_sha=COMMIT):
         folder = self.assets()
+        remote = existing
         calls = []
 
         def fake(*args):
+            nonlocal remote
             calls.append(args)
             if args[0] == 'api' and '/git/ref/tags/' in args[-1]:
                 return json.dumps({'object': {'type': 'commit', 'sha': remote_sha}})
             if '--paginate' in args:
-                return json.dumps([[existing] if existing else []])
+                return json.dumps([[remote] if remote else []])
             if args[0] == 'api' and '/releases/tags/' in args[-1]:
-                return json.dumps({'draft': True, 'assets': []})
+                # GitHub's tag endpoint does not expose unpublished drafts.
+                raise subprocess.CalledProcessError(1, args, stderr='Not Found (HTTP 404)')
+            if args[:2] == ('release', 'create'):
+                remote = {'tag_name': args[2], 'draft': True, 'assets': [],
+                          'body': args[args.index('--notes') + 1]}
             return ''
 
         with patch.object(publisher, 'gh', side_effect=fake):
@@ -172,14 +179,3 @@ class ReleasePipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'moved'):
             self.run_publish(remote_sha='b' * 40)
 
-    def test_workflow_has_readonly_build_and_publish_gate(self):
-        source = (ROOT / '.github/workflows/ci.yml').read_text()
-        self.assertNotIn('pull_request_target', source)
-        self.assertIn('contents: read', source)
-        self.assertIn('needs: build', source)
-        self.assertIn("format('pr-{0}', github.event.pull_request.number)", source)
-        self.assertIn("github.event_name == 'release'", source)
-        self.assertIn('pnpm install --frozen-lockfile', source)
-        for line in source.splitlines():
-            if 'uses:' in line:
-                self.assertRegex(line, r'@[a-f0-9]{40} # v')

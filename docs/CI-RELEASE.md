@@ -18,7 +18,7 @@ The `published` Release event covers stable and prerelease publication. Releases
 
 Set **both** `package.json.version` and `monitor/src/model.zig`'s `version` constant to the same desired version. A release tag must equal `v` followed by that version. The workflow does not silently rewrite source versions or create/move tags. Review the [compatibility limits](COMPATIBILITY.md), [third-party notices](../THIRD-PARTY-NOTICES.md), and unresolved licensing/store questions in [Release Preparation](RELEASE.md).
 
-For example, to intentionally publish the first public alpha from a reviewed checkout:
+The first public alpha used the following version/tag commands. Do not replay its tag creation; choose a new version for later releases:
 
 ```bash
 bash scripts/check.sh
@@ -65,6 +65,10 @@ Only the dependent publication job receives `contents: write`. It runs only for 
 
 A user-created draft stays a draft. A draft created by this CI contains a commit-specific marker so a rerun can resume an interrupted upload and publish after completion. If a conflict remains, choose a new version or investigate the exact asset difference; do not delete assets merely to make CI green.
 
+Draft discovery uses the authenticated release list, not `releases/tags/<tag>`: the latter returns 404 for an unpublished draft. The build exports the uploaded artifact ID and the publisher downloads that exact ID. Do not reconstruct its name from the publishing job's `github.run_attempt`; a failed-job-only rerun reuses the successful build's earlier artifact.
+
+The `v0.1.0-alpha.1` tag predates these two publication fixes and remains unchanged. Its build succeeded, but the initial draft lookup failed; the verified artifact from that run was recovered with `ci/publish.py` and published without replacing bytes. The subsequent [Release-event workflow](https://github.com/jinzhongjia/decky-scope/actions/runs/35192962047) passed both jobs. For that historical tag, rerun the entire workflow rather than only its failed publication job, or recover the exact successful build artifact as above. See [validation](VALIDATION.md) for identity and checksum evidence.
+
 ## Local verification and maintenance
 
 ```bash
@@ -75,7 +79,7 @@ python3 ci/release.py package --output outputs/ci-local
 (cd outputs/ci-local && sha256sum -c SHA256SUMS)
 ```
 
-The initial local implementation was checked with the official Zig distribution, frozen dependency installation and `actionlint`. Regression consists of 46 Zig tests, 55 Python tests per native build, and 28 frontend/tooling tests. Thirteen of the Python tests specifically cover release identity, unsafe/stale packages, reproducibility, checksums, tag movement, duplicate assets, draft handling and workflow permissions. Upload/publication paths use mocked GitHub calls locally; a real tag/Release execution remains a separate acceptance step.
+The initial local implementation was checked with the official Zig distribution, frozen dependency installation and `actionlint`. After the alpha publication fixes, `bash scripts/check.sh` passes Zig tests/builds, 54 Python tests per native build and 28 frontend/tooling tests. Twelve Python tests cover release identity, unsafe/stale packages, reproducibility, checksums, tag movement, duplicate assets and draft handling; the draft fixture now reproduces GitHub's unpublished-tag 404. A source-text workflow assertion was removed; the revised workflow passes `actionlint` 1.7.12. Hosted alpha build/publication and public-asset download checks are recorded in [validation](VALIDATION.md).
 
 Do not confuse the existence of a ZIP with permission to redistribute all contents, actual SteamOS UI acceptance or official-store compliance. The project owner has not selected a main license. No new license grant or stable-release certification is implied by enabling packaging CI.
 

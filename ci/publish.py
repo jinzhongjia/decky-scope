@@ -57,14 +57,19 @@ def remote_commit(repo, tag):
     raise ValueError('Unable to resolve remote tag to a commit')
 
 
+def find_release(repo, tag):
+    # The tag endpoint excludes drafts; the authenticated list includes them.
+    pages = json.loads(gh('api', '--paginate', '--slurp', f'repos/{repo}/releases?per_page=100'))
+    return next((r for page in pages for r in page if r['tag_name'] == tag), None)
+
+
 def publish(folder, repo, tag, commit):
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repo) or not re.fullmatch(r'v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?', tag):
         raise ValueError('Invalid repository or tag')
     manifest = verify_assets(folder, tag, commit)
     if remote_commit(repo, tag) != commit:
         raise ValueError('Remote tag moved after the build; refusing publication')
-    releases = json.loads(gh('api', '--paginate', '--slurp', f'repos/{repo}/releases?per_page=100'))
-    release = next((r for page in releases for r in page if r['tag_name'] == tag), None)
+    release = find_release(repo, tag)
     created = release is None
     marker = f'<!-- deckscope-ci:{commit} -->'
     owned_draft = bool(release and release.get('draft') and marker in (release.get('body') or ''))
@@ -78,7 +83,9 @@ def publish(folder, repo, tag, commit):
         if '-' in manifest['version']:
             command += ['--prerelease', '--latest=false']
         gh(*command)
-        release = json.loads(gh('api', f'repos/{repo}/releases/tags/{quote(tag, safe="")}'))
+        release = find_release(repo, tag)
+        if release is None:
+            raise ValueError('Created release draft was not found')
     assets = {a['name']: a for a in release['assets']}
     for path in sorted(folder.iterdir()):
         digest = hashlib.sha256(path.read_bytes()).hexdigest()

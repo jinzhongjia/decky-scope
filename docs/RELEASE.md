@@ -2,7 +2,7 @@
 
 **rc.3 acceptance gate:** grouped charts and system details are locally tested and their native snapshot works on Galileo. The revised candidate is installed and passes QAM rendering and CEF directional-key acceptance; exact hashes and remaining limitations are in [device acceptance](RC3-ACCEPTANCE.md). See [feature notes](FEATURES-RC3.md).
 
-**Current version: `0.1.0-alpha.1`, the first public alpha packaging target.** On September 17, 2026, the maintainer authorized an alpha package and GitHub prerelease. The previous `0.1.0-rc.3` label was an unpublished development candidate; the public alpha label does not remove its functionality or establish stable readiness. No store submission is included. This publication does not select a main license or certify redistribution rights, official-store builds, or production suitability.
+**Current version: [`0.1.0-alpha.1`](https://github.com/jinzhongjia/decky-scope/releases/tag/v0.1.0-alpha.1), published as the first public alpha prerelease.** On September 17, 2026, the maintainer authorized an alpha package and GitHub prerelease. The previous `0.1.0-rc.3` label was an unpublished development candidate; the public alpha label does not remove its functionality or establish stable readiness. No store submission is included. This publication does not select a main license or certify redistribution rights, official-store builds, or production suitability.
 
 ## Product and acceptance status
 

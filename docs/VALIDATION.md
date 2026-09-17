@@ -6,7 +6,13 @@
 
 A local smoke run extracted the native executable from the alpha ZIP and exercised its UNIX-socket protocol against a synthetic Galileo fixture. `get_status` and `get_device_info` both reported `0.1.0-alpha.1`; live pushes remained disabled without a consumer, a bounded recent-history query returned recorded data, and flushing succeeded. This is packaged-runtime verification, not a new SteamOS/Decky UI acceptance run. Earlier device records below retain their original versions and hashes.
 
-**Latest tooling revision:** [GitHub packaging CI](CI-RELEASE.md) passes local official-Zig/frozen-lockfile checks, 46 Zig tests, 55 Python tests per native build and 28 frontend/tooling tests. Release network actions are mocked locally; hosted build acceptance is recorded separately.
+The public [prerelease](https://github.com/jinzhongjia/decky-scope/releases/tag/v0.1.0-alpha.1) points to `98f661b981af7b0d02700db2d039073826baabe8`. The [tag build](https://github.com/jinzhongjia/decky-scope/actions/runs/35192105710) passed testing and packaging, then exposed a draft lookup bug. Recovery used its original hosted artifacts, not a local rebuild. The public ZIP is 104,598 bytes with SHA-256 `0dc67f9d17b144b45ed4c9401ec0d4224c46a12691d2d37e6cb1f262bdd1377a`. All three public assets were downloaded again; `SHA256SUMS` passed, and an idempotent publisher run skipped every identical asset without overwriting. The hosted ZIP also passed the native smoke described above.
+
+The subsequent [Release-event run](https://github.com/jinzhongjia/decky-scope/actions/runs/35192962047) passed both build and publication jobs. The initial tag run's failed-job-only rerun exposed a separate artifact-name/run-attempt mismatch. Both defects are fixed on `main`: drafts are found through the authenticated release list, and publication consumes the successful build's artifact ID. The existing alpha tag was not moved. After the source fix, full local checks pass with 54 Python tests per build and 28 frontend/tooling tests; one source-text-only workflow test was removed. The draft regression failed before the fix and passed afterward, and `actionlint` 1.7.12 validates the revised workflow. This does not claim that the revised failed-job-only path has itself been exercised in hosted CI.
+
+## Earlier tooling and UI baseline
+
+**Earlier tooling revision:** [GitHub packaging CI](CI-RELEASE.md) passed local official-Zig/frozen-lockfile checks, 46 Zig tests, 55 Python tests per native build and 28 frontend/tooling tests. At that stage, release network actions were mocked locally; the public alpha record above adds hosted publication evidence.
 
 **Latest UI revision:** the two-level metric picker passes installed QAM checks and 28 frontend/tooling tests. The native monitor is unchanged. See [two-level picker acceptance](TWO-LEVEL-PICKER.md) for current screenshots and navigation results.
 
